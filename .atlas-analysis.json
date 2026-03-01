@@ -1,0 +1,210 @@
+{
+  "projectType": "frontend",
+  "projectName": "Theme Raed",
+  "projectDescription": "A customizable e-commerce theme for Salla stores built with Twig templates, TailwindCSS, and JavaScript",
+  "theme": "maple",
+  "primaryColor": "#21636d",
+  "lightColor": "#5CD5C4",
+  "darkColor": "#1D1F1F",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "getting-started",
+              "installation"
+            ]
+          },
+          {
+            "group": "Theme Structure",
+            "pages": [
+              "structure/directory-structure",
+              "structure/assets",
+              "structure/views",
+              "structure/locales"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "development/setup",
+              "development/preview",
+              "development/build",
+              "development/customization"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/twilight-json",
+              "configuration/theme-settings",
+              "configuration/webpack",
+              "configuration/tailwind"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Components",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "components/overview"
+            ]
+          },
+          {
+            "group": "Layout Components",
+            "pages": [
+              "components/header",
+              "components/footer",
+              "components/master-layout"
+            ]
+          },
+          {
+            "group": "Home Components",
+            "pages": [
+              "components/enhanced-slider",
+              "components/main-links",
+              "components/slider-products-with-header",
+              "components/enhanced-square-banners",
+              "components/brands",
+              "components/custom-testimonials"
+            ]
+          },
+          {
+            "group": "Product Components",
+            "pages": [
+              "components/product-card",
+              "components/product-options",
+              "components/product-slider"
+            ]
+          },
+          {
+            "group": "Theme Features",
+            "pages": [
+              "components/youtube",
+              "components/fixed-banner",
+              "components/testimonials",
+              "components/parallax-background",
+              "components/photos-slider",
+              "components/store-features",
+              "components/square-photos",
+              "components/fixed-products",
+              "components/products-slider",
+              "components/featured-products",
+              "components/latest-products",
+              "components/vertical-menu-slider"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Pages",
+        "groups": [
+          {
+            "group": "Store Pages",
+            "pages": [
+              "pages/home",
+              "pages/product",
+              "pages/cart",
+              "pages/checkout"
+            ]
+          },
+          {
+            "group": "Customer Pages",
+            "pages": [
+              "pages/customer-profile",
+              "pages/customer-orders",
+              "pages/customer-notifications",
+              "pages/wishlist"
+            ]
+          },
+          {
+            "group": "Content Pages",
+            "pages": [
+              "pages/blog",
+              "pages/brands",
+              "pages/static-pages"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "JavaScript",
+            "pages": [
+              "reference/app-helpers",
+              "reference/anime",
+              "reference/product-card-js",
+              "reference/add-product-toast",
+              "reference/image-zoom"
+            ]
+          },
+          {
+            "group": "Styling",
+            "pages": [
+              "reference/tailwind-config",
+              "reference/custom-styles",
+              "reference/theme-colors"
+            ]
+          },
+          {
+            "group": "Twig Templates",
+            "pages": [
+              "reference/twig-basics",
+              "reference/twig-filters",
+              "reference/twig-variables"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Customizable Twig templates for all store pages",
+    "14 pre-built home page components",
+    "TailwindCSS styling with custom configuration",
+    "Responsive design for mobile and desktop",
+    "Product sliders and carousels",
+    "Enhanced image galleries and lightbox",
+    "Customer testimonials display",
+    "Brand showcase components",
+    "Mega menu support",
+    "Multi-language support (Arabic and English)",
+    "Sticky header and cart",
+    "Product image zoom",
+    "Animated elements with anime.js",
+    "Webpack-based build system"
+  ],
+  "publicApiSurface": [
+    "Enhanced Slider Component",
+    "Main Links Component",
+    "Slider Products with Header Component",
+    "Enhanced Square Banners Component",
+    "Brands Component",
+    "Custom Testimonials Component",
+    "YouTube Component",
+    "Fixed Banner Component",
+    "Parallax Background Component",
+    "Photos Slider Component",
+    "Store Features Component",
+    "Square Photos Component",
+    "Fixed Products Component",
+    "Products Slider Component",
+    "Featured Products (3 styles)",
+    "Latest Products Component",
+    "Vertical Menu with Slider Component",
+    "app-helpers.js utilities",
+    "Product card JavaScript",
+    "Add to cart toast notification",
+    "Image zoom functionality",
+    "Twilight theme integration"
+  ]
+}
