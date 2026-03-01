@@ -1,0 +1,508 @@
+---
+title: Twig filters
+description: Available Twig filters in Theme Raed
+---
+
+Filters modify variables before output. Theme Raed includes Twig's built-in filters plus Salla-specific filters.
+
+## Salla filters
+
+### money
+
+Formats a number as currency with the store's currency symbol.
+
+<CodeGroup>
+```twig Usage
+{{ product.price|money }}
+{# Output: "100.00 SAR" or "١٠٠ ر.س" #}
+
+{{ cart.total|money }}
+{{ item.sale_price|money }}
+```
+</CodeGroup>
+
+<ParamField path="value" type="float" required>
+  Numeric value to format as currency
+</ParamField>
+
+The output format depends on:
+- Store currency (`currency.symbol`)
+- Language direction (RTL/LTR)
+- Number format settings (`store.settings.arabic_numbers_enabled`)
+
+### cdn
+
+Generates a CDN URL for assets with optional dimensions.
+
+<CodeGroup>
+```twig Basic usage
+{{ 'images/logo.png'|cdn }}
+{# Output: CDN URL for the image #}
+
+{{ store.logo|cdn }}
+{{ product.image.url|cdn }}
+```
+
+```twig With dimensions
+{{ store.logo|cdn(175) }}
+{# Single dimension (width) #}
+
+{{ 'images/tax.png'|cdn(70, 70) }}
+{# Width and height #}
+```
+</CodeGroup>
+
+<ParamField path="width" type="int">
+  Image width in pixels
+</ParamField>
+
+<ParamField path="height" type="int">
+  Image height in pixels
+</ParamField>
+
+### asset
+
+Generates a URL for theme assets (JS, CSS, images).
+
+<CodeGroup>
+```twig JavaScript
+<script src="{{ 'app.js' | asset }}"></script>
+<script src="{{ 'product.js' | asset }}"></script>
+<script defer src="{{ 'checkout.js' | asset }}"></script>
+```
+
+```twig CSS
+<link rel="stylesheet" href="{{ 'app.css' | asset }}">
+```
+
+```twig Images
+<img src="{{ 'images/placeholder.png' | asset }}">
+```
+</CodeGroup>
+
+### json_encode
+
+Encodes a value as JSON for use in JavaScript or HTML attributes.
+
+<CodeGroup>
+```twig HTML attributes
+<salla-count-down
+  pre-order='{{ product.preorder|json_encode }}'
+  boxed
+  labeled>
+</salla-count-down>
+
+<salla-cart-item-offers
+  offers="{{ item.detailed_offers|json_encode }}">
+</salla-cart-item-offers>
+```
+
+```twig JavaScript
+<script>
+  window.can_access_wallet = {{ user.can_access_wallet | json_encode }};
+</script>
+```
+</CodeGroup>
+
+### trans
+
+Translates a key to the current language.
+
+<CodeGroup>
+```twig Basic translation
+{{ trans('pages.cart.empty_cart') }}
+{{ trans('common.elements.back_home') }}
+{{ trans('pages.products.read_more') }}
+```
+
+```twig With placeholders
+{{ trans('pages.cart.free_shipping_alert', {'amount': cart.free_shipping_bar.remaining|money}) }}
+```
+</CodeGroup>
+
+<Note>
+  Translation keys are defined in the theme's language files. Merchants can customize translations via the Salla dashboard.
+</Note>
+
+### pluralize
+
+Returns the singular or plural form based on a count.
+
+<CodeGroup>
+```twig Usage
+{{ pluralize('pages.products.sold_times', product.sold_quantity)|raw }}
+{# Output: "1 time" or "5 times" depending on quantity #}
+```
+</CodeGroup>
+
+## String filters
+
+### raw
+
+Outputs HTML without escaping. Use for trusted HTML content.
+
+<CodeGroup>
+```twig HTML content
+{{ product.description|raw }}
+{{ store.description|raw }}
+{{ product_desc|raw }}
+```
+</CodeGroup>
+
+<Note>
+  Only use `raw` for content you trust. Never use it with user input to prevent XSS attacks.
+</Note>
+
+### replace
+
+Replaces text within a string.
+
+<CodeGroup>
+```twig Replace text
+{% set product_desc = product.description|replace({"&nbsp;":"\n"}) %}
+
+{{ product.name|replace({'&': 'and'}) }}
+```
+</CodeGroup>
+
+<ParamField path="search" type="object" required>
+  Object with search/replace pairs
+</ParamField>
+
+### upper
+
+Converts string to uppercase.
+
+```twig
+{{ product.name|upper }}
+{# "PRODUCT NAME" #}
+```
+
+### lower
+
+Converts string to lowercase.
+
+```twig
+{{ product.name|lower }}
+{# "product name" #}
+```
+
+### title
+
+Converts string to title case.
+
+```twig
+{{ product.name|title }}
+{# "Product Name" #}
+```
+
+### capitalize
+
+Capitalizes the first character.
+
+```twig
+{{ status|capitalize }}
+{# "Active" #}
+```
+
+### trim
+
+Removes whitespace from both ends.
+
+```twig
+{{ product.name|trim }}
+```
+
+### length
+
+Returns the length of a string or array.
+
+<CodeGroup>
+```twig String length
+{% if product.name|length > 50 %}
+  {{ product.name|slice(0, 50) ~ '...' }}
+{% else %}
+  {{ product.name }}
+{% endif %}
+```
+
+```twig Array length
+{% set has_many_images = product.images|length > 1 %}
+
+{% if cart.items|length %}
+  <!-- Show items -->
+{% endif %}
+```
+</CodeGroup>
+
+## Array filters
+
+### slice
+
+Extracts a portion of an array.
+
+<CodeGroup>
+```twig Slice array
+{% for product in section.products|slice(0, 4) %}
+  <!-- First 4 products -->
+{% endfor %}
+
+{% for product in section.products|slice(0, main_product ? 4 : 8) %}
+  <!-- Dynamic slice -->
+{% endfor %}
+```
+</CodeGroup>
+
+<ParamField path="start" type="int" required>
+  Starting index (0-based)
+</ParamField>
+
+<ParamField path="length" type="int">
+  Number of items to extract
+</ParamField>
+
+### first
+
+Returns the first element.
+
+```twig
+{% if loop.first %}
+  <img loading="eager" src="{{ product.images|first }}">
+{% endif %}
+```
+
+### last
+
+Returns the last element.
+
+```twig
+{{ product.images|last }}
+```
+
+### join
+
+Joins array elements with a separator.
+
+<CodeGroup>
+```twig Join array
+channels="{{ product.notify_availability.channels|join(',') }}"
+{# Output: "sms,email" #}
+
+{{ tags|join(', ') }}
+{# Output: "tag1, tag2, tag3" #}
+```
+</CodeGroup>
+
+<ParamField path="separator" type="string" default="''">
+  String to insert between elements
+</ParamField>
+
+### sort
+
+Sorts an array.
+
+```twig
+{% for tag in product.tags|sort %}
+  {{ tag.name }}
+{% endfor %}
+```
+
+### reverse
+
+Reverses an array.
+
+```twig
+{% for item in cart.items|reverse %}
+  <!-- Items in reverse order -->
+{% endfor %}
+```
+
+## Number filters
+
+### round
+
+Rounds a number.
+
+<CodeGroup>
+```twig Round number
+{{ product.price|round }}
+{# 99.5 → 100 #}
+
+{{ product.price|round(2) }}
+{# 99.567 → 99.57 #}
+```
+</CodeGroup>
+
+<ParamField path="precision" type="int" default="0">
+  Number of decimal places
+</ParamField>
+
+### number_format
+
+Formats a number with thousands separator.
+
+```twig
+{{ product.sold_quantity|number_format }}
+{# 1000 → "1,000" #}
+```
+
+### abs
+
+Returns absolute value.
+
+```twig
+{{ discount|abs }}
+```
+
+## Date filters
+
+### date
+
+Formats a date.
+
+<CodeGroup>
+```twig Date formatting
+{{ product.created_at|date('Y-m-d') }}
+{# 2024-01-15 #}
+
+{{ product.created_at|date('F j, Y') }}
+{# January 15, 2024 #}
+
+{{ product.discount_ends|date('M d, Y H:i') }}
+{# Jan 15, 2024 14:30 #}
+```
+</CodeGroup>
+
+## Conditional filters
+
+### default
+
+Provides a default value if variable is undefined or empty.
+
+<CodeGroup>
+```twig Default values
+{{ product.subtitle|default('No subtitle available') }}
+{{ image.alt|default(product.name) }}
+{{ theme.settings.get('imageZoom')|default('enabled') }}
+```
+</CodeGroup>
+
+## Type checking
+
+### iterable
+
+Checks if a value is iterable (array or object).
+
+```twig
+{% if image.video_url is iterable %}
+  {{ image.video_url|first }}
+{% else %}
+  {{ image.video_url }}
+{% endif %}
+```
+
+## Escaping filters
+
+### escape (e)
+
+Escapes HTML characters (applied by default).
+
+```twig
+{{ product.name|escape }}
+{{ product.name|e }}
+{# Same as {{ product.name }} #}
+```
+
+### url_encode
+
+Encodes a string for use in URLs.
+
+```twig
+<a href="/search?q={{ query|url_encode }}">
+  Search results
+</a>
+```
+
+## Chaining filters
+
+Filters can be chained together:
+
+<CodeGroup>
+```twig Filter chains
+{{ product.name|upper|trim }}
+
+{{ product.description|replace({"&nbsp;":"\n"})|raw }}
+
+{{ product.price|round(2)|number_format }}
+
+{{ store.description|trim|raw }}
+```
+</CodeGroup>
+
+## Common patterns
+
+### Price display
+
+<CodeGroup>
+```twig Sale price
+{% if product.is_on_sale %}
+  <span class="text-red-800">{{ product.sale_price|money }}</span>
+  <span class="line-through">{{ product.regular_price|money }}</span>
+{% else %}
+  <span>{{ product.price|money }}</span>
+{% endif %}
+```
+</CodeGroup>
+
+### Image optimization
+
+<CodeGroup>
+```twig Responsive images
+<img
+  src="{{ product.image.url|cdn }}"
+  alt="{{ product.image.alt|default(product.name) }}"
+  {% if loop.first %}
+    loading="eager"
+    fetchpriority="high"
+  {% else %}
+    loading="lazy"
+  {% endif %}
+>
+```
+</CodeGroup>
+
+### Truncate text
+
+<CodeGroup>
+```twig Text truncation
+{% if product.name|length > 50 %}
+  {{ product.name|slice(0, 50)|trim ~ '...' }}
+{% else %}
+  {{ product.name }}
+{% endif %}
+```
+</CodeGroup>
+
+### Safe HTML output
+
+<CodeGroup>
+```twig HTML content
+<div class="product-description">
+  {{ product.description|raw }}
+</div>
+```
+</CodeGroup>
+
+### Conditional assets
+
+<CodeGroup>
+```twig Load assets conditionally
+{% if product.has_3d_image %}
+  <script type="module" defer src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+{% endif %}
+
+{% if theme.settings.get('enable_add_product_toast', true) %}
+  <script defer src="{{ 'add-product-toast.js'|asset }}"></script>
+{% endif %}
+```
+</CodeGroup>

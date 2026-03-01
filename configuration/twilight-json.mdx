@@ -1,0 +1,402 @@
+---
+title: twilight.json configuration
+description: Complete reference for the twilight.json theme configuration file
+---
+
+The `twilight.json` file is the main configuration file for Theme Raed. It defines theme metadata, supported features, customizable settings, and available components for the Salla e-commerce platform.
+
+## File location
+
+The configuration file is located at the root of the theme directory:
+
+```
+/twilight.json
+```
+
+## Structure overview
+
+The `twilight.json` file contains the following main sections:
+
+- **name** - Theme name in multiple languages
+- **repository** - GitHub repository URL
+- **author_email** - Theme author contact
+- **features** - List of supported theme features
+- **settings** - Customizable theme settings
+- **components** - Custom page builder components
+- **support_url** - Support website URL
+- **description** - Theme description in multiple languages
+
+## Theme metadata
+
+### Basic information
+
+<ParamField path="name" type="object" required>
+  Theme name in multiple languages
+  
+  ```json
+  {
+    "ar": "رائد",
+    "en": "Theme Raed"
+  }
+  ```
+</ParamField>
+
+<ParamField path="repository" type="string">
+  GitHub repository URL for the theme
+  
+  ```json
+  "repository": "https://github.com/SallaApp/theme-raed"
+  ```
+</ParamField>
+
+<ParamField path="author_email" type="string">
+  Contact email for theme support
+  
+  ```json
+  "author_email": "support@salla.sa"
+  ```
+</ParamField>
+
+<ParamField path="description" type="object">
+  Theme description in multiple languages
+  
+  ```json
+  {
+    "ar": "مجموعة كبيرة من المزايا لدعم تجارتك وتقديم تجربة تسوق مثيرة لعملائك",
+    "en": "A wide range of features to support your business and provide an exciting shopping experience for your customers"
+  }
+  ```
+</ParamField>
+
+## Features
+
+The `features` array lists all supported theme capabilities:
+
+```json
+"features": [
+  "mega-menu",
+  "fonts",
+  "color",
+  "breadcrumb",
+  "unite-cards-height",
+  "component-featured-products",
+  "component-fixed-banner",
+  "component-fixed-products",
+  "component-products-slider",
+  "component-photos-slider",
+  "component-parallax-background",
+  "component-testimonials",
+  "component-square-photos",
+  "component-store-features",
+  "component-youtube",
+  "menu-images",
+  "filters"
+]
+```
+
+### Available features
+
+<Accordion title="Navigation features">
+  - **mega-menu** - Advanced dropdown menus with multiple columns
+  - **breadcrumb** - Breadcrumb navigation support
+  - **menu-images** - Display images in menu items
+</Accordion>
+
+<Accordion title="Styling features">
+  - **fonts** - Custom font support
+  - **color** - Color customization options
+  - **unite-cards-height** - Uniform height for product cards
+</Accordion>
+
+<Accordion title="Component features">
+  - **component-featured-products** - Featured products display
+  - **component-fixed-banner** - Static banner component
+  - **component-fixed-products** - Fixed products section
+  - **component-products-slider** - Product carousel slider
+  - **component-photos-slider** - Image carousel slider
+  - **component-parallax-background** - Parallax scrolling effects
+  - **component-testimonials** - Customer testimonials display
+  - **component-square-photos** - Square image gallery
+  - **component-store-features** - Store features highlights
+  - **component-youtube** - YouTube video embed
+</Accordion>
+
+<Accordion title="Other features">
+  - **filters** - Product filtering capabilities
+</Accordion>
+
+## Settings
+
+The `settings` array defines customizable options available in the theme dashboard:
+
+### Header settings
+
+<ParamField path="header_is_sticky" type="boolean" default={true}>
+  Fix the main menu at the top of the page when scrolling down
+  
+  <Note>
+    It is recommended to disable this if there are many items in the dropdown menu
+  </Note>
+</ParamField>
+
+<ParamField path="topnav_is_dark" type="boolean" default={false}>
+  Enable dark mode for the top navigation bar
+</ParamField>
+
+<ParamField path="important_links" type="boolean" default={true}>
+  Display important page links in the top bar (landing pages, blog, info pages)
+</ParamField>
+
+<ParamField path="enable_more_menu" type="boolean" default={true}>
+  Enable "More" menu in the main navigation
+  
+  When enabled, additional links will appear in a dropdown menu labeled "More" when there is not enough space
+</ParamField>
+
+### Footer settings
+
+<ParamField path="footer_is_dark" type="boolean" default={false}>
+  Enable dark mode for the footer section
+</ParamField>
+
+### Product page settings
+
+<ParamField path="enable_add_product_toast" type="boolean" default={true}>
+  Enable enhanced add to cart notification
+</ParamField>
+
+<ParamField path="sticky_add_to_cart" type="boolean" default={true}>
+  Fix the add to cart button and quantity selector at the bottom of mobile screens
+</ParamField>
+
+<ParamField path="show_tags" type="boolean" default={true}>
+  Display product tags
+</ParamField>
+
+<ParamField path="slider_background_size" type="dropdown" default="contain">
+  Image display method in product image slider
+  
+  **Options:**
+  - `cover` - Cover the entire area while maintaining aspect ratio
+  - `contain` - Show the full image centered
+</ParamField>
+
+<ParamField path="imageZoom" type="boolean" default={false}>
+  Enable image zoom in product slider
+  
+  This feature allows customers to zoom in on images to see more details
+</ParamField>
+
+### Home page settings
+
+<ParamField path="vertical_fixed_products" type="boolean" default={false}>
+  Vertical layout for products in the fixed products box on the home page
+</ParamField>
+
+<ParamField path="is_more_button_enabled" type="boolean">
+  Show "View All" button on the home page
+</ParamField>
+
+<ParamField path="squar_photo_bg_image_size" type="dropdown" default="contain">
+  Image display method in the square items list section
+  
+  **Options:**
+  - `cover` - Cover the entire area while maintaining aspect ratio
+  - `contain` - Show the full image centered
+</ParamField>
+
+## Components
+
+The `components` array defines custom page builder elements available in the theme:
+
+### Enhanced animated images
+
+```json
+{
+  "key": "186b3f4f-25cf-4d3c-abca-cef7eed6f0ab",
+  "path": "home.enhanced-slider",
+  "icon": "sicon-image-carousel"
+}
+```
+
+Image carousel with animated text overlays. Supports up to 10 slides with titles, descriptions, and overlay options.
+
+**Recommended image size:** 900×600 pixels
+
+### Quick links
+
+```json
+{
+  "key": "2b1b130b-5b37-422a-9683-e0fd367460c0",
+  "path": "home.main-links",
+  "icon": "sicon-layout-grid-rearrange"
+}
+```
+
+Scrollable quick link cards with icons. Can display either custom links or category links with images.
+
+### Animated products with background
+
+```json
+{
+  "key": "9a758d20-2ce4-4782-91fe-c04466464588",
+  "path": "home.slider-products-with-header",
+  "icon": "sicon-list-play"
+}
+```
+
+Product carousel with custom background image, title, and description. Supports up to 8 products.
+
+**Recommended background size:** 1233×500 pixels
+
+### Enhanced square images
+
+```json
+{
+  "key": "b89edc4a-ce0b-468f-8323-2da48147bb32",
+  "path": "home.enhanced-square-banners",
+  "icon": "sicon-image"
+}
+```
+
+Square image gallery with text overlays. Supports 1-5 images with titles, descriptions, and links.
+
+**Recommended image size:** 640×427 pixels
+
+<Note>
+  Images are cropped from the edges to fit different screen sizes. Consider the cropped areas when designing to ensure the image appears complete as much as possible.
+</Note>
+
+### Brands
+
+```json
+{
+  "key": "25f6cf26-a53f-4954-9b32-739b311b32c7",
+  "path": "home.brands",
+  "icon": "sicon-award-ribbon"
+}
+```
+
+Brand logo carousel. Select brands from your store to display.
+
+### Custom testimonials
+
+```json
+{
+  "key": "541cc423-90c7-4230-8a33-a0342cfde4ad",
+  "path": "home.custom-testimonials",
+  "icon": "sicon-chat-bubbles"
+}
+```
+
+Custom customer testimonials carousel. Supports 1-30 testimonials with customer name, avatar, rating (1-5 stars), and review text.
+
+**Recommended avatar size:** 68×68 pixels
+
+## Setting field types
+
+The theme supports various field types for settings:
+
+<Accordion title="Boolean (switch)">
+  Toggle switches for on/off options
+  
+  ```json
+  {
+    "type": "boolean",
+    "format": "switch",
+    "id": "header_is_sticky",
+    "value": true
+  }
+  ```
+</Accordion>
+
+<Accordion title="Dropdown list">
+  Single or multiple selection from predefined options
+  
+  ```json
+  {
+    "type": "items",
+    "format": "dropdown-list",
+    "id": "slider_background_size",
+    "options": [
+      {"label": "Cover", "value": "cover"},
+      {"label": "Contain", "value": "contain"}
+    ]
+  }
+  ```
+</Accordion>
+
+<Accordion title="Text input">
+  Single-line text input with optional multi-language support
+  
+  ```json
+  {
+    "type": "string",
+    "format": "text",
+    "id": "title",
+    "multilanguage": true,
+    "maxLength": 100
+  }
+  ```
+</Accordion>
+
+<Accordion title="Textarea">
+  Multi-line text input
+  
+  ```json
+  {
+    "type": "string",
+    "format": "textarea",
+    "id": "description",
+    "maxLength": 255
+  }
+  ```
+</Accordion>
+
+<Accordion title="Image upload">
+  Image file upload with recommended dimensions
+  
+  ```json
+  {
+    "type": "string",
+    "format": "image",
+    "id": "background",
+    "description": "Recommended size: 1233×500 pixels"
+  }
+  ```
+</Accordion>
+
+<Accordion title="Collection">
+  Repeatable groups of fields
+  
+  ```json
+  {
+    "type": "collection",
+    "format": "collection",
+    "id": "slides",
+    "minLength": 1,
+    "maxLength": 10,
+    "fields": []
+  }
+  ```
+</Accordion>
+
+## Validation
+
+Ensure your `twilight.json` file is valid JSON and follows the Salla theme schema. Common validation rules:
+
+- All component `key` values must be unique UUIDs
+- Required fields must have the `"required": true` property
+- Multilanguage fields should include `"multilanguage": true`
+- Collection fields must specify `minLength` and `maxLength`
+- Image fields should include recommended dimensions in the description
+
+## Best practices
+
+1. **Use descriptive IDs** - Setting IDs should be clear and self-explanatory
+2. **Provide descriptions** - Help users understand what each setting does
+3. **Set appropriate defaults** - Choose sensible default values for settings
+4. **Limit collection sizes** - Don't allow unlimited items in collections to maintain performance
+5. **Include preview images** - Add static description fields with preview images for components
+6. **Support multiple languages** - Use multilanguage fields for user-facing text
+7. **Document image sizes** - Always specify recommended image dimensions

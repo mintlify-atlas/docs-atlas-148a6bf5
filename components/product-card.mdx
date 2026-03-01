@@ -1,0 +1,166 @@
+---
+title: Product card
+description: Custom product card component with multiple display styles and advanced features
+---
+
+The product card component is a custom web component that renders product information in various layouts with support for wishlists, donations, and special offers.
+
+## Component usage
+
+The product card is implemented as a custom HTML element `<custom-salla-product-card>` that accepts a product object and various attributes to control its appearance.
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}" 
+  shadow-on-hover
+></custom-salla-product-card>
+```
+
+## Attributes
+
+<ParamField path="product" type="object" required>
+  Product object containing all product information including id, name, price, images, and status
+</ParamField>
+
+<ParamField path="horizontal" type="boolean">
+  Displays the card in horizontal layout instead of vertical
+</ParamField>
+
+<ParamField path="shadowOnHover" type="boolean">
+  Adds shadow effect when hovering over the card
+</ParamField>
+
+<ParamField path="hideAddBtn" type="boolean">
+  Hides the add to cart button from the card
+</ParamField>
+
+<ParamField path="fullImage" type="boolean">
+  Displays the product image as full-width with overlay content
+</ParamField>
+
+<ParamField path="minimal" type="boolean">
+  Renders a minimal version of the card with reduced information
+</ParamField>
+
+<ParamField path="isSpecial" type="boolean">
+  Applies special styling and shows quantity circle indicator for limited offers
+</ParamField>
+
+<ParamField path="showQuantity" type="boolean">
+  Displays remaining quantity badge on the product card
+</ParamField>
+
+## Display styles
+
+### Vertical card
+
+Default card layout with image on top and content below:
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}"
+></custom-salla-product-card>
+```
+
+### Horizontal card
+
+Card with image on the side:
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}" 
+  horizontal
+></custom-salla-product-card>
+```
+
+### Full image card
+
+Card with full-width image and overlay content:
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}" 
+  fullImage
+  shadow-on-hover
+></custom-salla-product-card>
+```
+
+### Minimal card
+
+Compact version without subtitle and donation details:
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}" 
+  minimal
+></custom-salla-product-card>
+```
+
+### Special offer card
+
+Highlights limited quantity products with countdown timer:
+
+```twig
+<custom-salla-product-card 
+  product="{{ product }}" 
+  isSpecial
+  shadow-on-hover
+></custom-salla-product-card>
+```
+
+## Features
+
+### Wishlist integration
+
+The card automatically integrates with Salla's wishlist system. Users can add or remove products from their wishlist directly from the card.
+
+### Price display
+
+The component automatically handles different price scenarios:
+- Sale prices with strikethrough original price
+- Starting prices for products with variants
+- Regular pricing
+- Donation amounts for donation products
+
+### Product badges
+
+Cards display relevant badges based on product status:
+- Pre-order labels
+- Promotion titles
+- Remaining quantity
+- Out of stock indicators
+
+### Image handling
+
+The card respects the store's image fit settings and uses the configured placeholder for products without images.
+
+<Note>
+  The product card reads the `fit_type` setting from store configuration to determine whether images should be contained or covered.
+</Note>
+
+## Product object
+
+The product object passed to the component should include:
+
+```javascript
+{
+  id: "123",
+  name: "Product Name",
+  url: "/product/product-name",
+  price: 100.00,
+  sale_price: 80.00,
+  regular_price: 100.00,
+  is_on_sale: true,
+  status: "sale", // sale, out
+  type: "product", // product, booking, donating
+  quantity: 50,
+  image: {
+    url: "https://...",
+    alt: "Product image"
+  },
+  rating: {
+    stars: 4.5
+  },
+  add_to_cart_label: "Add to Cart"
+}
+```

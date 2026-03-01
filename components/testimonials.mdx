@@ -1,0 +1,115 @@
+---
+title: Testimonials
+description: Display customer reviews and testimonials with filtering options
+---
+
+The testimonials component showcases customer reviews and ratings for your store or specific products.
+
+## Component usage
+
+Add testimonials to your home page:
+
+```twig
+<section class="s-block s-block--testimonials container overflow-hidden">
+  <salla-reviews 
+    {{ display_all_url ? "display-all-link" : "" }} 
+    limit="{{ limit }}" 
+    sort="{{ sort }}" 
+    {{ hide_customer_info ? 'hide-customer-info' : '' }} 
+    type="{{ type }}"
+  ></salla-reviews>
+</section>
+```
+
+## Variables
+
+<ParamField path="limit" type="string">
+  Maximum number of testimonials to display
+</ParamField>
+
+<ParamField path="type" type="string" default="store">
+  Type of reviews to display:
+  - `store` - All store reviews
+  - `product` - Product-specific reviews
+  - `all` - All available reviews
+</ParamField>
+
+<ParamField path="sort" type="string">
+  Sorting order for reviews:
+  - `latest` - Newest reviews first
+  - `oldest` - Oldest reviews first
+  - `rating_high` - Highest rated first
+  - `rating_low` - Lowest rated first
+</ParamField>
+
+<ParamField path="hide_customer_info" type="boolean" default="false">
+  When true, hides customer names and profile information
+</ParamField>
+
+<ParamField path="display_all_url" type="string">
+  URL for "View All Reviews" link. If empty, the link is hidden
+</ParamField>
+
+## Example with all options
+
+```twig
+<section class="s-block s-block--testimonials container overflow-hidden">
+  <salla-reviews 
+    display-all-link
+    limit="6" 
+    sort="latest" 
+    type="store"
+  ></salla-reviews>
+</section>
+```
+
+## Example hiding customer info
+
+```twig
+<section class="s-block s-block--testimonials container overflow-hidden">
+  <salla-reviews 
+    limit="8" 
+    sort="rating_high" 
+    hide-customer-info
+    type="all"
+  ></salla-reviews>
+</section>
+```
+
+## Example for product reviews
+
+```twig
+<section class="s-block s-block--testimonials container overflow-hidden">
+  <salla-reviews 
+    limit="5" 
+    sort="latest" 
+    type="product"
+  ></salla-reviews>
+</section>
+```
+
+<Note>
+  The salla-reviews component automatically handles loading states, pagination, and responsive layouts.
+</Note>
+
+## Review content
+
+Each review typically includes:
+
+- Customer name and avatar (unless hidden)
+- Star rating (1-5 stars)
+- Review text
+- Review date
+- Product information (for product reviews)
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-testimonials"
+  ]
+}
+```

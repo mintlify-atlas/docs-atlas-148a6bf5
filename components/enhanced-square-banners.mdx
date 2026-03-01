@@ -1,0 +1,180 @@
+---
+title: Enhanced square banners
+description: Grid of square banner images with overlay text and links
+---
+
+## Overview
+
+The enhanced square banners component displays a responsive grid of clickable banner images with optional overlay text. It's perfect for showcasing categories, promotions, or featured content in an organized grid layout.
+
+<Note>
+  Images are cropped from the edges to fit different screen sizes. When designing, consider the parts that will be cropped horizontally and vertically to ensure important content remains visible.
+</Note>
+
+## Location
+
+```
+src/views/components/home/enhanced-square-banners.twig
+```
+
+## Component path
+
+```
+home.enhanced-square-banners
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `b89edc4a-ce0b-468f-8323-2da48147bb32`.
+
+### Available fields
+
+<ParamField path="banners" type="collection" required>
+  Collection of banner images (min: 1, max: 5)
+</ParamField>
+
+<ParamField path="banners[].image" type="string" format="image" required>
+  Banner image URL. Recommended size: 640×427 pixels
+</ParamField>
+
+<ParamField path="banners[].url" type="items" format="variable-list">
+  Link destination when the banner is clicked
+</ParamField>
+
+<ParamField path="banners[].title" type="string" maxLength={100}>
+  Main heading text displayed on the image with large, bold font
+</ParamField>
+
+<ParamField path="banners[].description" type="string" format="textarea" maxLength={255}>
+  Additional descriptive text displayed below the title with smaller font
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.enhanced-square-banners' %}
+```
+
+## Template structure
+
+```twig
+<section class="s-block s-block--banners container">
+  <div class="grid {{ component.banners|length <= 3 ? 'md:grid-cols-' ~ component.banners|length : 'md:grid-cols-3 two-row' }} grid-flow-row gap-3 sm:gap-8">
+    {% for index, banner in component.banners %}
+      <a href="{{ banner.url }}" 
+         aria-label="{{ (banner.title ? banner.title : 'square-banner-' ~ index) | e('html_attr') }}" 
+         class="banner-entry lazy {{ banner.title ? 'has-overlay' : '' }} {{ component.banners|length <= 3 ? 'h-lg-banner' : 'h-banner' }}" 
+         data-bg="{{ banner.image }}">
+        <article class="banner-entry__text text-with-border">
+          <h3 class="banner__title font-bold mb-1 leading-6">{{ banner.title }}</h3>
+          <p class="banner__description">{{ banner.description }}</p>
+        </article>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+```
+
+## Grid behavior
+
+The grid layout adapts based on the number of banners:
+
+### 1-3 banners
+
+```twig
+class="md:grid-cols-{{ component.banners|length }}"
+```
+
+- Each banner gets an equal column
+- Taller height with `h-lg-banner` class
+
+### 4-5 banners
+
+```twig
+class="md:grid-cols-3 two-row"
+```
+
+- Three columns grid
+- Multiple rows with `two-row` class
+- Standard height with `h-banner` class
+
+## Link types
+
+The `url` field supports these link sources:
+
+- **products**: Link to a specific product
+- **categories**: Link to a product category
+- **brands**: Link to a brand page
+- **pages**: Link to a custom page
+- **blog_articles**: Link to a blog article
+- **blog_categories**: Link to a blog category
+- **offers_link**: Link to the offers page
+- **brands_link**: Link to all brands
+- **blog_link**: Link to the blog
+- **custom**: Custom external URL
+
+## Overlay behavior
+
+Overlay is conditionally applied:
+
+```twig
+class="banner-entry lazy {{ banner.title ? 'has-overlay' : '' }}"
+```
+
+- When a title exists: `has-overlay` class adds a dark overlay for text readability
+- Without title: No overlay, showing the image in its natural state
+
+## Lazy loading
+
+Banners use lazy loading:
+
+```twig
+class="banner-entry lazy" data-bg="{{ banner.image }}"
+```
+
+The `lazy` class and `data-bg` attribute enable deferred image loading for better performance.
+
+## Accessibility
+
+```twig
+aria-label="{{ (banner.title ? banner.title : 'square-banner-' ~ index) | e('html_attr') }}"
+```
+
+- Uses banner title as aria-label when available
+- Falls back to "square-banner-{index}" for banners without titles
+- Properly escapes HTML attributes
+
+## Styling
+
+The component uses these main CSS classes:
+
+- `.s-block--banners`: Main container styling
+- `.banner-entry`: Individual banner styling
+- `.has-overlay`: Adds dark overlay when text is present
+- `.h-lg-banner`: Larger height for 1-3 banners
+- `.h-banner`: Standard height for 4-5 banners
+- `.text-with-border`: Text styling with border effects
+
+## Responsive spacing
+
+```twig
+class="gap-3 sm:gap-8"
+```
+
+- Mobile: 0.75rem gap between banners
+- Desktop: 2rem gap between banners
+
+## Default example
+
+The component comes with 5 default banners featuring:
+- Title: "Browse by category"
+- Description: "Make shopping easy and access your products"
+- Various product images
+
+<Tip>
+  For best visual results, use images with a 3:2 aspect ratio (640×427px). Keep important content in the center of images to avoid cropping issues.
+</Tip>
+
+<Note>
+  The banner height automatically adjusts based on the number of banners. Fewer banners (1-3) display taller for more prominent visibility.
+</Note>

@@ -1,0 +1,481 @@
+---
+title: Webpack configuration
+description: Understanding and customizing the Webpack build process for Theme Raed
+---
+
+Theme Raed uses Webpack 5 to bundle and optimize JavaScript, CSS, and assets for production deployment. This guide covers the Webpack configuration and how to customize the build process.
+
+## Configuration file
+
+The Webpack configuration is located at:
+
+```
+/webpack.config.js
+```
+
+## Entry points
+
+Theme Raed uses multiple entry points to split code by page type, reducing bundle sizes and improving load times:
+
+```javascript
+entry: {
+  app: [
+    asset('styles/app.scss'),
+    asset('js/wishlist.js'),
+    asset('js/app.js'),
+    asset('js/blog.js')
+  ],
+  home: asset('js/home.js'),
+  'product-card': asset('js/partials/product-card.js'),
+  'main-menu': asset('js/partials/main-menu.js'),
+  'wishlist-card': asset('js/partials/wishlist-card.js'),
+  'add-product-toast': asset('js/partials/add-product-toast.js'),
+  'digital-files': asset('js/partials/digital-files.js'),
+  checkout: [asset('js/cart.js'), asset('js/thankyou.js')],
+  pages: [asset('js/loyalty.js'), asset('js/brands.js')],
+  product: [asset('js/product.js'), asset('js/products.js')],
+  order: asset('js/order.js'),
+  testimonials: asset('js/testimonials.js')
+}
+```
+
+### Entry point breakdown
+
+<Accordion title="app - Core application bundle">
+  The main application bundle loaded on all pages.
+  
+  **Includes:**
+  - Global styles (`app.scss`)
+  - Wishlist functionality
+  - Core JavaScript (`app.js`)
+  - Blog functionality
+  
+  **Usage:** Loaded site-wide
+</Accordion>
+
+<Accordion title="home - Home page scripts">
+  JavaScript specific to the home page.
+  
+  **Includes:**
+  - Component initialization
+  - Slider functionality
+  - Home page interactions
+  
+  **Usage:** Home page only
+</Accordion>
+
+<Accordion title="product-card - Product card component">
+  Reusable product card functionality.
+  
+  **Includes:**
+  - Quick add to cart
+  - Wishlist toggle
+  - Product card interactions
+  
+  **Usage:** Product listings and grids
+</Accordion>
+
+<Accordion title="main-menu - Navigation component">
+  Main navigation menu functionality.
+  
+  **Includes:**
+  - Mega menu interactions
+  - Mobile menu toggle
+  - Dropdown behavior
+  
+  **Usage:** Site header
+</Accordion>
+
+<Accordion title="wishlist-card - Wishlist item component">
+  Wishlist-specific card functionality.
+  
+  **Includes:**
+  - Remove from wishlist
+  - Move to cart
+  
+  **Usage:** Wishlist page
+</Accordion>
+
+<Accordion title="add-product-toast - Cart notification">
+  Enhanced add to cart notification component.
+  
+  **Includes:**
+  - Toast animation
+  - Quick cart preview
+  
+  **Usage:** Product pages
+</Accordion>
+
+<Accordion title="digital-files - Digital product downloads">
+  Digital product file management.
+  
+  **Includes:**
+  - Download handling
+  - License display
+  
+  **Usage:** Digital product pages and order confirmation
+</Accordion>
+
+<Accordion title="checkout - Cart and order completion">
+  Shopping cart and thank you page scripts.
+  
+  **Includes:**
+  - Cart calculations (`cart.js`)
+  - Order confirmation (`thankyou.js`)
+  
+  **Usage:** Cart and checkout pages
+</Accordion>
+
+<Accordion title="pages - Special pages">
+  Scripts for specific page types.
+  
+  **Includes:**
+  - Loyalty program (`loyalty.js`)
+  - Brand listing (`brands.js`)
+  
+  **Usage:** Loyalty and brands pages
+</Accordion>
+
+<Accordion title="product - Product pages">
+  Product detail and listing page scripts.
+  
+  **Includes:**
+  - Product detail page (`product.js`)
+  - Product listing page (`products.js`)
+  
+  **Usage:** Product-related pages
+</Accordion>
+
+<Accordion title="order - Order tracking">
+  Order tracking and history functionality.
+  
+  **Usage:** Order pages
+</Accordion>
+
+<Accordion title="testimonials - Customer reviews">
+  Testimonials carousel and display.
+  
+  **Usage:** Pages with testimonials component
+</Accordion>
+
+## Output configuration
+
+```javascript
+output: {
+  path: public(),
+  clean: true,
+  chunkFilename: "[name].[contenthash].js"
+}
+```
+
+<ParamField path="path" type="string">
+  Output directory for compiled assets
+  
+  **Value:** `/public/`
+</ParamField>
+
+<ParamField path="clean" type="boolean" default={true}>
+  Automatically clean the output directory before each build
+  
+  Removes old files to prevent accumulation of unused assets
+</ParamField>
+
+<ParamField path="chunkFilename" type="string">
+  Naming pattern for dynamically loaded chunks
+  
+  **Pattern:** `[name].[contenthash].js`
+  
+  Includes content hash for cache busting
+</ParamField>
+
+## Module rules
+
+### JavaScript/ES6 transpilation
+
+```javascript
+{
+  test: /\.js$/,
+  exclude: [
+    /(node_modules)/,
+    asset('js/twilight.js')
+  ],
+  use: {
+    loader: 'babel-loader',
+    options: {
+      presets: ['@babel/preset-env'],
+      plugins: [
+        ["@babel/plugin-transform-runtime", {
+          "regenerator": true
+        }]
+      ]
+    }
+  }
+}
+```
+
+**Purpose:** Transpile modern JavaScript to browser-compatible code
+
+**Features:**
+- ES6+ syntax support
+- Async/await transformation
+- Excludes `node_modules` and `twilight.js`
+- Runtime helpers with regenerator support
+
+### SCSS/CSS processing
+
+```javascript
+{
+  test: /\.(s(a|c)ss)$/,
+  use: [
+    MiniCssExtractPlugin.loader,
+    {loader: "css-loader", options: {url: false}},
+    "postcss-loader",
+    "sass-loader"
+  ]
+}
+```
+
+**Processing pipeline:**
+
+1. **sass-loader** - Compile SCSS to CSS
+2. **postcss-loader** - Apply PostCSS transformations (TailwindCSS, autoprefixer)
+3. **css-loader** - Resolve CSS imports and URLs
+4. **MiniCssExtractPlugin.loader** - Extract CSS into separate files
+
+<Note>
+  The `url: false` option prevents css-loader from processing `url()` references, as assets are handled separately.
+</Note>
+
+## Plugins
+
+### Theme watcher
+
+```javascript
+new ThemeWatcher()
+```
+
+Salla-specific plugin that watches for changes and syncs with the Salla platform during development.
+
+**Features:**
+- Live reload on file changes
+- Automatic theme synchronization
+- Development server integration
+
+### CSS extraction
+
+```javascript
+new MiniCssExtractPlugin()
+```
+
+Extracts CSS into separate files instead of injecting it via JavaScript.
+
+**Benefits:**
+- Parallel loading of CSS and JS
+- Better caching
+- Reduced JavaScript bundle size
+
+### Asset copying
+
+```javascript
+new CopyPlugin({
+  patterns: [
+    {from: asset('images'), to: public('images')}
+  ]
+})
+```
+
+Copies static images from source to public directory.
+
+**Source:** `/src/assets/images/`  
+**Destination:** `/public/images/`
+
+## Optimization
+
+```javascript
+optimization: {
+  minimizer: [
+    `...`,
+    new CssMinimizerPlugin()
+  ]
+}
+```
+
+<ParamField path="minimizer" type="array">
+  Array of minimizer plugins
+  
+  - `...` - Extends default minimizers (Terser for JS)
+  - `CssMinimizerPlugin` - Minifies CSS files
+</ParamField>
+
+**CSS minification features:**
+- Removes whitespace and comments
+- Optimizes color values
+- Merges duplicate rules
+- Removes unused declarations
+
+## Helper functions
+
+The configuration uses helper functions for path resolution:
+
+```javascript
+const asset = file => path.resolve('src/assets', file || '');
+const public = file => path.resolve("public", file || '');
+```
+
+**Usage:**
+
+```javascript
+asset('js/app.js')      // → /path/to/theme/src/assets/js/app.js
+public('images')        // → /path/to/theme/public/images
+```
+
+## Build commands
+
+<Note>
+  Build commands are typically defined in `package.json`.
+</Note>
+
+### Development build
+
+```bash
+npm run dev
+```
+
+Creates unminified bundles with source maps for debugging.
+
+### Production build
+
+```bash
+npm run build
+```
+
+Creates optimized, minified bundles for production deployment.
+
+### Watch mode
+
+```bash
+npm run watch
+```
+
+Watches for file changes and rebuilds automatically.
+
+## Customization
+
+### Adding a new entry point
+
+To add a new JavaScript bundle:
+
+```javascript
+entry: {
+  // ... existing entries
+  'custom-page': asset('js/custom-page.js')
+}
+```
+
+Then reference it in your Twig template:
+
+```twig
+<script src="{{ asset('custom-page.js') }}"></script>
+```
+
+### Adding a new loader
+
+To process additional file types:
+
+```javascript
+module: {
+  rules: [
+    // ... existing rules
+    {
+      test: /\.svg$/,
+      use: 'svg-inline-loader'
+    }
+  ]
+}
+```
+
+### Excluding files from Babel
+
+To exclude files from transpilation:
+
+```javascript
+{
+  test: /\.js$/,
+  exclude: [
+    /(node_modules)/,
+    asset('js/twilight.js'),
+    asset('js/vendor/legacy-lib.js') // Add exclusion
+  ],
+  use: { /* ... */ }
+}
+```
+
+## Performance optimization
+
+### Code splitting
+
+Webpack automatically splits code based on entry points. To enable dynamic imports:
+
+```javascript
+// In your JavaScript
+import(/* webpackChunkName: "slider" */ './slider.js')
+  .then(module => {
+    module.init();
+  });
+```
+
+### Bundle analysis
+
+Analyze bundle sizes to identify optimization opportunities:
+
+```bash
+npm install --save-dev webpack-bundle-analyzer
+```
+
+```javascript
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+plugins: [
+  new BundleAnalyzerPlugin()
+]
+```
+
+## Troubleshooting
+
+<Accordion title="Build fails with module not found">
+  **Cause:** Incorrect path or missing dependency
+  
+  **Solution:**
+  1. Verify the file exists at the specified path
+  2. Check that all dependencies are installed: `npm install`
+  3. Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+</Accordion>
+
+<Accordion title="CSS not updating">
+  **Cause:** Browser cache or build cache
+  
+  **Solution:**
+  1. Clear browser cache
+  2. Delete `/public/` directory and rebuild
+  3. Check that PostCSS config is valid
+</Accordion>
+
+<Accordion title="JavaScript errors in production">
+  **Cause:** Babel transpilation issues
+  
+  **Solution:**
+  1. Check browser compatibility settings in `@babel/preset-env`
+  2. Ensure all polyfills are included
+  3. Test in the target browsers
+</Accordion>
+
+## Best practices
+
+1. **Keep entry points focused** - Each entry should serve a specific page or feature
+2. **Minimize dependencies** - Only import what you need to reduce bundle size
+3. **Use code splitting** - Dynamically import large libraries when needed
+4. **Optimize images separately** - Don't bundle large images through Webpack
+5. **Monitor bundle sizes** - Regularly check and optimize bundle sizes
+6. **Use production mode** - Always build with `NODE_ENV=production` for deployment
+7. **Enable source maps in development** - Easier debugging with readable stack traces
+8. **Cache bust with hashes** - Use `[contenthash]` in filenames for proper cache invalidation

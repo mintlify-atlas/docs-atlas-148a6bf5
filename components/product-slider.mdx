@@ -1,0 +1,146 @@
+---
+title: Product slider
+description: Animated product carousel with autoplay and customizable display options
+---
+
+The product slider component displays a carousel of products with automatic sliding and navigation controls.
+
+## Component usage
+
+Add a product slider to your home page:
+
+```twig
+<section id="best-offers-{{ position }}-slider" 
+  class="s-block s-block--best-offers container overflow-hidden">
+  <salla-products-slider
+    source="{{ products.source }}"
+    limit="{{ limit }}"
+    autoplay
+    source-value="{{ products.source_value|json_encode }}"
+    display-all-url="{{ display_all_url }}"
+    block-title="{{ title }}"
+    block-subTitle="{{ sub_title|raw }}"
+    slider-id="slider-with-bg-{{ position }}"
+  ></salla-products-slider>
+</section>
+```
+
+## Variables
+
+<ParamField path="products.source" type="string" required>
+  Source type for products: `latest`, `most_sales`, `chosen_products`, `category`, `brand`
+</ParamField>
+
+<ParamField path="products.source_value" type="array">
+  Array of IDs when source is `chosen_products`, `category`, or `brand`. For example: `[123, 456, 789]`
+</ParamField>
+
+<ParamField path="title" type="string">
+  Main heading displayed above the slider
+</ParamField>
+
+<ParamField path="sub_title" type="string">
+  Subtitle or description text below the main title
+</ParamField>
+
+<ParamField path="display_all_url" type="string">
+  URL for the "View All" button. If empty, the button is hidden
+</ParamField>
+
+<ParamField path="limit" type="integer">
+  Maximum number of products to display in the slider
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting position of the component on the page (starts from zero)
+</ParamField>
+
+## Component attributes
+
+<ParamField path="source" type="string">
+  Product source type passed from variables
+</ParamField>
+
+<ParamField path="limit" type="integer">
+  Product count limit
+</ParamField>
+
+<ParamField path="autoplay" type="boolean">
+  Enables automatic sliding of products
+</ParamField>
+
+<ParamField path="source-value" type="json">
+  JSON-encoded array of source IDs
+</ParamField>
+
+<ParamField path="display-all-url" type="string">
+  Link to view all products page
+</ParamField>
+
+<ParamField path="block-title" type="string">
+  Section heading text
+</ParamField>
+
+<ParamField path="block-subTitle" type="string">
+  Section subtitle text (supports HTML)
+</ParamField>
+
+<ParamField path="slider-id" type="string">
+  Unique identifier for the slider instance
+</ParamField>
+
+## Example with latest products
+
+```twig
+<salla-products-slider
+  source="latest"
+  limit="8"
+  autoplay
+  block-title="Latest Products"
+  block-subTitle="Check out our newest arrivals"
+  slider-id="latest-products-slider"
+></salla-products-slider>
+```
+
+## Example with specific category
+
+```twig
+<salla-products-slider
+  source="category"
+  source-value="[123]"
+  limit="12"
+  autoplay
+  display-all-url="/category/electronics"
+  block-title="Electronics"
+  slider-id="electronics-slider"
+></salla-products-slider>
+```
+
+## Example with chosen products
+
+```twig
+<salla-products-slider
+  source="chosen_products"
+  source-value="[101, 102, 103, 104, 105]"
+  limit="5"
+  autoplay
+  block-title="Featured Selection"
+  slider-id="featured-slider"
+></salla-products-slider>
+```
+
+<Note>
+  The slider automatically adjusts the number of visible products based on screen size for optimal mobile viewing.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-products-slider"
+  ]
+}
+```

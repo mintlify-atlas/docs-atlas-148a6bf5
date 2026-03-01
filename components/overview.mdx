@@ -1,0 +1,98 @@
+---
+title: Component system overview
+description: Learn about the Theme Raed component system and how to use custom components in your store
+---
+
+## Introduction
+
+Theme Raed uses a flexible component system that allows you to customize your store's homepage with various pre-built components. Each component is configurable through the `twilight.json` file and can be customized with fields like titles, images, links, and products.
+
+## Component structure
+
+Components in Theme Raed are located in `src/views/components/` and organized by section:
+
+- **Header components**: Store header with navigation and search
+- **Footer components**: Store footer with links and contact information
+- **Home components**: Homepage sections like sliders, product grids, and testimonials
+
+## Using components
+
+Components are included in Twig templates using the `{% component %}` tag:
+
+```twig
+{% component 'header.header' %}
+{% component 'footer.footer' %}
+{% component 'home.enhanced-slider' %}
+```
+
+## Component configuration
+
+Each component is configured in `twilight.json` under the `components` array. Configuration includes:
+
+<ParamField path="key" type="string" required>
+  Unique identifier for the component
+</ParamField>
+
+<ParamField path="title" type="object">
+  Component title in multiple languages (ar, en)
+</ParamField>
+
+<ParamField path="icon" type="string">
+  Salla icon class for the component
+</ParamField>
+
+<ParamField path="path" type="string" required>
+  Component template path (e.g., `home.enhanced-slider`)
+</ParamField>
+
+<ParamField path="fields" type="array" required>
+  Array of configurable fields for the component
+</ParamField>
+
+## Available field types
+
+Components support various field types for customization:
+
+- **string**: Text input, textarea, or image URL
+- **boolean**: Switch/toggle field
+- **items**: Dropdown list or multi-select
+- **collection**: Repeatable group of fields
+- **static**: Descriptive text or images (non-editable)
+- **number**: Numeric input with min/max validation
+
+## Component variables
+
+All components receive these standard variables:
+
+<ParamField path="component" type="object" required>
+  Contains merchant settings from twilight.json fields
+</ParamField>
+
+<ParamField path="position" type="integer" required>
+  Sorting number starting from zero, used for unique IDs
+</ParamField>
+
+## Theme settings
+
+Global theme settings are configured in the `settings` array of `twilight.json` and accessed via:
+
+```twig
+{{ theme.settings.get('setting_name', 'default_value') }}
+```
+
+Common settings include:
+- `header_is_sticky`: Sticky header on scroll
+- `footer_is_dark`: Dark footer mode
+- `topnav_is_dark`: Dark top navigation
+- `is_more_button_enabled`: Show "View All" buttons
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Layout components" icon="layer-group" href="/components/header">
+    Explore header, footer, and master layout
+  </Card>
+  <Card title="Home components" icon="house" href="/components/enhanced-slider">
+    Learn about homepage components
+  </Card>
+</CardGroup>

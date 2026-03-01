@@ -1,0 +1,95 @@
+---
+title: Products slider
+description: Animated product carousel with title, subtitle, and view all link
+---
+
+The products slider component is an alias for the product slider component. It displays a carousel of products with automatic sliding, title, subtitle, and optional "View All" link.
+
+## Component usage
+
+This component is identical to the [Product slider](/components/product-slider) component.
+
+Add a products slider to your home page:
+
+```twig
+<section id="best-offers-{{ position }}-slider" 
+  class="s-block s-block--best-offers container overflow-hidden">
+  {% if products|length %}
+    <salla-products-slider
+      source="{{ products.source }}"
+      limit="{{ limit }}"
+      autoplay
+      source-value="{{ products.source_value|json_encode }}"
+      display-all-url="{{ display_all_url }}"
+      block-title="{{ title }}"
+      block-subTitle="{{ sub_title|raw }}"
+      slider-id="slider-with-bg-{{ position }}"
+    ></salla-products-slider>
+  {% endif %}
+</section>
+```
+
+## Variables
+
+<ParamField path="products.source" type="string" required>
+  Source type for products: `latest`, `most_sales`, `chosen_products`, `category`, `brand`
+</ParamField>
+
+<ParamField path="products.source_value" type="array">
+  Array of IDs for chosen products, categories, or brands. Example: `[123, 456]`
+</ParamField>
+
+<ParamField path="title" type="string">
+  Main heading displayed above the slider
+</ParamField>
+
+<ParamField path="sub_title" type="string">
+  Subtitle text supporting HTML content. Use `|raw` filter to render HTML
+</ParamField>
+
+<ParamField path="display_all_url" type="string">
+  URL for "View All" button. If empty, button is hidden
+</ParamField>
+
+<ParamField path="limit" type="integer">
+  Maximum number of products to display
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting position for component placement (starts from zero)
+</ParamField>
+
+## Example
+
+```twig
+<section id="best-offers-0-slider" 
+  class="s-block s-block--best-offers container overflow-hidden">
+  <salla-products-slider
+    source="most_sales"
+    limit="10"
+    autoplay
+    display-all-url="/best-sellers"
+    block-title="Best Sellers"
+    block-subTitle="<p>Check out our most popular products</p>"
+    slider-id="best-sellers-slider"
+  ></salla-products-slider>
+</section>
+```
+
+<Note>
+  The component only renders if the `products` array contains items. Always wrap it in a length check condition.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-products-slider"
+  ]
+}
+```
+
+For complete documentation, see [Product slider](/components/product-slider).

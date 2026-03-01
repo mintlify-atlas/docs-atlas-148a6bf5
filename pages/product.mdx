@@ -1,0 +1,187 @@
+---
+title: Product page
+description: Documentation for the product single page template
+---
+
+The product page displays detailed information about a single product, including images, pricing, options, and purchase controls.
+
+## Template location
+
+```
+src/views/pages/product/single.twig
+```
+
+## Page structure
+
+The product page consists of several main sections:
+
+- Product image gallery with slider
+- Product details (name, price, description)
+- Product options and variations
+- Add to cart functionality
+- Product ratings and reviews
+- Related products
+
+## Key variables
+
+### Product object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `product.id` | int | Product ID |
+| `product.name` | string | Product name |
+| `product.description` | string | Product description (HTML) |
+| `product.url` | string | Product URL |
+| `product.type` | string | Product type: `product`, `service`, `group_products`, `codes`, `digital`, `food`, `donating` |
+| `product.status` | string | Product status: `sale`, `out`, `out-and-notify` |
+| `product.sku` | string | Product SKU |
+| `product.price` | float | Current price |
+| `product.sale_price` | float | Sale price if on sale |
+| `product.regular_price` | float | Regular price |
+| `product.starting_price` | float | Starting price for products with options |
+| `product.currency` | string | Currency code |
+
+### Product media
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `product.image.url` | string | Main product image URL |
+| `product.image.alt` | string | Image alt text |
+| `product.images` | array | Array of all product images |
+| `product.images[].id` | int | Image ID |
+| `product.images[].url` | string | Image URL |
+| `product.images[].alt` | string | Image alt text |
+| `product.images[].video_url` | string | Video URL if image is a video |
+| `product.images[].type` | string | Media type: `image` or `video` |
+
+### Product pricing
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `product.is_on_sale` | bool | Whether product has discounted price |
+| `product.discount_percentage` | string | Discount percentage (e.g., "20%") |
+| `product.is_taxable` | bool | Whether tax is included in price |
+| `product.discount_ends` | date | Discount end date |
+
+### Product inventory
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `product.quantity` | int | Available quantity (null if unlimited) |
+| `product.sold_quantity` | int | Number of units sold |
+| `product.max_quantity` | int | Maximum quantity per order |
+| `product.is_available` | bool | Whether product is available |
+| `product.is_out_of_stock` | bool | Whether product is out of stock |
+| `product.is_hidden_quantity` | bool | Whether quantity is hidden |
+| `product.can_show_remained_quantity` | bool | Whether to show remaining quantity |
+| `product.can_show_sold` | bool | Whether to show sold count |
+
+### Product features
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `product.has_options` | bool | Whether product has options |
+| `product.has_metadata` | bool | Whether product has metadata |
+| `product.has_custom_form` | bool | Whether product has custom form |
+| `product.can_add_note` | bool | Whether customer can add notes |
+| `product.can_upload_file` | bool | Whether customer can upload files |
+| `product.is_giftable` | bool | Whether product can be gifted |
+| `product.is_require_shipping` | bool | Whether product requires shipping |
+| `product.has_3d_image` | bool | Whether product has 3D image |
+| `product.has_size_guide` | bool | Whether product has size guide |
+
+## Code examples
+
+### Display product price
+
+```twig
+<div class="product-price">
+  {% if product.is_on_sale %}
+    <span class="sale-price">{{ product.sale_price|money }}</span>
+    <span class="regular-price">{{ product.regular_price|money }}</span>
+  {% else %}
+    <span class="price">{{ product.price|money }}</span>
+  {% endif %}
+</div>
+```
+
+### Display product images
+
+```twig
+<salla-slider id="details-slider-{{ product.id }}" type="thumbs">
+  <div slot="items">
+    {% for image in product.images %}
+      <a href="{{ image.url }}">
+        <img src="{{ image.url }}" alt="{{ image.alt }}">
+      </a>
+    {% endfor %}
+  </div>
+</salla-slider>
+```
+
+### Display product rating
+
+```twig
+{% if product.rating %}
+  <salla-rating-stars 
+    value="{{ product.rating.stars }}"
+    reviews="{{ product.rating.count }}">
+  </salla-rating-stars>
+{% endif %}
+```
+
+### Add to cart form
+
+```twig
+<form class="product-form" 
+      onsubmit="return salla.form.onSubmit('cart.addItem', event)">
+  <input type="hidden" name="id" value="{{ product.id }}">
+  
+  {% include 'pages.partials.product.options' %}
+  
+  <salla-quantity-input 
+    max="{{ product.max_quantity }}" 
+    value="1" 
+    name="quantity">
+  </salla-quantity-input>
+  
+  <salla-add-product-button
+    product-id="{{ product.id }}"
+    product-type="{{ product.type }}"
+    product-status="{{ product.status }}"
+    type="submit">
+    {{ product.add_to_cart_label }}
+  </salla-add-product-button>
+</form>
+```
+
+## Special features
+
+### Donation products
+
+For donation type products:
+
+```twig
+{% if product.donation %}
+  <div class="donation-info">
+    <p>Collected: {{ product.donation.collected_amount|money }}</p>
+    <p>Target: {{ product.donation.target_amount|money }}</p>
+    <p>Progress: {{ product.donation.target_percent }}%</p>
+  </div>
+{% endif %}
+```
+
+### Notify when available
+
+```twig
+{% if product.notify_availability %}
+  <salla-add-product-button
+    {{ product.notify_availability.subscribed ? 'is-subscribed' : '' }}
+    channels="{{ product.notify_availability.channels|join(',') }}">
+  </salla-add-product-button>
+{% endif %}
+```
+
+<Note>
+Product options are included via `{% include 'pages.partials.product.options' %}` which handles complex option types like colors, sizes, and custom fields.
+</Note>

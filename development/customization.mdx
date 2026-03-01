@@ -1,0 +1,504 @@
+---
+title: How to customize the theme
+description: Learn how to customize Theme Raed to match your brand and requirements
+---
+
+Theme Raed is highly customizable, allowing you to modify styles, layouts, components, and behavior to match your brand.
+
+## Customization overview
+
+You can customize Theme Raed at multiple levels:
+
+- **Styles**: Modify colors, fonts, spacing using Tailwind CSS and SCSS
+- **Templates**: Edit Twig templates for layouts and pages
+- **Components**: Customize or create new theme components
+- **JavaScript**: Add custom functionality and interactions
+- **Settings**: Configure theme options via twilight.json
+
+## Styling customization
+
+### Tailwind CSS configuration
+
+The primary way to customize styles is through `tailwind.config.js`:
+
+```javascript
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'dark': '#1D1F1F',
+        'darker': '#0E0F0F',
+        'danger': '#AE0A0A',
+        'primary-dark': 'var(--color-primary-dark)'
+      },
+      fontFamily: {
+        sans: [
+          'var(--font-main)',
+          '-apple-system',
+          'BlinkMacSystemFont',
+        ],
+        primary: "var(--font-main)"
+      },
+      spacing: {
+        '3.75': '15px',
+        '7.5': '30px',
+        '58': '232px',
+      },
+    },
+  },
+}
+```
+
+### Custom colors
+
+Add your brand colors to the theme configuration:
+
+```javascript
+theme: {
+  extend: {
+    colors: {
+      'brand-primary': '#your-color',
+      'brand-secondary': '#your-color',
+      'brand-accent': '#your-color',
+    },
+  },
+}
+```
+
+Then use them in your templates:
+
+```html
+<div class="bg-brand-primary text-white">
+  Your content
+</div>
+```
+
+### Custom fonts
+
+The theme uses CSS variables for font management:
+
+```javascript
+fontFamily: {
+  sans: [
+    'var(--font-main)',
+    '-apple-system',
+    'BlinkMacSystemFont',
+  ],
+  primary: "var(--font-main)"
+}
+```
+
+Font settings are managed through the Salla Partners Portal and exposed via the `fonts` feature in twilight.json.
+
+### Custom spacing
+
+Extend Tailwind's spacing scale:
+
+```javascript
+spacing: {
+  '100': '28rem',
+  '116': '464px',
+  '132': '528px',
+  '200': '800px',
+}
+```
+
+Use in templates:
+
+```html
+<div class="mt-100 mb-116">
+  Large spacing
+</div>
+```
+
+### Box shadows
+
+Custom shadow utilities are defined in the theme:
+
+```javascript
+boxShadow: {
+  'default': '5px 10px 30px #2B2D340D;',
+  'dropdown': '0 4px 8px rgba(161, 121, 121, 0.07)',
+  'light': '0px 4px 15px rgba(1, 1, 1, 0.06)',
+}
+```
+
+### SCSS customization
+
+For advanced styling, edit SCSS files in `src/assets/styles/`:
+
+```scss
+// Example: Custom component styles
+.custom-component {
+  @apply bg-white rounded-lg shadow-default;
+  
+  &:hover {
+    @apply shadow-lg;
+  }
+}
+```
+
+<Note>
+When using custom SCSS, ensure you rebuild your assets with `pnpm watch` or `pnpm production`.
+</Note>
+
+## Template customization
+
+### Page templates
+
+Page templates are located in `src/views/pages/`. Common pages to customize:
+
+- `index.twig` - Homepage
+- `pages/product/single.twig` - Product detail page
+- `pages/cart.twig` - Shopping cart
+- `pages/thank-you.twig` - Order confirmation
+- `pages/blog/index.twig` - Blog listing
+
+### Layout customization
+
+The master layout is in `src/views/layouts/master.twig`. This controls:
+
+- HTML structure
+- Header and footer inclusion
+- Meta tags and SEO
+- Global scripts and styles
+
+### Component templates
+
+Components are in `src/views/components/`. Customize existing components:
+
+- `header/` - Header and navigation components
+- `footer/` - Footer components
+- `home/` - Homepage components
+- `product/` - Product-related components
+
+### Creating custom components
+
+To create a new component:
+
+<Steps>
+  <Step title="Create component file">
+    Create a new Twig file in `src/views/components/`:
+    
+    ```twig src/views/components/my-component.twig
+    <div class="my-component">
+      <h2>{{ component.title }}</h2>
+      <p>{{ component.description }}</p>
+    </div>
+    ```
+  </Step>
+
+  <Step title="Register in twilight.json">
+    Add your component to the `components` array:
+    
+    ```json
+    {
+      "key": "unique-component-key",
+      "title": {
+        "en": "My Component",
+        "ar": "مكوّني"
+      },
+      "icon": "sicon-component",
+      "path": "components.my-component",
+      "fields": [
+        // Define editable fields
+      ]
+    }
+    ```
+  </Step>
+
+  <Step title="Add component fields">
+    Define editable fields for your component:
+    
+    ```json
+    "fields": [
+      {
+        "type": "string",
+        "id": "title",
+        "label": "Title",
+        "format": "text",
+        "required": true
+      },
+      {
+        "type": "string",
+        "id": "description",
+        "label": "Description",
+        "format": "textarea",
+        "required": false
+      }
+    ]
+    ```
+  </Step>
+</Steps>
+
+## JavaScript customization
+
+### Entry points
+
+JavaScript is organized by page and component:
+
+- `src/assets/js/app.js` - Main application logic
+- `src/assets/js/home.js` - Homepage functionality
+- `src/assets/js/product.js` - Product page features
+- `src/assets/js/partials/` - Reusable component scripts
+
+### Adding custom JavaScript
+
+Create a new JavaScript file:
+
+```javascript src/assets/js/custom-feature.js
+export default class CustomFeature {
+  constructor() {
+    this.init();
+  }
+  
+  init() {
+    // Your custom functionality
+    console.log('Custom feature initialized');
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  new CustomFeature();
+});
+```
+
+Add to webpack entry points:
+
+```javascript webpack.config.js
+module.exports = {
+  entry: {
+    app: [
+      asset('styles/app.scss'),
+      asset('js/app.js'),
+      asset('js/custom-feature.js'), // Add your file
+    ],
+  },
+}
+```
+
+### Using Salla JavaScript SDK
+
+The theme includes access to Salla's JavaScript SDK for e-commerce functionality:
+
+```javascript
+// Example: Add to cart functionality
+salla.cart.addItem({
+  product_id: 123,
+  quantity: 1
+}).then(response => {
+  console.log('Product added to cart', response);
+});
+```
+
+## Theme settings
+
+### twilight.json settings
+
+The `settings` array in twilight.json defines options exposed in the Partners Portal:
+
+```json
+{
+  "settings": [
+    {
+      "type": "boolean",
+      "id": "header_is_sticky",
+      "label": "Sticky header on scroll",
+      "format": "switch",
+      "value": true
+    }
+  ]
+}
+```
+
+### Available setting types
+
+- **boolean**: Toggle switches
+- **string**: Text inputs, textareas
+- **items**: Dropdown lists
+- **number**: Numeric inputs
+- **collection**: Repeatable field groups
+- **static**: Informational content
+
+### Accessing settings in templates
+
+Settings are available in Twig templates:
+
+```twig
+{% if theme.settings.header_is_sticky %}
+  <header class="sticky top-0">
+    <!-- Sticky header content -->
+  </header>
+{% else %}
+  <header>
+    <!-- Regular header content -->
+  </header>
+{% endif %}
+```
+
+## Theme features
+
+### Enabled features
+
+The `features` array in twilight.json enables specific functionality:
+
+```json
+{
+  "features": [
+    "mega-menu",
+    "fonts",
+    "color",
+    "breadcrumb",
+    "unite-cards-height",
+    "component-featured-products",
+    "component-testimonials"
+  ]
+}
+```
+
+### Feature components
+
+Pre-defined features include:
+
+- **mega-menu**: Enhanced navigation menus
+- **fonts**: Custom font selection
+- **color**: Color scheme customization
+- **breadcrumb**: Breadcrumb navigation
+- **component-featured-products**: Featured product displays
+- **component-testimonials**: Customer testimonials
+- **component-youtube**: YouTube video embeds
+
+## Custom components
+
+### Example: Enhanced slider
+
+Theme Raed includes custom components like the enhanced slider:
+
+```json twilight.json
+{
+  "key": "186b3f4f-25cf-4d3c-abca-cef7eed6f0ab",
+  "title": {
+    "en": "Enhances Animated Images",
+    "ar": "صور متحركة (محسنة)"
+  },
+  "icon": "sicon-image-carousel",
+  "path": "home.enhanced-slider",
+  "fields": [
+    {
+      "id": "slides",
+      "type": "collection",
+      "format": "collection",
+      "maxLength": 10,
+      "fields": [
+        {
+          "type": "string",
+          "id": "slides.image",
+          "label": "Banner image",
+          "format": "image",
+          "required": true
+        },
+        {
+          "type": "string",
+          "id": "slides.title",
+          "label": "Main title",
+          "format": "text",
+          "multilanguage": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Example: Brands component
+
+Display brand logos:
+
+```json twilight.json
+{
+  "key": "25f6cf26-a53f-4954-9b32-739b311b32c7",
+  "title": {
+    "en": "Brands",
+    "ar": "الماركات التجارية"
+  },
+  "icon": "sicon-award-ribbon",
+  "path": "home.brands",
+  "fields": [
+    {
+      "type": "items",
+      "id": "brands",
+      "label": "Brands",
+      "format": "dropdown-list",
+      "source": "brands",
+      "multichoice": true
+    }
+  ]
+}
+```
+
+<Warning>
+When adding custom components, ensure the component path matches your Twig file location and that all required fields are properly configured.
+</Warning>
+
+## Localization
+
+### Translation files
+
+Translations are stored in `src/locales/`:
+
+- `ar.json` - Arabic translations
+- `en.json` - English translations
+
+Add your custom translations:
+
+```json src/locales/en.json
+{
+  "custom": {
+    "button_text": "Click Here",
+    "success_message": "Operation completed successfully"
+  }
+}
+```
+
+### Using translations in templates
+
+```twig
+<button>{{ trans('custom.button_text') }}</button>
+<p>{{ trans('custom.success_message') }}</p>
+```
+
+## Best practices
+
+<Steps>
+  <Step title="Use Tailwind utilities first">
+    Prefer Tailwind CSS utilities over custom CSS for consistency and maintainability.
+  </Step>
+
+  <Step title="Follow the directory structure">
+    Keep files organized according to the theme's directory structure.
+  </Step>
+
+  <Step title="Test in preview mode">
+    Always test customizations using `salla theme preview` before building for production.
+  </Step>
+
+  <Step title="Build for production">
+    Run `pnpm production` to create optimized assets before deployment.
+  </Step>
+
+  <Step title="Version control">
+    Use Git to track your customizations and maintain a clean history.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Preview mode" icon="eye" href="/development/preview">
+    Test your customizations in real-time
+  </Card>
+  <Card title="Build process" icon="hammer" href="/development/build">
+    Build optimized assets for production
+  </Card>
+</CardGroup>

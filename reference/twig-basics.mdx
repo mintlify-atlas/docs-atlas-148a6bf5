@@ -1,0 +1,474 @@
+---
+title: Twig template basics
+description: Introduction to Twig templating in Theme Raed
+---
+
+Theme Raed uses Twig as its templating engine. Twig provides a clean, powerful syntax for building dynamic pages.
+
+## Template structure
+
+Templates are organized in a hierarchical structure:
+
+```
+src/views/
+├── layouts/           # Base layouts
+│   ├── master.twig    # Main layout
+│   └── customer.twig  # Customer area layout
+├── pages/             # Page templates
+│   ├── index.twig     # Home page
+│   ├── cart.twig      # Cart page
+│   └── product/       # Product pages
+│       └── single.twig
+└── components/        # Reusable components
+    ├── header/
+    ├── footer/
+    └── home/
+```
+
+## Template inheritance
+
+### Master layout
+
+The base layout (`layouts/master.twig`) defines the HTML structure:
+
+<CodeGroup>
+```twig master.twig
+<!DOCTYPE html>
+<html lang="{{ user.language.code }}" dir="{{ user.language.dir }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  {% block head_scripts %}{% endblock %}
+  {% block styles %}{% endblock %}
+  
+  <link rel="stylesheet" href="{{ 'app.css' | asset }}">
+</head>
+<body>
+  <div class="app-inner flex flex-col min-h-full">
+    {% component 'header.header' %}
+    
+    <main id="main-content" role="main">
+      {% block content %}{% endblock %}
+    </main>
+    
+    {% component 'footer.footer' %}
+  </div>
+  
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+```
+</CodeGroup>
+
+### Extending layouts
+
+Pages extend the master layout:
+
+<CodeGroup>
+```twig Page template
+{% extends "layouts.master" %}
+
+{% block content %}
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+    <!-- Page content -->
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script defer src="{{ 'page.js' | asset }}"></script>
+{% endblock %}
+```
+</CodeGroup>
+
+## Syntax basics
+
+### Output variables
+
+<Tabs>
+  <Tab title="Variables">
+    ```twig
+    {{ store.name }}
+    {{ product.price }}
+    {{ user.language.name }}
+    ```
+  </Tab>
+  <Tab title="With filters">
+    ```twig
+    {{ product.price|money }}
+    {{ store.url|cdn }}
+    {{ product.description|raw }}
+    ```
+  </Tab>
+  <Tab title="With functions">
+    ```twig
+    {{ trans('pages.cart.empty_cart') }}
+    {{ link('/') }}
+    {{ asset('app.js') }}
+    ```
+  </Tab>
+</Tabs>
+
+### Control structures
+
+#### Conditionals
+
+<CodeGroup>
+```twig If statements
+{% if product.is_on_sale %}
+  <span class="text-red-800">{{ product.sale_price|money }}</span>
+  <span class="line-through">{{ product.regular_price|money }}</span>
+{% else %}
+  <span>{{ product.price|money }}</span>
+{% endif %}
+```
+
+```twig If-elseif-else
+{% if product.status == 'out' %}
+  <span class="text-red-600">Out of stock</span>
+{% elseif product.quantity < 5 %}
+  <span class="text-orange-500">Only {{ product.quantity }} left</span>
+{% else %}
+  <span class="text-green-600">In stock</span>
+{% endif %}
+```
+</CodeGroup>
+
+#### Loops
+
+<CodeGroup>
+```twig For loop
+{% for item in cart.items %}
+  <div class="cart-item">
+    <h3>{{ item.product_name }}</h3>
+    <p>{{ item.price|money }}</p>
+  </div>
+{% endfor %}
+```
+
+```twig For-else
+{% for product in products %}
+  <div class="product-card">{{ product.name }}</div>
+{% else %}
+  <p>No products found</p>
+{% endfor %}
+```
+
+```twig Loop variables
+{% for image in product.images %}
+  <img
+    src="{{ image.url }}"
+    alt="{{ image.alt }}"
+    {% if loop.first %}
+      loading="eager"
+      fetchpriority="high"
+    {% else %}
+      loading="lazy"
+    {% endif %}
+  >
+{% endfor %}
+```
+</CodeGroup>
+
+### Loop helpers
+
+| Variable | Description |
+|----------|-------------|
+| `loop.index` | Current iteration (1-indexed) |
+| `loop.index0` | Current iteration (0-indexed) |
+| `loop.first` | True if first iteration |
+| `loop.last` | True if last iteration |
+| `loop.length` | Total number of items |
+| `loop.parent` | Parent context in nested loops |
+
+## Components
+
+### Including components
+
+<CodeGroup>
+```twig Component directive
+{% component 'header.header' %}
+{% component 'footer.footer' %}
+{% component home %}
+```
+</CodeGroup>
+
+### Including partials
+
+<CodeGroup>
+```twig Include directive
+{% include 'pages.partials.product.options' %}
+```
+
+```twig Include with variables
+{% include 'pages.partials.product.options' with {product: item} %}
+```
+</CodeGroup>
+
+## Blocks
+
+Blocks define sections that child templates can override:
+
+<Tabs>
+  <Tab title="Define block">
+    ```twig
+    {% block content %}
+      Default content
+    {% endblock %}
+    ```
+  </Tab>
+  <Tab title="Override block">
+    ```twig
+    {% extends "layouts.master" %}
+    
+    {% block content %}
+      Custom content for this page
+    {% endblock %}
+    ```
+  </Tab>
+  <Tab title="Append to block">
+    ```twig
+    {% extends "layouts.master" %}
+    
+    {% block scripts %}
+      {{ parent() }}
+      <script src="{{ 'custom.js' | asset }}"></script>
+    {% endblock %}
+    ```
+  </Tab>
+</Tabs>
+
+## Variables
+
+### Setting variables
+
+<CodeGroup>
+```twig Set simple variable
+{% set total_price = product.price * quantity %}
+{% set has_many_images = product.images|length > 1 %}
+```
+
+```twig Set from template
+{% set product_desc = product.description|replace({"&nbsp;":"\n"}) %}
+```
+</CodeGroup>
+
+### Theme settings
+
+<CodeGroup>
+```twig Set theme setting
+{{ theme.settings.set('placeholder', 'images/placeholder.png') }}
+```
+
+```twig Get theme setting
+{{ theme.settings.get('header_is_sticky', 'Default Value') }}
+{{ theme.settings.get('enable_add_product_toast', true) }}
+```
+</CodeGroup>
+
+## Comments
+
+<Tabs>
+  <Tab title="Single line">
+    ```twig
+    {# This is a comment #}
+    ```
+  </Tab>
+  <Tab title="Multi-line">
+    ```twig
+    {#
+      This is a multi-line comment
+      It can span multiple lines
+    #}
+    ```
+  </Tab>
+  <Tab title="Documentation">
+    ```twig
+    {#
+    | Variable         | Type    | Description                     |
+    |------------------|---------|---------------------------------|
+    | cart             | object  |                                 |
+    | cart.items_count | int     |                                 |
+    | cart.total       | string  | Formatted total ex: "١٠٠ ر.س"   |
+    #}
+    ```
+  </Tab>
+</Tabs>
+
+## Hooks
+
+Salla hooks allow injecting custom code at specific points:
+
+<CodeGroup>
+```twig Hook usage
+{% hook 'head:start' %}
+{% hook head %}
+{% hook 'head:end' %}
+
+{% hook 'body:start' %}
+{% hook 'body:end' %}
+
+{% hook 'cart:items.start' %}
+{% hook 'cart:items.end' %}
+
+{% hook 'product:single.form.start' %}
+{% hook 'product:single.form.end' %}
+```
+</CodeGroup>
+
+<Note>
+  Hooks enable merchants to add custom content without modifying theme files.
+</Note>
+
+## Whitespace control
+
+Control whitespace around tags:
+
+<CodeGroup>
+```twig Strip whitespace
+{%- if condition -%}
+  Content
+{%- endif -%}
+```
+
+```twig Left strip
+{%- for item in items %}
+  {{ item }}
+{% endfor %}
+```
+</CodeGroup>
+
+## Ternary operator
+
+<CodeGroup>
+```twig Ternary syntax
+{{ product.is_on_sale ? 'On sale' : 'Regular price' }}
+{{ user.type == 'guest' ? 'Sign in' : 'Account' }}
+
+<div class="{{ product.is_on_sale ? 'sale-badge' : 'hidden' }}">
+  Sale!
+</div>
+```
+</CodeGroup>
+
+## Null coalescing
+
+<CodeGroup>
+```twig Default values
+{{ product.subtitle ?? 'No subtitle' }}
+{{ image.alt ?? product.name }}
+{{ theme.settings.get('imageZoom') ?? 'enabled' }}
+```
+</CodeGroup>
+
+## String concatenation
+
+<CodeGroup>
+```twig Concatenate strings
+{{ 'product-' ~ product.id }}
+{{ 'details-slider-' ~ product.id }}
+{{ store.url ~ '/cart' }}
+```
+</CodeGroup>
+
+## Array operations
+
+### Array length
+
+```twig
+{% if product.images|length > 1 %}
+  <div class="image-gallery">...</div>
+{% endif %}
+```
+
+### Array slicing
+
+```twig
+{% for product in section.products|slice(0, 4) %}
+  <!-- Show first 4 products -->
+{% endfor %}
+```
+
+### Array contains
+
+```twig
+{% if 'sms' in product.notify_availability.channels %}
+  <input type="checkbox" name="channel[]" value="sms">
+{% endif %}
+```
+
+## Object property access
+
+<Tabs>
+  <Tab title="Dot notation">
+    ```twig
+    {{ store.name }}
+    {{ product.brand.logo }}
+    {{ cart.items[0].product_name }}
+    ```
+  </Tab>
+  <Tab title="Bracket notation">
+    ```twig
+    {{ store['name'] }}
+    {{ product['brand']['logo'] }}
+    ```
+  </Tab>
+</Tabs>
+
+## Best practices
+
+<Note>
+  Keep logic minimal in templates. Use variables and filters instead of complex expressions.
+</Note>
+
+### Use semantic structure
+
+```twig
+<!-- Good: Clear structure -->
+{% set is_on_sale = product.is_on_sale %}
+{% set show_quantity = not product.is_hidden_quantity %}
+
+{% if is_on_sale %}
+  <!-- Sale price display -->
+{% endif %}
+
+<!-- Avoid: Complex inline logic -->
+{% if product.sale_price and product.sale_price < product.regular_price %}
+  <!-- Hard to read -->
+{% endif %}
+```
+
+### Optimize loops
+
+```twig
+<!-- Good: Check before looping -->
+{% if products|length %}
+  {% for product in products %}
+    <!-- Product card -->
+  {% endfor %}
+{% endif %}
+
+<!-- Better: Use for-else -->
+{% for product in products %}
+  <!-- Product card -->
+{% else %}
+  <p>No products</p>
+{% endfor %}
+```
+
+### Use lazy loading
+
+```twig
+{% for image in product.images %}
+  <img
+    src="{{ image.url }}"
+    {% if loop.first %}
+      loading="eager"
+      fetchpriority="high"
+    {% else %}
+      loading="lazy"
+    {% endif %}
+  >
+{% endfor %}
+```

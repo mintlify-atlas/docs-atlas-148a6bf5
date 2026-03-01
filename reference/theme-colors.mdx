@@ -1,0 +1,395 @@
+---
+title: Color system
+description: Color variables, utilities, and theming system in Theme Raed
+---
+
+Theme Raed uses a dynamic color system with CSS custom properties for flexible theming.
+
+## Color architecture
+
+Colors are defined in three layers:
+
+1. **CSS custom properties** - Set in master layout based on merchant settings
+2. **SCSS variables** - Reference CSS custom properties
+3. **Tailwind utilities** - Extended with custom color classes
+
+## Primary colors
+
+### CSS custom properties
+
+Set dynamically in `master.twig` based on theme configuration:
+
+<CodeGroup>
+```html Master layout
+<style>
+  :root {
+    --font-main: '{{theme.font.name}}';
+    --color-primary: {{ theme.color.primary }};
+    --color-primary-dark: {{ theme.color.darker(0.15) }};
+    --color-primary-light: {{ theme.color.lighter(0.15) }};
+    --color-primary-reverse: {{ theme.color.reverse_text }};
+  }
+</style>
+```
+</CodeGroup>
+
+### Global variables
+
+Defined in `global.scss`:
+
+<CodeGroup>
+```scss Color variables
+:root {
+  --infinte-color: #c9c9c9;
+  --main-text-color: #231f1e;
+  --main-text-color-dark: #2b2d34;
+  
+  /* Primary palette */
+  --color-primary: #414042;
+  --color-primary-d: #272628;
+  --color-primary-l: #676668;
+  --color-primary-reverse: #ff6767;
+  
+  /* Text and backgrounds */
+  --color-text: #7c8082;
+  --bg-gray: #c6c7ce1a;
+  --color-grey: #f5f7f9;
+  --color-light-grey: #eeeeee;
+}
+```
+</CodeGroup>
+
+### SCSS variable references
+
+```scss
+$main-color: var(--color-primary);
+$infinte-color: var(--infinte-color);
+$main-text-color: var(--main-text-color);
+```
+
+## Tailwind color extensions
+
+### Extended colors
+
+Added to Tailwind's color palette:
+
+<ParamField path="dark" type="string" default="#1D1F1F">
+  Dark gray for text and backgrounds
+</ParamField>
+
+<ParamField path="darker" type="string" default="#0E0F0F">
+  Darker shade for contrast
+</ParamField>
+
+<ParamField path="danger" type="string" default="#AE0A0A">
+  Error and destructive actions
+</ParamField>
+
+<ParamField path="primary-dark" type="CSS variable">
+  References `var(--color-primary-dark)` for dynamic theming
+</ParamField>
+
+### Usage examples
+
+<Tabs>
+  <Tab title="Text colors">
+    ```html
+    <p class="text-primary">Primary color text</p>
+    <p class="text-primary-dark">Darker primary text</p>
+    <p class="text-dark">Dark gray text</p>
+    <p class="text-danger">Error message</p>
+    ```
+  </Tab>
+  <Tab title="Background colors">
+    ```html
+    <div class="bg-primary">Primary background</div>
+    <div class="bg-primary-dark">Darker background</div>
+    <div class="bg-dark">Dark background</div>
+    <div class="bg-danger">Danger background</div>
+    ```
+  </Tab>
+  <Tab title="Border colors">
+    ```html
+    <div class="border border-primary">Primary border</div>
+    <div class="border border-dark">Dark border</div>
+    <div class="border border-danger">Danger border</div>
+    ```
+  </Tab>
+</Tabs>
+
+## Semantic colors
+
+### Text colors
+
+<CodeGroup>
+```css Text color system
+--main-text-color: #231f1e;        /* Primary text */
+--main-text-color-dark: #2b2d34;   /* Headings */
+--color-text: #7c8082;             /* Secondary text */
+```
+</CodeGroup>
+
+Usage in components:
+```scss
+.product-description {
+  color: var(--main-text-color);
+}
+
+.product-subtitle {
+  color: var(--color-text);
+}
+```
+
+### Background colors
+
+<CodeGroup>
+```css Background system
+--bg-gray: #c6c7ce1a;           /* Light gray backgrounds */
+--color-grey: #f5f7f9;          /* Card backgrounds */
+--color-light-grey: #eeeeee;    /* Subtle backgrounds */
+```
+</CodeGroup>
+
+Usage:
+```html
+<div class="bg-[var(--bg-gray)]">
+  <!-- Light background -->
+</div>
+```
+
+## Dynamic color functions
+
+Theme Raed provides Twig functions for dynamic color manipulation:
+
+### Color darker
+
+<CodeGroup>
+```twig Darker shade
+{{ theme.color.darker(0.15) }}
+{# Returns darker version of primary color #}
+
+{{ theme.color.darker(0.25, '#ff6767') }}
+{# Returns darker version of specific color #}
+```
+</CodeGroup>
+
+<ParamField path="alpha" type="float" required>
+  Darkness factor from 0.0 to 1.0
+</ParamField>
+
+<ParamField path="hexColor" type="string">
+  Optional hex color. Defaults to `theme.color.primary`
+</ParamField>
+
+### Color lighter
+
+<CodeGroup>
+```twig Lighter shade
+{{ theme.color.lighter(0.15) }}
+{# Returns lighter version of primary color #}
+
+{{ theme.color.lighter(0.3, '#414042') }}
+{# Returns lighter version of specific color #}
+```
+</CodeGroup>
+
+<ParamField path="alpha" type="float" required>
+  Lightness factor from 0.0 to 1.0
+</ParamField>
+
+<ParamField path="hexColor" type="string">
+  Optional hex color. Defaults to `theme.color.primary`
+</ParamField>
+
+## Product colors
+
+### Sale prices
+
+```scss
+.s-product-card-sale-price h4 {
+  @apply text-red-800 #{!important};
+}
+```
+
+Usage:
+```html
+<h4 class="text-red-800 font-bold">{{ product.sale_price|money }}</h4>
+<span class="text-gray-500 line-through">{{ product.regular_price|money }}</span>
+```
+
+### Promotion badges
+
+```scss
+.s-product-card-promotion-title {
+  @apply bg-red-800 text-white;
+}
+```
+
+### Wishlist icons
+
+```scss
+.s-product-card-wishlist-added i {
+  @apply text-red-500;
+}
+```
+
+## State colors
+
+### Success states
+
+<CodeGroup>
+```html Success examples
+<input class="form-input has-success">
+<button class="text-green-600">Saved</button>
+<div class="border-green-500">Success message</div>
+```
+</CodeGroup>
+
+### Error states
+
+<CodeGroup>
+```html Error examples
+<input class="form-input has-error">
+<span class="text-red-700">Error message</span>
+<div class="border-red-400">Warning</div>
+```
+</CodeGroup>
+
+### Info states
+
+```html
+<div class="text-blue-700">
+  <a href="#">Learn more</a>
+</div>
+```
+
+## Interactive colors
+
+### Hover states
+
+Consistent hover opacity:
+
+```scss
+.btn {
+  @apply hover:opacity-80;
+}
+
+.link--primary {
+  @apply text-primary hover:text-primary-d;
+}
+```
+
+### Focus states
+
+Form inputs use primary color for focus:
+
+```scss
+.form-input {
+  @apply focus:border-primary focus:ring-transparent;
+}
+```
+
+## Gray scale
+
+Tailwind's default gray scale is used throughout:
+
+| Class | Hex | Usage |
+|-------|-----|-------|
+| `gray-100` | `#f7fafc` | Light backgrounds |
+| `gray-200` | `#edf2f7` | Borders, dividers |
+| `gray-300` | `#e2e8f0` | Disabled states |
+| `gray-400` | `#cbd5e0` | Placeholders |
+| `gray-500` | `#a0aec0` | Secondary text |
+| `gray-600` | `#718096` | Body text |
+| `gray-700` | `#4a5568` | Headings |
+| `gray-800` | `#2d3748` | Primary text |
+| `gray-900` | `#1a202c` | Emphasis |
+
+## Opacity utilities
+
+Custom opacity scale:
+
+```js
+backgroundOpacity: {
+  '05': '0.05',
+}
+```
+
+Usage:
+```html
+<div class="bg-gray-200 bg-opacity-05">
+  <!-- Very subtle background -->
+</div>
+```
+
+## Color best practices
+
+<Note>
+  Always use CSS custom properties for primary colors to support dynamic theming.
+</Note>
+
+### Use semantic colors
+
+```html
+<!-- Good: Semantic meaning -->
+<button class="bg-primary text-primary-reverse">Submit</button>
+<span class="text-danger">Error</span>
+
+<!-- Avoid: Hard-coded colors -->
+<button class="bg-[#414042] text-white">Submit</button>
+```
+
+### Respect color contrast
+
+The theme automatically handles text color for backgrounds:
+
+```twig
+{{ theme.color.text }}
+{# Returns #000000 or #FFFFFF based on primary color brightness #}
+
+{{ theme.color.reverse_text }}
+{# Returns opposite of theme.color.text #}
+```
+
+### Use grayscale consistently
+
+```html
+<!-- Consistent gray usage -->
+<p class="text-gray-500">Secondary text</p>
+<div class="border-gray-200">Border</div>
+<input class="bg-gray-100" disabled>
+```
+
+## Dark mode colors
+
+Dark mode uses the `dark:` prefix:
+
+```html
+<div class="bg-white dark:bg-gray-800">
+  <p class="text-gray-800 dark:text-gray-100">
+    Adapts to dark mode
+  </p>
+</div>
+```
+
+<Note>
+  Enable dark mode by adding the `dark` class to the `<body>` or `<html>` element.
+</Note>
+
+## Accessing colors in JavaScript
+
+Read CSS custom properties:
+
+```javascript
+const primaryColor = getComputedStyle(document.documentElement)
+  .getPropertyValue('--color-primary');
+
+console.log(primaryColor); // '#414042'
+```
+
+Set colors dynamically:
+
+```javascript
+document.documentElement.style
+  .setProperty('--color-primary', '#5cd5c4');
+```

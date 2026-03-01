@@ -1,0 +1,253 @@
+---
+title: Static pages
+description: Documentation for static content pages template
+---
+
+Static pages are used for custom content like About Us, Terms & Conditions, Privacy Policy, and other informational pages.
+
+## Template location
+
+```
+src/views/pages/page-single.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page` | Page | Page object |
+| `page.title` | string | Page title |
+| `page.content` | string | Page content (HTML) |
+| `page.url` | string | Page URL |
+| `page.slug` | string | Page slug |
+| `page.id` | int | Page ID |
+
+## Page structure
+
+Static pages have a simple, clean layout:
+
+```twig
+{% extends "layouts.master" %}
+{% block content %}
+    <div class="container">
+        <nav class="breadcrumbs">
+            <salla-breadcrumb></salla-breadcrumb>
+        </nav>
+        
+        <div class="page-content">
+            <h1>{{ page.title }}</h1>
+            <div class="content-entry">
+                {{ page.content|raw }}
+            </div>
+            <salla-comments item-id="{{page.id}}" type="page"></salla-comments>
+        </div>
+    </div>
+{% endblock %}
+```
+
+## Code examples
+
+### Basic page layout
+
+```twig
+<div class="static-page">
+  <div class="page-header">
+    <h1>{{ page.title }}</h1>
+  </div>
+  
+  <div class="page-body">
+    {{ page.content|raw }}
+  </div>
+</div>
+```
+
+### With breadcrumbs
+
+```twig
+<div class="container">
+  <nav class="breadcrumbs">
+    <salla-breadcrumb></salla-breadcrumb>
+  </nav>
+  
+  <article class="static-page">
+    <h1 class="page-title">{{ page.title }}</h1>
+    <div class="page-content">
+      {{ page.content|raw }}
+    </div>
+  </article>
+</div>
+```
+
+### With comments
+
+```twig
+<div class="page-wrapper">
+  <div class="page-content">
+    <h1>{{ page.title }}</h1>
+    <div class="content-entry">
+      {{ page.content|raw }}
+    </div>
+  </div>
+  
+  <salla-comments 
+    item-id="{{ page.id }}" 
+    type="page">
+  </salla-comments>
+</div>
+```
+
+### Centered layout
+
+```twig
+<div class="container">
+  <div class="centered-content">
+    <div class="static-page-card">
+      <h1 class="page-title">{{ page.title }}</h1>
+      <div class="page-body">
+        {{ page.content|raw }}
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+### With custom styling
+
+```twig
+<div class="container">
+  <nav class="breadcrumbs">
+    <salla-breadcrumb></salla-breadcrumb>
+  </nav>
+  
+  <article class="prose max-w-4xl mx-auto">
+    <header class="page-header">
+      <h1 class="text-3xl font-bold mb-6">{{ page.title }}</h1>
+    </header>
+    
+    <div class="page-content rich-text">
+      {{ page.content|raw }}
+    </div>
+    
+    <footer class="page-footer">
+      <salla-comments 
+        item-id="{{ page.id }}" 
+        type="page">
+      </salla-comments>
+    </footer>
+  </article>
+</div>
+```
+
+## Common use cases
+
+### About us page
+
+```twig
+<div class="about-page">
+  <div class="hero-section">
+    <h1>{{ page.title }}</h1>
+  </div>
+  
+  <div class="about-content">
+    {{ page.content|raw }}
+  </div>
+</div>
+```
+
+### Terms and conditions
+
+```twig
+<div class="legal-page">
+  <div class="container">
+    <h1>{{ page.title }}</h1>
+    <div class="legal-content">
+      {{ page.content|raw }}
+    </div>
+    <p class="last-updated">
+      {{ trans('pages.static.last_updated') }}: 
+      {{ page.updated_at|date }}
+    </p>
+  </div>
+</div>
+```
+
+### FAQ page
+
+```twig
+<div class="faq-page">
+  <h1>{{ page.title }}</h1>
+  <div class="faq-content">
+    {{ page.content|raw }}
+  </div>
+  
+  <div class="contact-section">
+    <h2>{{ trans('pages.faq.still_have_questions') }}</h2>
+    <a href="{{ link('contact') }}" class="btn btn--primary">
+      {{ trans('pages.faq.contact_us') }}
+    </a>
+  </div>
+</div>
+```
+
+## Accessing page metadata
+
+You can access additional page properties:
+
+```twig
+{# Page URL #}
+<link rel="canonical" href="{{ page.url }}">
+
+{# Page slug #}
+<body class="page-{{ page.slug }}">
+
+{# Page ID #}
+<div data-page-id="{{ page.id }}">
+```
+
+## Content filtering
+
+The `|raw` filter is important for rendering HTML content:
+
+```twig
+{# Correct - renders HTML #}
+{{ page.content|raw }}
+
+{# Incorrect - shows HTML tags as text #}
+{{ page.content }}
+```
+
+## Styling content
+
+Apply typography styles to page content:
+
+```css
+.content-entry {
+  line-height: 1.8;
+}
+
+.content-entry h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.content-entry p {
+  margin-bottom: 1rem;
+}
+
+.content-entry ul,
+.content-entry ol {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.content-entry a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+```
+
+<Note>
+Static pages use the same template (`page-single.twig`) regardless of content. Customize the layout by targeting specific pages using the `page.slug` variable in your CSS or template conditions.
+</Note>

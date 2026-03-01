@@ -1,0 +1,656 @@
+---
+title: TailwindCSS configuration
+description: Complete guide to Theme Raed's TailwindCSS setup and customization
+---
+
+Theme Raed uses TailwindCSS as its utility-first CSS framework. This guide covers the TailwindCSS configuration, custom theme extensions, and how to customize styles.
+
+## Configuration files
+
+TailwindCSS configuration is split across two files:
+
+- **tailwind.config.js** - Main TailwindCSS configuration
+- **postcss.config.js** - PostCSS pipeline configuration
+
+## Content sources
+
+Tailwind scans these files to generate CSS classes:
+
+```javascript
+content: [
+  "src/views/**/*.twig",
+  "src/assets/js/**/*.js",
+  'node_modules/@salla.sa/twilight-tailwind-theme/safe-list-css.txt'
+]
+```
+
+<ParamField path="src/views/**/*.twig" type="glob">
+  All Twig template files
+  
+  Tailwind scans these for class names to generate
+</ParamField>
+
+<ParamField path="src/assets/js/**/*.js" type="glob">
+  All JavaScript files
+  
+  Includes classes added dynamically via JavaScript
+</ParamField>
+
+<ParamField path="safe-list-css.txt" type="file">
+  Salla theme safelist
+  
+  Ensures Salla-specific classes are always included
+</ParamField>
+
+## Dark mode
+
+```javascript
+darkMode: 'class'
+```
+
+Theme Raed uses class-based dark mode. Add the `dark` class to enable dark mode:
+
+```html
+<html class="dark">
+  <!-- Dark mode active -->
+</html>
+```
+
+## Container configuration
+
+```javascript
+container: {
+  center: true,
+  padding: '10px',
+  screens: {
+    '2xl': "1280px"
+  }
+}
+```
+
+<ParamField path="center" type="boolean" default={true}>
+  Automatically center containers using margin auto
+</ParamField>
+
+<ParamField path="padding" type="string" default="10px">
+  Default horizontal padding for containers
+</ParamField>
+
+<ParamField path="screens.2xl" type="string" default="1280px">
+  Maximum container width for 2xl breakpoint
+  
+  Prevents containers from becoming too wide on large screens
+</ParamField>
+
+## Typography
+
+### Font families
+
+```javascript
+fontFamily: {
+  sans: [
+    'var(--font-main)',
+    '-apple-system',
+    'BlinkMacSystemFont'
+  ],
+  primary: "var(--font-main)"
+}
+```
+
+**Font stack:**
+1. Custom font via CSS variable (`--font-main`)
+2. System fonts as fallback
+
+**Usage:**
+
+```html
+<div class="font-sans">Uses main font</div>
+<div class="font-primary">Also uses main font</div>
+```
+
+### Font sizes
+
+```javascript
+fontSize: {
+  'icon-lg': '33px',
+  'xxs': '10px',
+  'xxxs': '8px',
+  'title-size': '42px',
+  '22px': '22px'
+}
+```
+
+**Custom sizes:**
+
+<ParamField path="icon-lg" type="string" default="33px">
+  Large icon text size
+  
+  **Usage:** `text-icon-lg`
+</ParamField>
+
+<ParamField path="xxs" type="string" default="10px">
+  Extra extra small text
+  
+  **Usage:** `text-xxs`
+</ParamField>
+
+<ParamField path="xxxs" type="string" default="8px">
+  Extra extra extra small text
+  
+  **Usage:** `text-xxxs`
+</ParamField>
+
+<ParamField path="title-size" type="string" default="42px">
+  Large title text size
+  
+  **Usage:** `text-title-size`
+</ParamField>
+
+### Line heights
+
+```javascript
+lineHeight: {
+  '12': '3rem',
+  '14': '3.5rem',
+  '16': '4rem',
+  '18': '4.5rem',
+  '20': '5rem'
+}
+```
+
+**Usage:**
+
+```html
+<h1 class="text-title-size leading-16">Large heading</h1>
+```
+
+## Colors
+
+### Custom colors
+
+```javascript
+colors: {
+  'dark': '#1D1F1F',
+  'darker': '#0E0F0F',
+  'danger': '#AE0A0A',
+  'primary-dark': 'var(--color-primary-dark)'
+}
+```
+
+<ParamField path="dark" type="color" default="#1D1F1F">
+  Dark background color
+  
+  **Usage:** `bg-dark`, `text-dark`, `border-dark`
+</ParamField>
+
+<ParamField path="darker" type="color" default="#0E0F0F">
+  Darker background color for layered dark mode
+  
+  **Usage:** `bg-darker`
+</ParamField>
+
+<ParamField path="danger" type="color" default="#AE0A0A">
+  Danger/error state color
+  
+  **Usage:** `bg-danger`, `text-danger`, `border-danger`
+</ParamField>
+
+<ParamField path="primary-dark" type="color" default="var(--color-primary-dark)">
+  Dark variant of primary color via CSS variable
+  
+  **Usage:** `bg-primary-dark`
+</ParamField>
+
+## Spacing
+
+### Custom spacing values
+
+```javascript
+spacing: {
+  '3.75': '15px',
+  '7.5': '30px',
+  '58': '232px',
+  '62': '248px',
+  '100': '28rem',
+  '116': '464px',
+  '132': '528px',
+  '200': '800px'
+}
+```
+
+**Usage examples:**
+
+```html
+<div class="p-3.75">15px padding</div>
+<div class="mt-7.5">30px top margin</div>
+<div class="w-116">464px width</div>
+<div class="max-w-200">800px max width</div>
+```
+
+## Border radius
+
+```javascript
+borderRadius: {
+  'large': '22px',
+  'big': '40px',
+  'tiny': '3px',
+  DEFAULT: '.75rem'
+}
+```
+
+<ParamField path="large" type="string" default="22px">
+  Large border radius
+  
+  **Usage:** `rounded-large`
+</ParamField>
+
+<ParamField path="big" type="string" default="40px">
+  Extra large border radius for pills
+  
+  **Usage:** `rounded-big`
+</ParamField>
+
+<ParamField path="tiny" type="string" default="3px">
+  Minimal border radius
+  
+  **Usage:** `rounded-tiny`
+</ParamField>
+
+<ParamField path="DEFAULT" type="string" default=".75rem">
+  Default border radius when using `rounded`
+  
+  **Usage:** `rounded`
+</ParamField>
+
+## Box shadows
+
+```javascript
+boxShadow: {
+  'default': '5px 10px 30px #2B2D340D;',
+  'top': '0px 0px 10px #0000001A;',
+  'md': '5px 10px 99px #2B2D340D',
+  'dropdown': '0 4px 8px rgba(161, 121, 121, 0.07)',
+  'light': '0px 4px 15px rgba(1, 1, 1, 0.06)',
+  'huge': '0px 3px 6px #00000029',
+  'progress': '0 5px 15px rgba(92, 213, 196, 0.4)',
+  'mobile': 'rgb(0 0 0 / 9%) 0px 2px 1px, ...'
+}
+```
+
+**Usage:**
+
+```html
+<div class="shadow-default">Standard card shadow</div>
+<div class="shadow-dropdown">Dropdown menu shadow</div>
+<div class="shadow-light">Subtle shadow</div>
+<div class="shadow-huge">Prominent shadow</div>
+```
+
+## Dimensions
+
+### Width
+
+```javascript
+width: {
+  '18': '4.5rem',
+  '22': '5.5rem',
+  '74': '18.5rem',
+  '76': '19rem',
+  '78': '19.5rem'
+}
+```
+
+### Height
+
+```javascript
+height: {
+  'banner': '200px',
+  'lg-banner': '428px',
+  'full-banner': '600px',
+  '500': '500px',
+  '460': '460px'
+}
+```
+
+**Banner heights:**
+
+```html
+<div class="h-banner">200px height</div>
+<div class="h-lg-banner">428px height</div>
+<div class="h-full-banner">600px height</div>
+```
+
+### Min/max width
+
+```javascript
+minWidth: {
+  '1/4': '25%',
+  '1/2': '50%',
+  '3/4': '75%'
+},
+maxWidth: {
+  '1/4': '25%',
+  '1/2': '50%',
+  '3/4': '75%'
+}
+```
+
+**Usage:**
+
+```html
+<div class="min-w-1/2 max-w-3/4">Constrained width</div>
+```
+
+## Grid system
+
+```javascript
+gridTemplateColumns: {
+  'auto-fill': 'repeat(auto-fill, 290px)'
+}
+```
+
+Creates a responsive grid that automatically fits 290px columns:
+
+```html
+<div class="grid grid-cols-auto-fill gap-4">
+  <div>Card 1</div>
+  <div>Card 2</div>
+  <div>Card 3</div>
+</div>
+```
+
+## Breakpoints
+
+```javascript
+screens: {
+  'xxs': {'min': '380px', 'max': '479px'},
+  'xs': '480px'
+}
+```
+
+**Custom breakpoints:**
+
+<ParamField path="xxs" type="object">
+  Extra extra small devices (380px - 479px)
+  
+  **Usage:** `xxs:text-sm`
+</ParamField>
+
+<ParamField path="xs" type="string" default="480px">
+  Extra small devices (480px and up)
+  
+  **Usage:** `xs:block`
+</ParamField>
+
+**Standard breakpoints (from Tailwind):**
+- `sm`: 640px
+- `md`: 768px
+- `lg`: 1024px
+- `xl`: 1280px
+- `2xl`: 1280px (custom max-width)
+
+## Animations
+
+### Keyframes
+
+```javascript
+keyframes: {
+  slideUpFromBottom: {
+    '0%': { transform: 'translateY(100%)', opacity: '0' },
+    '100%': { transform: 'translateY(0%)', opacity: '1' }
+  },
+  slideDownFromBottom: {
+    '0%': { transform: 'translateY(0%)', opacity: '1' },
+    '100%': { transform: 'translateY(100%)', opacity: '0' }
+  }
+}
+```
+
+### Animation utilities
+
+```javascript
+animation: {
+  slideUpFromBottom: 'slideUpFromBottom .6s linear',
+  slideDownFromBottom: 'slideDownFromBottom .6s linear'
+}
+```
+
+**Usage:**
+
+```html
+<div class="animate-slideUpFromBottom">
+  Slides up from bottom
+</div>
+```
+
+## Transitions
+
+### Timing functions
+
+```javascript
+transitionTimingFunction: {
+  'elastic': 'cubic-bezier(0.55, 0, 0.1, 1)'
+}
+```
+
+**Usage:**
+
+```html
+<div class="transition ease-elastic duration-300">
+  Elastic transition
+</div>
+```
+
+### Properties
+
+```javascript
+transitionProperty: {
+  'height': 'height'
+}
+```
+
+**Usage:**
+
+```html
+<div class="transition-height duration-300">
+  Animates height changes
+</div>
+```
+
+## Z-index
+
+```javascript
+zIndex: {
+  '1': '1',
+  '2': '2',
+  '-1': '-1'
+}
+```
+
+**Usage:**
+
+```html
+<div class="z-1">Layer 1</div>
+<div class="z-2">Layer 2 (above)</div>
+<div class="z--1">Behind base layer</div>
+```
+
+## Plugins
+
+### Salla Twilight theme
+
+```javascript
+require('@salla.sa/twilight-tailwind-theme')
+```
+
+Adds Salla-specific utilities and components including:
+- RTL support
+- Salla color scheme
+- Salla component styles
+
+### Tailwind Forms
+
+```javascript
+require('@tailwindcss/forms')
+```
+
+Provides better default styles for form elements:
+- Input fields
+- Select dropdowns
+- Checkboxes and radios
+- Textareas
+
+### Line clamp
+
+```javascript
+require('@tailwindcss/line-clamp')
+```
+
+Enables truncating text to a specific number of lines:
+
+```html
+<p class="line-clamp-2">
+  This text will be truncated to 2 lines with an ellipsis
+</p>
+```
+
+## PostCSS configuration
+
+The `postcss.config.js` file configures the CSS processing pipeline:
+
+```javascript
+module.exports = {
+  plugins: {
+    'postcss-import': {},
+    'tailwindcss/nesting': 'postcss-nesting',
+    tailwindcss: {},
+    'postcss-preset-env': {
+      features: { 'nesting-rules': true }
+    }
+  }
+}
+```
+
+### Plugin pipeline
+
+<Accordion title="postcss-import">
+  Processes `@import` statements in CSS files
+  
+  Allows splitting CSS into multiple files:
+  
+  ```css
+  @import './components/button.css';
+  @import './components/card.css';
+  ```
+</Accordion>
+
+<Accordion title="tailwindcss/nesting">
+  Enables CSS nesting syntax
+  
+  ```css
+  .card {
+    &:hover {
+      @apply shadow-lg;
+    }
+  }
+  ```
+</Accordion>
+
+<Accordion title="tailwindcss">
+  Main TailwindCSS plugin that generates utility classes
+</Accordion>
+
+<Accordion title="postcss-preset-env">
+  Adds modern CSS features with browser compatibility
+  
+  - CSS nesting
+  - Custom properties
+  - Modern color functions
+</Accordion>
+
+## Customization
+
+### Adding custom colors
+
+Extend the color palette in `tailwind.config.js`:
+
+```javascript
+theme: {
+  extend: {
+    colors: {
+      'brand': '#FF6B6B',
+      'brand-light': '#FFE5E5'
+    }
+  }
+}
+```
+
+### Adding custom utilities
+
+Create custom utility classes:
+
+```javascript
+const plugin = require('tailwindcss/plugin');
+
+module.exports = {
+  plugins: [
+    plugin(function({ addUtilities }) {
+      const newUtilities = {
+        '.rtl-flip': {
+          transform: 'scaleX(-1)'
+        }
+      }
+      addUtilities(newUtilities)
+    })
+  ]
+}
+```
+
+### Customizing breakpoints
+
+Modify or add breakpoints:
+
+```javascript
+theme: {
+  screens: {
+    'tablet': '640px',
+    'laptop': '1024px',
+    'desktop': '1280px'
+  }
+}
+```
+
+## Important mode
+
+```javascript
+important: false
+```
+
+Set to `false` to avoid adding `!important` to all utilities. This allows easier overriding when needed.
+
+<Note>
+  Only set `important: true` if you have specific CSS specificity conflicts that require it.
+</Note>
+
+## Best practices
+
+1. **Use semantic spacing** - Prefer Tailwind's spacing scale over arbitrary values
+2. **Leverage component classes** - Use `@apply` for repeated patterns
+3. **Keep customizations minimal** - Extend only when necessary
+4. **Use design tokens** - Define colors and spacing as CSS variables
+5. **Optimize for production** - Use PurgeCSS via content configuration
+6. **Follow RTL conventions** - Use logical properties (start/end instead of left/right)
+7. **Test dark mode** - Ensure all custom colors work in dark mode
+8. **Document custom utilities** - Add comments explaining custom extensions
+
+## Performance
+
+Tailwind automatically optimizes for production:
+
+- **PurgeCSS** - Removes unused classes based on content sources
+- **Minification** - CSS is minified in production builds
+- **Tree shaking** - Only includes used plugins and utilities
+
+**Production build size:**
+- Development: ~3MB (all utilities)
+- Production: ~10-50KB (purged and minified)

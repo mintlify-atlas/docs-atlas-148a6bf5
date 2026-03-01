@@ -1,0 +1,355 @@
+---
+title: Build process and webpack commands
+description: Understand the build system, webpack configuration, and available npm scripts
+---
+
+Theme Raed uses webpack to bundle and optimize assets for production and development environments.
+
+## Available npm scripts
+
+The theme provides several npm scripts for different build scenarios:
+
+<CodeGroup>
+```bash Production build
+pnpm production
+# or
+pnpm prod
+```
+
+```bash Development build
+pnpm development
+```
+
+```bash Watch mode
+pnpm watch
+```
+</CodeGroup>
+
+### Script details
+
+| Script | Command | Purpose |
+|--------|---------|----------|
+| `production` | `webpack --mode production` | Builds optimized assets for production |
+| `prod` | `webpack --mode production` | Alias for production |
+| `development` | `webpack --mode development` | Builds unminified assets for development |
+| `watch` | `webpack --mode development --watch` | Watches files and rebuilds on changes |
+
+## Webpack configuration
+
+The webpack configuration in `webpack.config.js` handles multiple entry points and asset processing.
+
+### Entry points
+
+Theme Raed defines multiple entry points for optimal code splitting:
+
+```javascript
+module.exports = {
+  entry: {
+    app: [
+      asset('styles/app.scss'),
+      asset('js/wishlist.js'),
+      asset('js/app.js'),
+      asset('js/blog.js')
+    ],
+    home: asset('js/home.js'),
+    'product-card': asset('js/partials/product-card.js'),
+    'main-menu': asset('js/partials/main-menu.js'),
+    'wishlist-card': asset('js/partials/wishlist-card.js'),
+    'add-product-toast': asset('js/partials/add-product-toast.js'),
+    'digital-files': asset('js/partials/digital-files.js'),
+    checkout: [asset('js/cart.js'), asset('js/thankyou.js')],
+    pages: [asset('js/loyalty.js'), asset('js/brands.js')],
+    product: [asset('js/product.js'), asset('js/products.js')],
+    order: asset('js/order.js'),
+    testimonials: asset('js/testimonials.js')
+  },
+}
+```
+
+### Entry point breakdown
+
+- **app**: Main application bundle (styles, wishlist, core app, blog)
+- **home**: Homepage-specific JavaScript
+- **product-card**: Product card component logic
+- **main-menu**: Navigation menu functionality
+- **checkout**: Cart and thank you page scripts
+- **product**: Product listing and detail pages
+- **pages**: Loyalty and brands page scripts
+
+### Output configuration
+
+```javascript
+module.exports = {
+  output: {
+    path: public(),
+    clean: true,
+    chunkFilename: "[name].[contenthash].js"
+  },
+}
+```
+
+The output configuration:
+
+- Outputs files to the `public` directory
+- Cleans the output directory before each build
+- Uses content hashing for cache busting
+
+## Asset processing
+
+### JavaScript processing
+
+JavaScript files are processed with Babel for modern browser compatibility:
+
+```javascript
+{
+  test: /\.js$/,
+  exclude: [
+    /(node_modules)/,
+    asset('js/twilight.js')
+  ],
+  use: {
+    loader: 'babel-loader',
+    options: {
+      presets: ['@babel/preset-env'],
+      plugins: [
+        ["@babel/plugin-transform-runtime", {
+          "regenerator": true
+        }]
+      ],
+    }
+  }
+}
+```
+
+This configuration:
+
+- Transpiles modern JavaScript to ES5
+- Excludes node_modules and twilight.js from processing
+- Enables async/await support with regenerator runtime
+
+### SCSS/CSS processing
+
+Stylesheets are processed through a pipeline:
+
+```javascript
+{
+  test: /\.(s(a|c)ss)$/,
+  use: [
+    MiniCssExtractPlugin.loader,
+    { loader: "css-loader", options: { url: false } },
+    "postcss-loader",
+    "sass-loader",
+  ]
+}
+```
+
+The pipeline:
+
+1. **sass-loader**: Compiles SCSS to CSS
+2. **postcss-loader**: Processes CSS with PostCSS plugins (Tailwind, autoprefixer)
+3. **css-loader**: Resolves CSS imports and URLs
+4. **MiniCssExtractPlugin**: Extracts CSS into separate files
+
+### PostCSS configuration
+
+The `postcss.config.js` file configures PostCSS processing:
+
+```javascript
+module.exports = {
+  plugins: {
+    'postcss-import': {},
+    'tailwindcss/nesting': 'postcss-nesting',
+    tailwindcss: {},
+    'postcss-preset-env': {
+      features: { 'nesting-rules': true },
+    },
+  }
+}
+```
+
+This enables:
+
+- CSS imports
+- Tailwind CSS nesting support
+- Future CSS features via postcss-preset-env
+
+## Build plugins
+
+### MiniCssExtractPlugin
+
+Extracts CSS into separate files instead of inline styles:
+
+```javascript
+plugins: [
+  new MiniCssExtractPlugin(),
+]
+```
+
+### ThemeWatcher
+
+Monitors theme changes and syncs with Salla platform:
+
+```javascript
+const ThemeWatcher = require('@salla.sa/twilight/watcher.js');
+
+plugins: [
+  new ThemeWatcher(),
+]
+```
+
+### CopyPlugin
+
+Copies static assets to the public directory:
+
+```javascript
+const CopyPlugin = require('copy-webpack-plugin');
+
+plugins: [
+  new CopyPlugin({
+    patterns: [{ from: asset('images'), to: public('images') }]
+  }),
+]
+```
+
+## Optimization
+
+### CSS minimization
+
+Production builds minimize CSS with CssMinimizerPlugin:
+
+```javascript
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+
+module.exports = {
+  optimization: {
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin(),
+    ],
+  },
+}
+```
+
+The `...` spread syntax includes webpack's default minimizers (Terser for JS).
+
+## Build workflow
+
+### Development build
+
+<Steps>
+  <Step title="Run development command">
+    ```bash
+    pnpm development
+    ```
+  </Step>
+
+  <Step title="Check output">
+    Assets are compiled to the `public` directory without minification.
+  </Step>
+
+  <Step title="Use watch mode for active development">
+    ```bash
+    pnpm watch
+    ```
+    
+    Files will automatically rebuild when you make changes.
+  </Step>
+</Steps>
+
+### Production build
+
+<Steps>
+  <Step title="Run production command">
+    ```bash
+    pnpm production
+    ```
+  </Step>
+
+  <Step title="Review build output">
+    Webpack displays a summary of compiled assets:
+    
+    ```
+    asset app.css 245 KiB [emitted]
+    asset app.js 156 KiB [emitted] [minimized]
+    asset home.js 42 KiB [emitted] [minimized]
+    ...
+    ```
+  </Step>
+
+  <Step title="Verify minification">
+    Production assets are minified and optimized for performance.
+  </Step>
+</Steps>
+
+<Warning>
+Always run a production build before deploying your theme to ensure assets are optimized.
+</Warning>
+
+## Build statistics
+
+Webpack is configured to show concise build statistics:
+
+```javascript
+module.exports = {
+  stats: {
+    modules: false,
+    assetsSort: "size",
+    assetsSpace: 50
+  },
+}
+```
+
+This displays:
+
+- Asset list sorted by size
+- Top 50 assets
+- Hides module details for cleaner output
+
+## Troubleshooting
+
+### Build fails with SCSS errors
+
+Check your SCSS syntax and ensure all imports are valid:
+
+```bash
+pnpm development
+```
+
+Look for the specific error message in the output.
+
+### JavaScript compilation errors
+
+Babel errors usually indicate syntax issues:
+
+```
+Module build failed: SyntaxError: Unexpected token
+```
+
+Check the referenced file for syntax errors.
+
+### Out of memory errors
+
+For large projects, increase Node's memory limit:
+
+```bash
+NODE_OPTIONS=--max-old-space-size=4096 pnpm production
+```
+
+### Slow builds
+
+To improve build speed:
+
+- Use development mode during development
+- Only run production builds when necessary
+- Consider excluding unnecessary files from webpack processing
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Customization" icon="palette" href="/development/customization">
+    Learn how to customize the theme
+  </Card>
+  <Card title="Preview mode" icon="eye" href="/development/preview">
+    Test your changes with preview mode
+  </Card>
+</CardGroup>

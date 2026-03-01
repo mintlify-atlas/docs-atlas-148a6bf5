@@ -1,0 +1,179 @@
+---
+title: Slider products with header
+description: Product slider with a custom background image and header text
+---
+
+## Overview
+
+This component displays a product slider overlaid on a custom background image with a title and description. It's perfect for showcasing featured products within a themed or branded context.
+
+## Location
+
+```
+src/views/components/home/slider-products-with-header.twig
+```
+
+## Component path
+
+```
+home.slider-products-with-header
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `9a758d20-2ce4-4782-91fe-c04466464588`.
+
+### Available fields
+
+<ParamField path="background" type="string" format="image" required>
+  Background image URL. Recommended size: 1233×500 pixels
+</ParamField>
+
+<ParamField path="title" type="string" maxLength={80}>
+  Main heading displayed on the background
+</ParamField>
+
+<ParamField path="description" type="string" format="textarea" maxLength={256}>
+  Descriptive text displayed below the title, line-clamped to 2 lines with max width
+</ParamField>
+
+<ParamField path="products" type="items" format="dropdown-list" required>
+  Selected products to display in the slider (min: 1, max: 8)
+</ParamField>
+
+<ParamField path="display_all_url" type="items" format="variable-list">
+  Link for the "View All" button. When empty or set to "#", the button is hidden.
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.slider-products-with-header' %}
+```
+
+## Template structure
+
+```twig
+<section class="s-block s-block--slider-with-bg s-block--full-bg">
+  <div class="slider-bg" style="background-image: url('{{ component.background }}');">
+    <div class="container pt-8 sm:pt-20 relative">
+      <div>
+        <h3 class="text-lg font-bold leading-12">
+          {{ component.title }}
+        </h3>
+        <p class="text-sm mb-8 line-clamp-2 max-w-lg">
+          {{ component.description }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% set display_all = component.display_all_url %}
+  <div class="container -mt-62 relative overflow-hidden">
+    <salla-products-slider
+      {% if component.products|length %}
+        source="selected" 
+        source-value="[{{ component.products|map((product) => product.id)|join(',') }}]" 
+      {% endif %}
+      {% if display_all != '' and display_all != '#' %}
+        display-all-url="{{ display_all }}" 
+      {% endif %}
+      block-title=" " 
+      slider-id="slider-with-bg-{{ position }}"
+    ></salla-products-slider>
+  </div>
+</section>
+```
+
+## Features
+
+### Background layer
+
+The background section includes:
+- Full-width background image
+- Responsive padding (smaller on mobile, larger on desktop)
+- Container-constrained content
+- Title with bold, large font
+- Description with line clamping and max width
+
+### Product slider
+
+The product section:
+- Uses negative margin (`-mt-62`) to overlay the background
+- Displays selected products using `<salla-products-slider>`
+- Maps product IDs for the `source-value` attribute
+- Optional "View All" button based on `display_all_url`
+
+## Product selection
+
+```twig
+{% if component.products|length %}
+  source="selected" 
+  source-value="[{{ component.products|map((product) => product.id)|join(',') }}]" 
+{% endif %}
+```
+
+This extracts product IDs and formats them as a comma-separated array for the web component.
+
+## Display all button
+
+```twig
+{% set display_all = component.display_all_url %}
+{% if display_all != '' and display_all != '#' %}
+  display-all-url="{{ display_all }}" 
+{% endif %}
+```
+
+The "View All" button is conditionally displayed based on whether a valid URL is provided.
+
+## Link types
+
+The `display_all_url` supports these link sources:
+
+- products
+- categories
+- brands
+- pages
+- blog_articles
+- blog_categories
+- offers_link
+- brands_link
+- blog_link
+- custom (external URL)
+
+## Responsive behavior
+
+### Background section
+
+- Mobile: `pt-8` (2rem top padding)
+- Desktop: `sm:pt-20` (5rem top padding)
+
+### Text sizing
+
+- Title: `text-lg font-bold leading-12`
+- Description: `text-sm mb-8 line-clamp-2 max-w-lg`
+
+## Styling
+
+The component uses these main CSS classes:
+
+- `.s-block--slider-with-bg`: Main container styling
+- `.s-block--full-bg`: Full background treatment
+- `.slider-bg`: Background image container
+- `-mt-62`: Negative margin to overlay product slider on background
+
+## Web component
+
+The `<salla-products-slider>` component:
+- Automatically handles product display
+- Includes responsive carousel behavior
+- Shows product cards with standard styling
+- Adds "View All" button when URL is provided
+
+<Tip>
+  Choose a background image that complements your products. The negative margin effect creates an elegant overlap between the background section and product cards.
+</Tip>
+
+<Note>
+  The description text is limited to 2 lines with `line-clamp-2` and has a maximum width of `max-w-lg` to maintain readability.
+</Note>

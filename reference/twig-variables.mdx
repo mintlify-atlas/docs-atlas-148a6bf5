@@ -1,0 +1,655 @@
+---
+title: Twig variables
+description: Available variables in Theme Raed templates
+---
+
+Every Twig template has access to global variables and page-specific variables.
+
+## Global variables
+
+These variables are available in all templates.
+
+### store
+
+Store information and settings.
+
+<ParamField path="store.id" type="int">
+  Unique store identifier
+</ParamField>
+
+<ParamField path="store.name" type="string">
+  Store name
+</ParamField>
+
+<ParamField path="store.username" type="string">
+  Store username/slug
+</ParamField>
+
+<ParamField path="store.description" type="string">
+  Store description (may contain HTML)
+</ParamField>
+
+<ParamField path="store.slogan" type="string">
+  Store slogan (if enabled in twilight.json)
+</ParamField>
+
+<ParamField path="store.logo" type="string">
+  Store logo URL
+</ParamField>
+
+<ParamField path="store.url" type="string">
+  Store homepage URL
+</ParamField>
+
+<ParamField path="store.api" type="string">
+  API URL for the current store
+</ParamField>
+
+<ParamField path="store.icon" type="string">
+  Favicon URL
+</ParamField>
+
+#### Store contacts
+
+<CodeGroup>
+```twig Contact information
+{{ store.contacts.email }}
+{{ store.contacts.mobile }}
+{{ store.contacts.phone }}
+{{ store.contacts.whatsapp }}
+{{ store.contacts.telegram }}
+```
+</CodeGroup>
+
+#### Store social
+
+<CodeGroup>
+```twig Social media links
+{{ store.social.instagram }}
+{{ store.social.snapchat }}
+{{ store.social.twitter }}
+{{ store.social.youtube }}
+{{ store.social.facebook }}
+{{ store.social.pinterest }}
+{{ store.social.maroof }}
+{{ store.social.whatsapp }}
+```
+</CodeGroup>
+
+#### Store settings
+
+<ParamField path="store.settings.auth.email_allowed" type="bool">
+  Email login enabled
+</ParamField>
+
+<ParamField path="store.settings.auth.mobile_allowed" type="bool">
+  Mobile login enabled
+</ParamField>
+
+<ParamField path="store.settings.auth.is_email_required" type="bool">
+  Email required for registration
+</ParamField>
+
+<ParamField path="store.settings.cart.apply_coupon_enabled" type="bool">
+  Visitors can apply coupons in cart
+</ParamField>
+
+<ParamField path="store.settings.product.total_sold_enabled" type="bool">
+  Show total sold count
+</ParamField>
+
+<ParamField path="store.settings.product.fit_type" type="string">
+  Product image fit: `cover`, `contain`, or `null`
+</ParamField>
+
+<ParamField path="store.settings.tax.number" type="string">
+  Tax/VAT registration number
+</ParamField>
+
+<ParamField path="store.settings.tax.certificate" type="string">
+  Tax certificate image URL
+</ParamField>
+
+<ParamField path="store.settings.tax.taxable_prices_enabled" type="bool">
+  Tax included in prices
+</ParamField>
+
+<ParamField path="store.settings.rating_enabled" type="bool">
+  Ratings enabled (store, shipping, or products)
+</ParamField>
+
+<ParamField path="store.settings.is_multilingual" type="bool">
+  Multiple languages enabled
+</ParamField>
+
+<ParamField path="store.settings.currencies_enabled" type="bool">
+  Multiple currencies enabled
+</ParamField>
+
+### theme
+
+Theme configuration and settings.
+
+<ParamField path="theme.id" type="int">
+  Theme identifier
+</ParamField>
+
+<ParamField path="theme.name" type="string">
+  Theme name
+</ParamField>
+
+<ParamField path="theme.mode" type="string">
+  `live` or `preview`
+</ParamField>
+
+<ParamField path="theme.is_rtl" type="bool">
+  Right-to-left language direction
+</ParamField>
+
+<ParamField path="theme.translations_hash" type="int">
+  Cache-busting hash for translations
+</ParamField>
+
+#### Theme colors
+
+<CodeGroup>
+```twig Color variables
+{{ theme.color.primary }}
+{# Primary brand color #}
+
+{{ theme.color.text }}
+{# Text color (#000000 or #FFFFFF based on primary) #}
+
+{{ theme.color.reverse_primary }}
+{# Reverse of primary color #}
+
+{{ theme.color.reverse_text }}
+{# Reverse of text color #}
+
+{{ theme.color.is_dark }}
+{# Boolean: is primary color dark? #}
+```
+</CodeGroup>
+
+#### Theme color functions
+
+<CodeGroup>
+```twig Darker shade
+{{ theme.color.darker(0.15) }}
+{# 15% darker than primary #}
+
+{{ theme.color.darker(0.25, '#ff6767') }}
+{# 25% darker than specified color #}
+```
+
+```twig Lighter shade
+{{ theme.color.lighter(0.15) }}
+{# 15% lighter than primary #}
+
+{{ theme.color.lighter(0.3, '#414042') }}
+{# 30% lighter than specified color #}
+```
+</CodeGroup>
+
+#### Theme font
+
+<ParamField path="theme.font.name" type="string">
+  Font name: `DINNextLTArabic-Regular`, `Amazon-Ember`, `Apple`, `Dubai`, `Estedad`
+</ParamField>
+
+<ParamField path="theme.font.path" type="string">
+  CSS font file URL
+</ParamField>
+
+#### Theme settings
+
+<CodeGroup>
+```twig Get setting
+{{ theme.settings.get('header_is_sticky', 'Default Value') }}
+{{ theme.settings.get('enable_add_product_toast', true) }}
+{{ theme.settings.get('footer_is_dark') }}
+{{ theme.settings.get('topnav_is_dark') }}
+{{ theme.settings.get('sticky_add_to_cart') }}
+```
+
+```twig Set setting
+{{ theme.settings.set('placeholder', 'images/placeholder.png') }}
+{{ theme.settings.set('my_var', 'value') }}
+```
+</CodeGroup>
+
+### user
+
+Current user information.
+
+<ParamField path="user.type" type="string">
+  `user` or `guest`
+</ParamField>
+
+<ParamField path="user.language.code" type="string">
+  Language code (e.g., `en`, `ar`)
+</ParamField>
+
+<ParamField path="user.language.name" type="string">
+  Language name
+</ParamField>
+
+<ParamField path="user.language.dir" type="string">
+  Text direction: `ltr` or `rtl`
+</ParamField>
+
+<ParamField path="user.can_access_wallet" type="bool">
+  User can access wallet features
+</ParamField>
+
+<ParamField path="user.loyalty_points" type="int">
+  Current loyalty points balance
+</ParamField>
+
+### currency
+
+<ParamField path="currency.symbol" type="string">
+  Currency symbol (e.g., `SAR`, `$`, `ر.س`)
+</ParamField>
+
+### cart
+
+Cart summary (available in header/footer).
+
+<ParamField path="cart.items_count" type="int">
+  Number of items in cart
+</ParamField>
+
+<ParamField path="cart.total" type="string">
+  Formatted cart total (e.g., `"100 SAR"`)
+</ParamField>
+
+### page
+
+Current page metadata.
+
+<ParamField path="page.title" type="string">
+  Page title (may contain HTML)
+</ParamField>
+
+<ParamField path="page.slug" type="string">
+  Page slug (e.g., `"cart"`, `"product.single"`)
+</ParamField>
+
+## Product variables
+
+Available in product pages and product cards.
+
+<ParamField path="product.id" type="int">
+  Product identifier
+</ParamField>
+
+<ParamField path="product.name" type="string">
+  Product name
+</ParamField>
+
+<ParamField path="product.description" type="string">
+  Product description (HTML)
+</ParamField>
+
+<ParamField path="product.url" type="string">
+  Product page URL
+</ParamField>
+
+<ParamField path="product.promotion_title" type="string">
+  Promotion badge text
+</ParamField>
+
+<ParamField path="product.subtitle" type="string">
+  Product subtitle
+</ParamField>
+
+<ParamField path="product.type" type="string">
+  `product`, `service`, `group_products`, `codes`, `digital`, `food`, `donating`
+</ParamField>
+
+<ParamField path="product.status" type="string">
+  `sale`, `out`, `out-and-notify`
+</ParamField>
+
+### Product pricing
+
+<ParamField path="product.price" type="float">
+  Current price (may be `-` string if merchant hides zero prices)
+</ParamField>
+
+<ParamField path="product.sale_price" type="float">
+  Discounted price
+</ParamField>
+
+<ParamField path="product.regular_price" type="float">
+  Original price before discount
+</ParamField>
+
+<ParamField path="product.starting_price" type="float">
+  Starting price for products with options
+</ParamField>
+
+<ParamField path="product.currency" type="string">
+  Product currency code
+</ParamField>
+
+<ParamField path="product.base_currency_price" type="float">
+  Price in base currency (SAR)
+</ParamField>
+
+<ParamField path="product.discount_percentage" type="string">
+  Discount percentage (e.g., `"20%"`)
+</ParamField>
+
+### Product inventory
+
+<ParamField path="product.quantity" type="int">
+  Available quantity (`null` if unlimited)
+</ParamField>
+
+<ParamField path="product.sold_quantity" type="int">
+  Number of units sold
+</ParamField>
+
+<ParamField path="product.max_quantity" type="int">
+  Maximum quantity per order
+</ParamField>
+
+<ParamField path="product.sku" type="string">
+  Product SKU
+</ParamField>
+
+<ParamField path="product.weight" type="string">
+  Product weight
+</ParamField>
+
+### Product media
+
+<CodeGroup>
+```twig Main image
+{{ product.image.url }}
+{{ product.image.alt }}
+```
+
+```twig Image gallery
+{% for image in product.images %}
+  <img
+    src="{{ image.url }}"
+    alt="{{ image.alt }}"
+    id="{{ image.id }}"
+  >
+  {% if image.video_url %}
+    <!-- Video thumbnail -->
+  {% endif %}
+  {% if image.three_d_image_url %}
+    <!-- 3D model -->
+  {% endif %}
+{% endfor %}
+```
+</CodeGroup>
+
+### Product category
+
+<CodeGroup>
+```twig Category info
+{% if product.category %}
+  <a href="{{ product.category.url }}">
+    {{ product.category.name }}
+  </a>
+{% endif %}
+```
+</CodeGroup>
+
+### Product brand
+
+<CodeGroup>
+```twig Brand info
+{% if product.brand.name %}
+  <a href="{{ product.brand.url }}">
+    <img src="{{ product.brand.logo }}" alt="{{ product.brand.name }}">
+  </a>
+{% endif %}
+```
+</CodeGroup>
+
+### Product tags
+
+<CodeGroup>
+```twig Tags
+{% for tag in product.tags %}
+  <a href="{{ tag.url }}">
+    {{ tag.name }}
+  </a>
+{% endfor %}
+```
+</CodeGroup>
+
+### Product rating
+
+<CodeGroup>
+```twig Rating display
+{% if product.rating %}
+  <salla-rating-stars
+    value="{{ product.rating.stars }}"
+    reviews="{{ product.rating.count }}">
+  </salla-rating-stars>
+{% endif %}
+```
+</CodeGroup>
+
+### Product booleans
+
+<ParamField path="product.is_on_sale" type="bool">
+  Product has discounted price
+</ParamField>
+
+<ParamField path="product.is_available" type="bool">
+  Product is available for purchase
+</ParamField>
+
+<ParamField path="product.is_out_of_stock" type="bool">
+  Product is out of stock
+</ParamField>
+
+<ParamField path="product.is_in_wishlist" type="bool">
+  User has added to wishlist
+</ParamField>
+
+<ParamField path="product.is_taxable" type="bool">
+  Tax is included in the price
+</ParamField>
+
+<ParamField path="product.is_require_shipping" type="bool">
+  Product requires shipping
+</ParamField>
+
+<ParamField path="product.is_hidden_quantity" type="bool">
+  Quantity hidden by merchant or unavailable
+</ParamField>
+
+<ParamField path="product.has_options" type="bool">
+  Product has options (size, color, etc.)
+</ParamField>
+
+<ParamField path="product.has_read_more" type="bool">
+  Description is long and should be truncated
+</ParamField>
+
+<ParamField path="product.has_3d_image" type="bool">
+  Product has 3D model
+</ParamField>
+
+<ParamField path="product.has_size_guide" type="bool">
+  Product has size guide
+</ParamField>
+
+<ParamField path="product.is_giftable" type="bool">
+  Product can be sent as gift
+</ParamField>
+
+## Cart variables
+
+Available on cart page.
+
+<ParamField path="cart.id" type="string">
+  Unique cart identifier
+</ParamField>
+
+<ParamField path="cart.is_require_shipping" type="bool">
+  Any item requires shipping
+</ParamField>
+
+<ParamField path="cart.has_shipping" type="bool">
+  Shipping company selected
+</ParamField>
+
+<ParamField path="cart.sub_total" type="float">
+  Sum of items without shipping
+</ParamField>
+
+<ParamField path="cart.total" type="float">
+  Final total including all costs
+</ParamField>
+
+<ParamField path="cart.discount" type="float">
+  Total discount amount
+</ParamField>
+
+<ParamField path="cart.coupon" type="string">
+  Applied coupon code
+</ParamField>
+
+<ParamField path="cart.tax_amount" type="float">
+  Calculated tax amount
+</ParamField>
+
+<ParamField path="cart.real_shipping_cost" type="float">
+  Actual shipping cost (may be free via offer/coupon)
+</ParamField>
+
+### Cart items
+
+<CodeGroup>
+```twig Cart item loop
+{% for item in cart.items %}
+  <div class="cart-item" id="item-{{ item.id }}">
+    <img src="{{ item.product_image }}" alt="{{ item.product_name }}">
+    <h3>{{ item.product_name }}</h3>
+    <p>{{ item.price|money }}</p>
+    <p>Quantity: {{ item.quantity }}</p>
+    <p>Total: {{ item.total|money }}</p>
+  </div>
+{% endfor %}
+```
+</CodeGroup>
+
+<ParamField path="item.id" type="int">
+  Cart item identifier
+</ParamField>
+
+<ParamField path="item.product_id" type="int">
+  Product identifier
+</ParamField>
+
+<ParamField path="item.product_name" type="string">
+  Product name
+</ParamField>
+
+<ParamField path="item.product_image" type="string">
+  Product image URL
+</ParamField>
+
+<ParamField path="item.url" type="string">
+  Product page URL
+</ParamField>
+
+<ParamField path="item.quantity" type="int">
+  Item quantity
+</ParamField>
+
+<ParamField path="item.price" type="MoneyTaxable">
+  Unit price
+</ParamField>
+
+<ParamField path="item.total" type="Money">
+  Line total (price × quantity)
+</ParamField>
+
+<ParamField path="item.is_available" type="bool">
+  Item is still available
+</ParamField>
+
+<ParamField path="item.has_discount" type="bool">
+  Item has active discount
+</ParamField>
+
+### Free shipping bar
+
+<CodeGroup>
+```twig Free shipping progress
+{% if cart.free_shipping_bar %}
+  <div class="free-shipping-progress">
+    {% set is_free = cart.free_shipping_bar.has_free_shipping %}
+    
+    {% if is_free %}
+      <p>{{ trans('pages.cart.has_free_shipping') }}</p>
+    {% else %}
+      <p>{{ trans('pages.cart.free_shipping_alert', {
+        'amount': cart.free_shipping_bar.remaining|money
+      }) }}</p>
+      
+      <div class="progress-bar" style="width: {{ cart.free_shipping_bar.percent }}%"></div>
+    {% endif %}
+  </div>
+{% endif %}
+```
+</CodeGroup>
+
+<ParamField path="cart.free_shipping_bar.minimum_amount" type="float">
+  Minimum cart total for free shipping
+</ParamField>
+
+<ParamField path="cart.free_shipping_bar.has_free_shipping" type="bool">
+  Free shipping threshold reached
+</ParamField>
+
+<ParamField path="cart.free_shipping_bar.percent" type="float">
+  Progress percentage (0-100)
+</ParamField>
+
+<ParamField path="cart.free_shipping_bar.remaining" type="float">
+  Amount remaining to reach free shipping
+</ParamField>
+
+## Helper functions
+
+### link
+
+Generates store URLs.
+
+```twig
+<a href="{{ link('/') }}">Home</a>
+<a href="{{ link('/cart') }}">Cart</a>
+```
+
+### is_page
+
+Checks current page.
+
+```twig
+{% if is_page('index') %}
+  <h1>{{ store.name }}</h1>
+{% else %}
+  <h2>{{ store.name }}</h2>
+{% endif %}
+```
+
+### trans
+
+Translates text.
+
+```twig
+{{ trans('pages.cart.empty_cart') }}
+{{ trans('common.elements.back_home') }}
+```

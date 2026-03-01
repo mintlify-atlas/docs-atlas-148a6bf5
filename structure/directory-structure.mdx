@@ -1,0 +1,204 @@
+---
+title: Directory structure
+description: Complete overview of Theme Raed's source code organization
+---
+
+Theme Raed follows a well-organized directory structure that separates concerns between assets, views, and localization files. The theme is built using Twig templating engine, SCSS for styling, and vanilla JavaScript for functionality.
+
+## Root structure
+
+The `src/` directory contains three main folders:
+
+```
+src/
+├── assets/          # Static assets (images, JavaScript, styles)
+├── views/           # Twig templates (components, layouts, pages)
+└── locales/         # Translation files (ar.json, en.json)
+```
+
+<Note>
+All source files are located in the `src/` directory. During the build process, these files are compiled and optimized for production.
+</Note>
+
+## Assets directory
+
+The `assets/` folder contains all static resources:
+
+```
+assets/
+├── images/          # Theme images and icons
+├── js/              # JavaScript functionality
+│   └── partials/    # Reusable JS modules
+└── styles/          # SCSS stylesheets
+    ├── 01-settings/ # Configuration and variables
+    ├── 02-generic/  # Base styles and resets
+    ├── 03-elements/ # HTML element styles
+    ├── 04-components/ # Component-specific styles
+    └── 05-utilities/  # Utility classes and helpers
+```
+
+### JavaScript organization
+
+JavaScript files are organized by page type and functionality:
+
+- **Core files**: `app.js`, `app-helpers.js`, `base-page.js`
+- **Page-specific**: `home.js`, `cart.js`, `product.js`, `blog.js`, `brands.js`
+- **Feature modules**: `loyalty.js`, `order.js`, `wishlist.js`, `testimonials.js`
+- **Partials**: Reusable modules in `partials/` directory
+
+### Styles architecture
+
+SCSS files follow the ITCSS (Inverted Triangle CSS) methodology:
+
+<Accordion title="01-settings: Configuration layer">
+Contains global variables, Tailwind configuration, fonts, and breakpoints.
+
+- `tailwind.scss` - Tailwind CSS imports
+- `fonts.scss` - Font family definitions
+- `global.scss` - Global variables
+- `breakpoints.scss` - Responsive breakpoint mixins
+</Accordion>
+
+<Accordion title="02-generic: Base layer">
+General styles, resets, and animations that apply globally.
+
+- `reset.scss` - CSS reset rules
+- `common.scss` - Common styles and helper classes
+- `animations.scss` - Animation definitions from anime.css
+- `lazyload.scss` - Lazy loading placeholder styles
+- `rtl.scss` - Right-to-left language support
+- `ltr.scss` - Left-to-right language support
+- `tooltip.scss` - Tooltip component styles
+</Accordion>
+
+<Accordion title="03-elements: Element layer">
+Styling for bare HTML elements.
+
+- `buttons.scss` - Button element styles
+- `form.scss` - Form input styling
+- `radio.scss` - Custom radio button styles
+- `radio-images.scss` - Radio image options for products
+</Accordion>
+
+<Accordion title="04-components: Component layer">
+Component-specific styling for theme components.
+
+- `header.scss` - Header component
+- `footer.scss` - Footer component
+- `menus.scss` - Main and mobile menu
+- `user-menu.scss` - User dropdown menu
+- `user-pages.scss` - Profile, orders, notifications
+- `home-blocks.scss` - Homepage block components
+- `slider.scss` - Slider components
+- `product.scss` - Single product page
+- `brands.scss` - Brand listing page
+- `filters.scss` - Product filtering UI
+- `gifting.scss` - Gift wrapping system
+- `loyalty.scss` - Loyalty program UI
+- `add-product-toast.scss` - Add to cart notification
+- `no-content-placeholder.scss` - Empty state displays
+- `landing-page.scss` - Custom landing pages
+- `virtooal.scss` - Virtual try-on integration
+</Accordion>
+
+<Accordion title="05-utilities: Utility layer">
+Utility classes and third-party integrations.
+
+- `swal.scss` - Sweet Alert modal styling
+- `chat-bots.scss` - Chat widget integration
+- `safari-fixes.scss` - Safari browser-specific fixes
+- `font-customization.scss` - Custom font utilities
+</Accordion>
+
+## Views directory
+
+The `views/` folder contains all Twig templates organized by purpose:
+
+```
+views/
+├── components/      # Reusable components (21 files)
+│   ├── footer/      # Footer component
+│   ├── header/      # Header component
+│   └── home/        # Homepage blocks
+├── layouts/         # Master layouts (2 files)
+│   ├── master.twig  # Main layout template
+│   └── customer.twig # Customer dashboard layout
+└── pages/           # Page templates (21 files)
+    ├── blog/        # Blog listing and single post
+    ├── brands/      # Brand listing and single brand
+    ├── customer/    # Customer account pages
+    ├── product/     # Product listing and single product
+    └── partials/    # Reusable page partials
+```
+
+### Page templates
+
+The theme includes templates for all major e-commerce pages:
+
+- `index.twig` - Homepage
+- `cart.twig` - Shopping cart
+- `loyalty.twig` - Loyalty program
+- `landing-page.twig` - Custom landing pages
+- `testimonials.twig` - Customer testimonials
+- `thank-you.twig` - Order confirmation
+- `page-single.twig` - Static pages
+
+### Customer pages
+
+Customer account functionality is organized in `pages/customer/`:
+
+- `profile.twig` - User profile management
+- `notifications.twig` - User notifications
+- `wallet.twig` - Wallet balance and transactions
+- `wishlist.twig` - Saved products
+- `orders/index.twig` - Order history
+- `orders/single.twig` - Order details
+
+## Locales directory
+
+Translation files for bilingual support:
+
+```
+locales/
+├── ar.json          # Arabic translations
+└── en.json          # English translations
+```
+
+Each locale file contains structured translations organized by:
+- `blocks` - Component translations (header, footer, etc.)
+- `pages` - Page-specific text (cart, order, etc.)
+- `common` - Shared translations across the theme
+
+<Note>
+The theme supports both Arabic (RTL) and English (LTR) languages out of the box. Custom translations can be added by extending the locale JSON files.
+</Note>
+
+## Build output
+
+During the build process:
+
+1. SCSS files are compiled from `src/assets/styles/app.scss`
+2. JavaScript files are bundled and optimized
+3. Twig templates are processed and validated
+4. Assets are optimized and output to the `dist/` directory
+
+## File naming conventions
+
+- **Twig templates**: `kebab-case.twig`
+- **JavaScript**: `kebab-case.js`
+- **SCSS**: `kebab-case.scss`
+- **Images**: `kebab-case.svg`, `kebab-case.png`
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Assets folder" icon="folder" href="/structure/assets">
+    Explore images, JavaScript, and styles in detail
+  </Card>
+  <Card title="Views folder" icon="file" href="/structure/views">
+    Learn about components, layouts, and pages
+  </Card>
+  <Card title="Locales" icon="language" href="/structure/locales">
+    Understand the localization system
+  </Card>
+</CardGroup>

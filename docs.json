@@ -1,122 +1,182 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Theme Raed",
+  "theme": "maple",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#21636d",
+    "light": "#5CD5C4",
+    "dark": "#1D1F1F"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/SallaApp/theme-raed"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/SallaApp/theme-raed"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "getting-started",
+              "installation"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Theme Structure",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "structure/directory-structure",
+              "structure/assets",
+              "structure/views",
+              "structure/locales"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Development",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "development/setup",
+              "development/preview",
+              "development/build",
+              "development/customization"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Configuration",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "configuration/twilight-json",
+              "configuration/theme-settings",
+              "configuration/webpack",
+              "configuration/tailwind"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Components",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
-              "api-reference/introduction"
+              "components/overview"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Layout Components",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "components/header",
+              "components/footer",
+              "components/master-layout"
+            ]
+          },
+          {
+            "group": "Home Components",
+            "pages": [
+              "components/enhanced-slider",
+              "components/main-links",
+              "components/slider-products-with-header",
+              "components/enhanced-square-banners",
+              "components/brands",
+              "components/custom-testimonials"
+            ]
+          },
+          {
+            "group": "Product Components",
+            "pages": [
+              "components/product-card",
+              "components/product-options",
+              "components/product-slider"
+            ]
+          },
+          {
+            "group": "Theme Features",
+            "pages": [
+              "components/youtube",
+              "components/fixed-banner",
+              "components/testimonials",
+              "components/parallax-background",
+              "components/photos-slider",
+              "components/store-features",
+              "components/square-photos",
+              "components/fixed-products",
+              "components/products-slider",
+              "components/featured-products",
+              "components/latest-products",
+              "components/vertical-menu-slider"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Pages",
+        "groups": [
+          {
+            "group": "Store Pages",
+            "pages": [
+              "pages/home",
+              "pages/product",
+              "pages/cart",
+              "pages/checkout"
+            ]
+          },
+          {
+            "group": "Customer Pages",
+            "pages": [
+              "pages/customer-profile",
+              "pages/customer-orders",
+              "pages/customer-notifications",
+              "pages/wishlist"
+            ]
+          },
+          {
+            "group": "Content Pages",
+            "pages": [
+              "pages/blog",
+              "pages/brands",
+              "pages/static-pages"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "JavaScript",
+            "pages": [
+              "reference/app-helpers",
+              "reference/anime",
+              "reference/product-card-js",
+              "reference/add-product-toast",
+              "reference/image-zoom"
+            ]
+          },
+          {
+            "group": "Styling",
+            "pages": [
+              "reference/tailwind-config",
+              "reference/custom-styles",
+              "reference/theme-colors"
+            ]
+          },
+          {
+            "group": "Twig Templates",
+            "pages": [
+              "reference/twig-basics",
+              "reference/twig-filters",
+              "reference/twig-variables"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

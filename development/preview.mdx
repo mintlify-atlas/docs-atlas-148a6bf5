@@ -1,0 +1,180 @@
+---
+title: Using Salla CLI preview mode
+description: Preview your theme changes in real-time with Salla CLI
+---
+
+The Salla CLI provides a powerful preview mode that allows you to see your theme changes in real-time on a demo store.
+
+## Prerequisites
+
+Before using preview mode, ensure you have:
+
+- Installed Salla CLI globally
+- Created a theme through the [Salla Partners Portal](https://salla.partners/)
+- Have at least one demo store associated with your partner account
+
+<Note>
+You must be in the theme's root folder to run preview commands.
+</Note>
+
+## Starting preview mode
+
+To preview your theme during development:
+
+<Steps>
+  <Step title="Navigate to theme directory">
+    Open your terminal and navigate to your theme's root folder:
+    
+    ```bash
+    cd path/to/your-theme
+    ```
+  </Step>
+
+  <Step title="Run preview command">
+    Start the preview mode:
+    
+    <CodeGroup>
+    ```bash Full command
+    salla theme preview
+    ```
+    
+    ```bash Alias
+    salla theme p
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Select a demo store">
+    The CLI will display a list of your demo stores. Select the store where you want to preview the theme.
+  </Step>
+
+  <Step title="View in browser">
+    Once connected, the demo store will automatically open in your browser with the theme installed. Any changes you make to the theme files will be reflected instantly.
+  </Step>
+</Steps>
+
+## How preview mode works
+
+The Salla CLI preview mode utilizes the ThemeWatcher plugin configured in webpack:
+
+```javascript
+const ThemeWatcher = require('@salla.sa/twilight/watcher.js');
+
+module.exports = {
+  plugins: [
+    new ThemeWatcher(),
+    // other plugins...
+  ],
+}
+```
+
+This watcher:
+
+- Monitors file changes in your theme directory
+- Automatically syncs changes to the selected demo store
+- Triggers browser refresh when assets are updated
+- Provides live feedback during development
+
+## Development workflow
+
+A typical development workflow with preview mode:
+
+<Steps>
+  <Step title="Start preview mode">
+    Run `salla theme preview` to connect to your demo store.
+  </Step>
+
+  <Step title="Start watch mode">
+    In a separate terminal, run the webpack watch command:
+    
+    ```bash
+    pnpm watch
+    ```
+    
+    This compiles your assets automatically when you make changes.
+  </Step>
+
+  <Step title="Make changes">
+    Edit your theme files (Twig templates, SCSS, JavaScript).
+  </Step>
+
+  <Step title="See live updates">
+    Watch your changes appear in the browser immediately.
+  </Step>
+</Steps>
+
+## Preview best practices
+
+### Use separate terminals
+
+Run preview mode and watch mode in separate terminal windows:
+
+```bash Terminal 1
+salla theme preview
+```
+
+```bash Terminal 2
+pnpm watch
+```
+
+This allows you to monitor both processes simultaneously.
+
+### Test on multiple devices
+
+The preview URL is accessible from any device on your network. Test your theme on:
+
+- Desktop browsers (Chrome, Firefox, Safari)
+- Mobile devices (iOS, Android)
+- Tablet devices
+
+### Monitor webpack output
+
+Pay attention to the webpack watch terminal for:
+
+- Compilation errors
+- Build warnings
+- Asset size information
+
+<Warning>
+Preview mode syncs your local files to the demo store. Ensure you're working on the correct branch to avoid overwriting your work.
+</Warning>
+
+## Common issues
+
+### Changes not appearing
+
+If your changes aren't showing up:
+
+1. Check that webpack compiled successfully
+2. Hard refresh your browser (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows)
+3. Clear browser cache
+4. Verify the ThemeWatcher is running in webpack
+
+### Preview connection lost
+
+If the connection drops:
+
+1. Stop the preview command (Ctrl+C)
+2. Restart with `salla theme preview`
+3. Check your internet connection
+4. Verify you're still authenticated with Salla CLI
+
+### Build errors preventing sync
+
+If webpack fails to compile:
+
+1. Check the error message in the watch terminal
+2. Fix the syntax or compilation error
+3. Wait for webpack to recompile successfully
+4. Changes will sync once compilation succeeds
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Build process" icon="hammer" href="/development/build">
+    Learn about production builds and webpack configuration
+  </Card>
+  <Card title="Customization" icon="palette" href="/development/customization">
+    Start customizing your theme
+  </Card>
+</CardGroup>

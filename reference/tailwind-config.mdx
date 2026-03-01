@@ -1,0 +1,327 @@
+---
+title: Tailwind configuration
+description: Complete TailwindCSS configuration reference for Theme Raed
+---
+
+Theme Raed uses TailwindCSS as its primary styling framework. This page documents the custom Tailwind configuration.
+
+## Configuration file
+
+The Tailwind configuration is located at `tailwind.config.js` in the theme root.
+
+## Content sources
+
+Tailwind scans these files for class usage:
+
+```js
+content: [
+  "src/views/**/*.twig",
+  "src/assets/js/**/*.js",
+  'node_modules/@salla.sa/twilight-tailwind-theme/safe-list-css.txt',
+]
+```
+
+## Dark mode
+
+```js
+darkMode: 'class'
+```
+
+Dark mode is enabled using the `class` strategy. Add the `dark` class to enable dark mode styles.
+
+## Container
+
+Custom container configuration:
+
+<ParamField path="center" type="boolean" default="true">
+  Centers the container horizontally
+</ParamField>
+
+<ParamField path="padding" type="string" default="10px">
+  Default horizontal padding for containers
+</ParamField>
+
+<ParamField path="screens.2xl" type="string" default="1280px">
+  Maximum container width on 2xl screens
+</ParamField>
+
+```html
+<div class="container">
+  <!-- Content is centered with 10px padding, max-width 1280px on 2xl screens -->
+</div>
+```
+
+## Font families
+
+<CodeGroup>
+```js sans
+fontFamily: {
+  sans: [
+    'var(--font-main)',
+    '-apple-system',
+    'BlinkMacSystemFont',
+  ],
+  primary: "var(--font-main)"
+}
+```
+</CodeGroup>
+
+The font family uses CSS custom properties set in the master layout. Default font is `DINNextLTArabic`.
+
+## Extended theme
+
+### Colors
+
+<CodeGroup>
+```js Custom colors
+colors: {
+  'dark': '#1D1F1F',
+  'darker': '#0E0F0F',
+  'danger': '#AE0A0A',
+  'primary-dark': 'var(--color-primary-dark)'
+}
+```
+</CodeGroup>
+
+Primary colors are set via CSS variables:
+
+```css
+:root {
+  --color-primary: #414042;
+  --color-primary-d: #272628;
+  --color-primary-l: #676668;
+  --color-primary-reverse: #ff6767;
+  --color-text: #7c8082;
+  --bg-gray: #c6c7ce1a;
+  --color-grey: #f5f7f9;
+  --color-light-grey: #eeeeee;
+}
+```
+
+### Spacing
+
+Custom spacing values extend the default scale:
+
+<CodeGroup>
+```html Example usage
+<div class="p-3.75"><!-- 15px padding --></div>
+<div class="mt-7.5"><!-- 30px margin-top --></div>
+<div class="w-58"><!-- 232px width --></div>
+<div class="h-100"><!-- 28rem height --></div>
+```
+</CodeGroup>
+
+| Class | Value | Pixels |
+|-------|-------|--------|
+| `3.75` | `15px` | 15px |
+| `7.5` | `30px` | 30px |
+| `58` | `232px` | 232px |
+| `62` | `248px` | 248px |
+| `100` | `28rem` | 448px |
+| `116` | `464px` | 464px |
+| `132` | `528px` | 528px |
+| `200` | `800px` | 800px |
+
+### Border radius
+
+<CodeGroup>
+```html Border radius examples
+<div class="rounded-tiny"><!-- 3px --></div>
+<div class="rounded"><!-- 0.75rem (12px) --></div>
+<div class="rounded-large"><!-- 22px --></div>
+<div class="rounded-big"><!-- 40px --></div>
+```
+</CodeGroup>
+
+| Class | Value |
+|-------|-------|
+| `rounded-tiny` | `3px` |
+| `rounded` | `0.75rem` (default) |
+| `rounded-large` | `22px` |
+| `rounded-big` | `40px` |
+
+### Font sizes
+
+Custom font size utilities:
+
+| Class | Value | Usage |
+|-------|-------|-------|
+| `text-xxxs` | `8px` | Tiny labels |
+| `text-xxs` | `10px` | Small badges |
+| `text-22px` | `22px` | Medium headings |
+| `text-icon-lg` | `33px` | Large icons |
+| `text-title-size` | `42px` | Page titles |
+
+### Line heights
+
+Extended line height scale:
+
+```html
+<h1 class="leading-12"><!-- 3rem --></h1>
+<h2 class="leading-14"><!-- 3.5rem --></h2>
+<h3 class="leading-16"><!-- 4rem --></h3>
+<h4 class="leading-18"><!-- 4.5rem --></h4>
+<h5 class="leading-20"><!-- 5rem --></h5>
+```
+
+### Box shadows
+
+<CodeGroup>
+```html Shadow examples
+<div class="shadow-default"><!-- Standard shadow --></div>
+<div class="shadow-top"><!-- Top shadow --></div>
+<div class="shadow-dropdown"><!-- Dropdown shadow --></div>
+<div class="shadow-light"><!-- Light shadow --></div>
+<div class="shadow-huge"><!-- Prominent shadow --></div>
+<div class="shadow-progress"><!-- Progress bar shadow --></div>
+<div class="shadow-mobile"><!-- Mobile menu shadow --></div>
+```
+</CodeGroup>
+
+| Class | CSS Value |
+|-------|----------|
+| `shadow-default` | `5px 10px 30px #2B2D340D` |
+| `shadow-top` | `0px 0px 10px #0000001A` |
+| `shadow-md` | `5px 10px 99px #2B2D340D` |
+| `shadow-dropdown` | `0 4px 8px rgba(161, 121, 121, 0.07)` |
+| `shadow-light` | `0px 4px 15px rgba(1, 1, 1, 0.06)` |
+| `shadow-huge` | `0px 3px 6px #00000029` |
+| `shadow-progress` | `0 5px 15px rgba(92, 213, 196, 0.4)` |
+
+### Custom heights
+
+<CodeGroup>
+```html Height utilities
+<div class="h-banner"><!-- 200px --></div>
+<div class="h-lg-banner"><!-- 428px --></div>
+<div class="h-full-banner"><!-- 600px --></div>
+<div class="h-500"><!-- 500px --></div>
+<div class="h-460"><!-- 460px --></div>
+```
+</CodeGroup>
+
+### Breakpoints
+
+Custom responsive breakpoints:
+
+<CodeGroup>
+```html Responsive examples
+<div class="xxs:block xs:hidden">
+  <!-- Visible only on 380-479px -->
+</div>
+<div class="xs:grid xs:grid-cols-2">
+  <!-- Grid starts at 480px -->
+</div>
+```
+</CodeGroup>
+
+| Breakpoint | Min Width | Max Width |
+|------------|-----------|----------|
+| `xxs` | `380px` | `479px` |
+| `xs` | `480px` | - |
+
+### Animations
+
+Custom keyframe animations:
+
+<Tabs>
+  <Tab title="slideUpFromBottom">
+    ```css
+    @keyframes slideUpFromBottom {
+      0% { transform: translateY(100%); opacity: 0; }
+      100% { transform: translateY(0%); opacity: 1; }
+    }
+    ```
+    
+    Usage:
+    ```html
+    <div class="animate-slideUpFromBottom">
+      <!-- Slides up from bottom -->
+    </div>
+    ```
+  </Tab>
+  <Tab title="slideDownFromBottom">
+    ```css
+    @keyframes slideDownFromBottom {
+      0% { transform: translateY(0%); opacity: 1; }
+      100% { transform: translateY(100%); opacity: 0; }
+    }
+    ```
+    
+    Usage:
+    ```html
+    <div class="animate-slideDownFromBottom">
+      <!-- Slides down and fades out -->
+    </div>
+    ```
+  </Tab>
+</Tabs>
+
+### Transition timing
+
+```js
+transitionTimingFunction: {
+  'elastic': 'cubic-bezier(0.55, 0, 0.1, 1)',
+}
+```
+
+Usage:
+```html
+<button class="transition ease-elastic duration-500">
+  Smooth elastic transition
+</button>
+```
+
+### Grid columns
+
+```js
+gridTemplateColumns: {
+  'auto-fill': 'repeat(auto-fill, 290px)',
+}
+```
+
+Creates a responsive grid with auto-filling columns:
+
+```html
+<div class="grid grid-cols-auto-fill gap-4">
+  <!-- Automatically fills with 290px columns -->
+</div>
+```
+
+### Z-index
+
+Custom z-index utilities:
+
+```html
+<div class="z-1"><!-- z-index: 1 --></div>
+<div class="z-2"><!-- z-index: 2 --></div>
+<div class="z--1"><!-- z-index: -1 --></div>
+```
+
+## Plugins
+
+Theme Raed includes these Tailwind plugins:
+
+<CodeGroup>
+```js Installed plugins
+plugins: [
+  require('@salla.sa/twilight-tailwind-theme'),
+  require('@tailwindcss/forms'),
+  require('@tailwindcss/line-clamp'),
+]
+```
+</CodeGroup>
+
+<Note>
+  The `@salla.sa/twilight-tailwind-theme` plugin provides Salla-specific utilities and components.
+</Note>
+
+## Core plugins
+
+```js
+corePlugins: {
+  outline: false,
+}
+```
+
+The default outline utilities are disabled. Use `ring` utilities instead for focus states.

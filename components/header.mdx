@@ -1,0 +1,107 @@
+---
+title: Header component
+description: The store header with navigation, search, cart, and user menu
+---
+
+## Overview
+
+The header component provides the main navigation structure for your store, including the top navigation bar with language/currency selector, search functionality, and the main navigation with logo and menu.
+
+## Location
+
+```
+src/views/components/header/header.twig
+```
+
+## Available variables
+
+The header component receives these variables:
+
+<ParamField path="cart" type="object">
+  Shopping cart information
+</ParamField>
+
+<ParamField path="cart.items_count" type="integer">
+  Number of items in cart
+</ParamField>
+
+<ParamField path="cart.total" type="string">
+  Formatted cart total (e.g., "١٠٠ ر.س")
+</ParamField>
+
+## Configuration options
+
+The header behavior is controlled by theme settings:
+
+<ParamField path="header_is_sticky" type="boolean" default={true}>
+  Fix the main navigation at the top when scrolling. It's recommended to disable this if you have many dropdown menu items.
+</ParamField>
+
+<ParamField path="topnav_is_dark" type="boolean" default={false}>
+  Apply dark theme to the top navigation bar
+</ParamField>
+
+<ParamField path="important_links" type="boolean" default={true}>
+  Display important page links in the top bar (landing pages, blog, custom pages)
+</ParamField>
+
+<ParamField path="enable_more_menu" type="boolean" default={true}>
+  When enabled, extra links appear in a "More" dropdown menu when there's insufficient space
+</ParamField>
+
+## Structure
+
+### Top navigation
+
+The top navbar includes:
+- Footer menu links (when `important_links` is enabled)
+- Language and currency selector
+- Store scopes/branches selector
+- Search bar
+- Contact information
+
+### Main navigation
+
+The main navigation bar contains:
+- Mobile menu toggle button
+- Store logo with proper heading tags (h1 on homepage, h2 on other pages)
+- Custom main menu component
+- User menu (avatar for logged-in users, login button for guests)
+- Cart summary with item count
+
+## Usage example
+
+```twig
+{% component 'header.header' %}
+```
+
+## Customization
+
+You can access theme settings in your custom code:
+
+```twig
+{% set important_links = theme.settings.get('important_links') %}
+{% set header_is_sticky = theme.settings.get('header_is_sticky', true) %}
+```
+
+## Components used
+
+The header includes these Salla web components:
+
+- `<salla-menu>`: Renders store menus
+- `<salla-localization-modal>`: Language and currency selector
+- `<salla-search>`: Product search functionality
+- `<salla-contacts>`: Contact information display
+- `<salla-user-menu>`: User account menu
+- `<salla-cart-summary>`: Shopping cart summary
+- `<custom-main-menu>`: Custom main menu implementation
+
+## Accessibility
+
+- Logo includes proper alt text and semantic heading tags
+- Menu button includes `aria-label` for screen readers
+- Proper `role` attributes for navigation elements
+
+<Note>
+  The sticky header feature adds a shadow and fixed positioning when scrolling. This is controlled via JavaScript based on the `header_is_sticky` setting.
+</Note>

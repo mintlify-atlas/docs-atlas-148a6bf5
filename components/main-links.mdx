@@ -1,0 +1,181 @@
+---
+title: Main links (quick links)
+description: Scrollable horizontal links with icons for quick navigation to categories or custom pages
+---
+
+## Overview
+
+The main links component displays a horizontal carousel of clickable links with icons, perfect for quick navigation to categories, special pages, or promotional sections. It can display either custom links or store categories.
+
+## Location
+
+```
+src/views/components/home/main-links.twig
+```
+
+## Component path
+
+```
+home.main-links
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `2b1b130b-5b37-422a-9683-e0fd367460c0`.
+
+### Available fields
+
+<ParamField path="title" type="string" maxLength={100}>
+  Optional section heading displayed above the links
+</ParamField>
+
+<ParamField path="merge_with_top_component" type="boolean" default={false}>
+  Merge this component with the previous one, making them appear as a single cohesive element. Particularly useful when the previous component is "Enhanced slider".
+</ParamField>
+
+<ParamField path="show_controls" type="boolean" default={true}>
+  Display navigation arrows for the carousel
+</ParamField>
+
+<ParamField path="show_cats" type="boolean" default={false}>
+  Display category links instead of custom links. Category images can be shown with each link.
+</ParamField>
+
+<ParamField path="categories" type="items" format="dropdown-list">
+  Select categories to display (only visible when `show_cats` is true)
+</ParamField>
+
+<ParamField path="links" type="collection" required>
+  Collection of custom links (min: 3, max: 100, hidden when `show_cats` is true)
+</ParamField>
+
+<ParamField path="links[].icon" type="string" format="icon" default="sicon-store2">
+  Salla icon class for the link
+</ParamField>
+
+<ParamField path="links[].title" type="string" minLength={2} maxLength={80}>
+  Link title text
+</ParamField>
+
+<ParamField path="links[].url" type="items" format="variable-list">
+  Link destination. Can be a product, category, brand, page, blog article, blog category, offers, brands page, blog page, or custom URL.
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.main-links' %}
+```
+
+## Template structure
+
+### With custom links
+
+```twig
+<section class="s-block s-block--categories {{ component.merge_with_top_component ? 'merge-with-top-component' : '' }}">
+  <div class="container">
+    <salla-slider  
+      type="carousel"
+      {% if component.title %}
+        block-title="{{ component.title }}"
+      {% endif %}
+      controls-outer
+      show-controls="{{ component.show_controls ? 'true' : 'false' }}" 
+      id="main-links-{{ position }}">
+      <div slot="items">
+        {% for link in component.links %}
+          {% if link.title %}
+            <div class="swiper-slide slide--one-sixth">
+              <a href="{{ link.url }}" class="slide--cat-entry">
+                <i class="{{ link.icon }}"></i>
+                <h2>{{ link.title }}</h2>
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </salla-slider>
+  </div>
+</section>
+```
+
+### With categories
+
+```twig
+{% if component.show_cats %}
+  {% for cat in component.categories %}
+    <div class="swiper-slide slide--one-sixth">
+      <a href="{{ cat.url }}" class="slide--cat-entry">
+        {% if cat.image %}
+          <img src="{{ cat.image }}" 
+               class="w-16 h-16 object-cover rounded-full mb-2.5" 
+               width="64" 
+               height="64" 
+               alt="{{ cat.name }}" />
+        {% else %}
+          <i class="{{ cat.icon }}"></i>
+        {% endif %}
+        <h2>{{ cat.name }}</h2>
+      </a>
+    </div>
+  {% endfor %}
+{% endif %}
+```
+
+## Link types
+
+The component supports various link sources:
+
+- **products**: Link to a specific product
+- **categories**: Link to a product category
+- **brands**: Link to a brand page
+- **pages**: Link to a custom page
+- **blog_articles**: Link to a blog article
+- **blog_categories**: Link to a blog category
+- **offers_link**: Link to the offers page
+- **brands_link**: Link to all brands
+- **blog_link**: Link to the blog
+- **custom**: Custom external URL
+
+## Merge behavior
+
+When `merge_with_top_component` is enabled:
+
+```twig
+class="{{ component.merge_with_top_component and position ? 'merge-with-top-component' : '' }}
+       {{ not component.title and component.merge_with_top_component ? 'merged-has-no-title' : '' }}"
+```
+
+This applies special CSS to visually merge the component with the one above it.
+
+## Styling
+
+The component uses these main CSS classes:
+
+- `.s-block--categories`: Main container styling
+- `.slide--one-sixth`: Each link occupies 1/6 of the slider width
+- `.slide--cat-entry`: Link styling with icon and text
+- `.merge-with-top-component`: Special positioning for merged display
+
+## Default examples
+
+The component comes with these default links:
+
+- Ready-made product (sicon-packed-box)
+- Custom service (sicon-fabric-swatch)
+- Food & beverages (sicon-cake)
+- Digital product (sicon-game-controller-alt)
+- Digital card (sicon-barcode-scan)
+- Product bundle (sicon-inbox-full)
+- Bookings (sicon-calendar-date)
+
+## Category images
+
+When showing categories with images:
+- Images are displayed as 64×64px rounded circles
+- If no image is available, the category icon is shown instead
+- Images have proper alt text for accessibility
+
+<Tip>
+  Use this component right after the enhanced slider with `merge_with_top_component` enabled for a seamless hero section that combines images and quick links.
+</Tip>

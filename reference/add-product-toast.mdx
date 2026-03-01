@@ -1,0 +1,321 @@
+---
+title: Add product toast
+description: Custom web component that displays a notification when products are added to cart
+---
+
+The `AddToCartToast` custom element displays an elegant notification when a product is added to the shopping cart, showing product details and providing quick actions.
+
+## Overview
+
+The `salla-add-product-toast` component is an auto-hiding toast notification that appears when products are added to the cart. It features:
+
+- Product image, name, and price display
+- Selected product options
+- Auto-hide timer with progress bar
+- Pause on hover functionality
+- Quick checkout and view cart actions
+- Responsive discount pricing
+
+## Usage
+
+```html
+<salla-add-product-toast></salla-add-product-toast>
+```
+
+The component is automatically triggered by Salla's "Product Added" event and doesn't require manual configuration.
+
+## Features
+
+### Auto-hide timer
+
+The toast automatically disappears after 5 seconds, with a visual progress bar indicating the remaining time.
+
+<ParamField path="duration" type="number" default="5000">
+  Auto-hide duration in milliseconds
+</ParamField>
+
+```javascript
+this.duration = 5000; // 5 seconds
+```
+
+### Pause on hover
+
+When the user hovers over the toast, the auto-hide timer pauses, allowing them to read the information or click action buttons.
+
+```javascript
+// Automatically applied
+onmouseenter="this.isPaused=true"
+onmouseleave="this.isPaused=false"
+```
+
+### Progress indicator
+
+A visual progress bar at the top of the toast shows the remaining time before auto-hide.
+
+```html
+<div class="s-add-product-toast__progress">
+  <div class="s-add-product-toast__progress-bar" style="width: 100%"></div>
+</div>
+```
+
+## Product data structure
+
+The toast displays the following product information:
+
+```javascript
+{
+  id: 123,
+  name: "Product Name",
+  image: "https://...",
+  price: 99.99,
+  originalPrice: 129.99,
+  hasDiscount: true,
+  isOnSale: true,
+  quantity: 2,
+  url: "/product/product-name",
+  options: [
+    { name: "Color", value: "Red" },
+    { name: "Size", value: "Large" }
+  ]
+}
+```
+
+## Key methods
+
+### open
+
+Displays the toast with product information.
+
+<ParamField path="productData" type="object" required>
+  Product information to display
+</ParamField>
+
+```javascript
+const toast = document.querySelector('salla-add-product-toast');
+toast.open({
+  id: 123,
+  name: "Premium T-Shirt",
+  image: "https://...",
+  price: 49.99,
+  originalPrice: 69.99,
+  hasDiscount: true,
+  quantity: 1,
+  url: "/product/premium-t-shirt",
+  options: [{ name: "Size", value: "M" }]
+});
+```
+
+### close
+
+Manually closes the toast and clears timers.
+
+```javascript
+const toast = document.querySelector('salla-add-product-toast');
+toast.close();
+```
+
+### handleProductAdded
+
+Internal method that processes the "Product Added" event from Salla.
+
+<ParamField path="analyticsData" type="array" required>
+  Analytics data from Salla's product added event
+</ParamField>
+
+```javascript
+// Automatically triggered by Salla event
+salla.event.on('Product Added', (data) => this.handleProductAdded(data));
+```
+
+### extractOptions
+
+Processes and formats product options for display.
+
+<ParamField path="options" type="array" required>
+  Raw product options from cart item
+</ParamField>
+
+```javascript
+// Returns formatted options
+[
+  { name: "Color", value: "Red" },
+  { name: "Size", value: "Large" },
+  { name: "Image", value: "uploaded.jpg", hideValue: true }
+]
+```
+
+<Note>
+Options like image uploads, file uploads, and map selections have their values hidden, showing only the option name.
+</Note>
+
+### startAutoHideTimer
+
+Starts or restarts the auto-hide timer with progress bar animation.
+
+```javascript
+// Called automatically when toast opens
+this.startAutoHideTimer();
+```
+
+### clearTimers
+
+Clears all active timers and intervals.
+
+```javascript
+// Called on close or disconnect
+this.clearTimers();
+```
+
+## Component lifecycle
+
+### connectedCallback
+
+Called when the element is added to the DOM. Initializes the component after theme is ready.
+
+```javascript
+connectedCallback() {
+  if (window.app?.status === 'ready') {
+    this.init();
+  } else {
+    document.addEventListener('theme::ready', () => this.init());
+  }
+}
+```
+
+### disconnectedCallback
+
+Called when the element is removed from the DOM. Cleans up timers.
+
+```javascript
+disconnectedCallback() {
+  this.clearTimers();
+}
+```
+
+## Toast structure
+
+The toast displays the following sections:
+
+### Header
+
+- Success icon
+- "Added to Cart" message
+- Close button
+
+### Body
+
+- Product image (clickable)
+- Product name (clickable)
+- Selected options (up to 3 visible)
+- "Show more" link (if more than 3 options)
+- Product price (with discount indication)
+
+### Actions
+
+- Complete order button (triggers checkout)
+- View cart button (navigates to cart)
+
+## Event integration
+
+### Product added event
+
+The toast listens to Salla's product added event:
+
+```javascript
+salla.event.on('Product Added', (data) => this.handleProductAdded(data));
+```
+
+### Cart submission
+
+The checkout button triggers cart submission:
+
+```javascript
+this.querySelector('#toast-submit').addEventListener('click', () => {
+  salla.cart.submit();
+  this.close();
+});
+```
+
+## Localization
+
+The component supports Arabic and English translations:
+
+```javascript
+salla.lang.addBulk({
+  'pages.cart.added_to_cart': { 
+    ar: 'تمت الإضافة إلى سلة التسوق', 
+    en: 'Added to Cart' 
+  },
+  'pages.cart.view_cart': { 
+    ar: 'عرض السلة', 
+    en: 'View Cart' 
+  }
+});
+```
+
+## Styling classes
+
+The component uses the following CSS classes:
+
+- `s-add-product-toast` - Base container class
+- `s-add-product-toast--visible` - Applied when toast is shown
+- `s-add-product-toast__progress` - Progress bar container
+- `s-add-product-toast__progress-bar` - Animated progress indicator
+- `s-add-product-toast__header` - Header section
+- `s-add-product-toast__body` - Product details section
+- `s-add-product-toast__actions` - Action buttons section
+- `s-add-product-toast__image` - Product image
+- `s-add-product-toast__name` - Product name
+- `s-add-product-toast__options` - Product options list
+- `s-add-product-toast__price` - Price display
+- `s-add-product-toast__price-sale` - Sale price
+- `s-add-product-toast__price-original` - Original price (strikethrough)
+
+## Security
+
+The component escapes HTML to prevent XSS vulnerabilities:
+
+```javascript
+escapeHTML(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+```
+
+## Error handling
+
+The component includes error handling for cart API failures:
+
+```javascript
+try {
+  const cartResponse = await salla.cart.api.details(null, ['options']);
+  // Process cart data
+} catch (error) {
+  salla.log('Error processing product added event:', error);
+}
+```
+
+## Customization example
+
+To customize the auto-hide duration:
+
+```javascript
+const toast = document.querySelector('salla-add-product-toast');
+toast.duration = 7000; // 7 seconds instead of default 5
+```
+
+## Options display
+
+The toast intelligently handles different option types:
+
+- **Single selection**: Shows the selected option
+- **Multiple selection**: Shows all selected options separated by commas
+- **File/Image uploads**: Shows option name without value
+- **Map selection**: Shows option name without value
+- **Text input**: Shows the entered value
+
+If there are more than 3 options, only the first 3 are shown with a "Show more" link to the cart page.

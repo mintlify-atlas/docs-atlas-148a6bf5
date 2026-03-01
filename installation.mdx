@@ -1,0 +1,359 @@
+---
+title: Installation
+description: Step-by-step guide to install Theme Raed for your Salla store
+---
+
+# Installation
+
+Theme Raed gets installed by default when you install the Twilight Themes engine. Twilight can be installed in two ways: through the Salla Partners Portal or through the Salla CLI.
+
+<Note>
+  Either installation method will trigger the installation of both the Twilight Engine and Theme Raed together.
+</Note>
+
+## Installation methods
+
+<CardGroup cols={2}>
+  <Card
+    title="Salla Partners Portal"
+    icon="browser"
+    href="#via-salla-partners-portal"
+  >
+    Install through the web interface - easiest for beginners
+  </Card>
+  <Card
+    title="Salla CLI"
+    icon="terminal"
+    href="#via-salla-cli"
+  >
+    Install via command line - preferred for developers
+  </Card>
+</CardGroup>
+
+## Via Salla Partners Portal
+
+The Salla Partners Portal provides a user-friendly interface for creating and managing themes.
+
+<Steps>
+  <Step title="Access the Partners Portal">
+    Navigate to [Salla Partners Portal](https://salla.partners/) and sign in with your partner account.
+    
+    <Note>
+      Don't have a partner account? [Register here](https://salla.partners/register) to get started.
+    </Note>
+  </Step>
+  
+  <Step title="Create a new theme">
+    Follow the theme creation wizard in the Partners Portal. The system will automatically:
+    - Initialize the Twilight engine
+    - Install Theme Raed as your starter theme
+    - Set up the necessary configurations
+    
+    For detailed instructions, refer to the [official documentation on creating themes via Partners Portal](https://docs.salla.dev/doc-421877/?nav=01HNFTD5Y5ESFQS3P9MJ0721VM#creating-theme-via-salla-partners-portal).
+  </Step>
+  
+  <Step title="Connect to a demo store">
+    Select or create a demo store where your theme will be installed and tested.
+  </Step>
+  
+  <Step title="Access your theme">
+    Once created, you can access your theme files and begin customization through the Partners Portal interface or by cloning the repository.
+  </Step>
+</Steps>
+
+## Via Salla CLI
+
+The Salla CLI is the recommended method for developers as it provides powerful tools for theme development and preview.
+
+<Steps>
+  <Step title="Install Salla CLI">
+    First, ensure you have Node.js installed, then install the Salla CLI globally:
+    
+    ```bash
+    npm install -g @salla.sa/cli
+    ```
+    
+    <Note>
+      The CLI requires Node.js version 14 or higher.
+    </Note>
+  </Step>
+  
+  <Step title="Authenticate with Salla">
+    Log in to your Salla partner account through the CLI:
+    
+    ```bash
+    salla login
+    ```
+    
+    Follow the prompts to authenticate your account.
+  </Step>
+  
+  <Step title="Create a new theme">
+    Use the CLI to create a new theme project:
+    
+    ```bash
+    salla theme create
+    ```
+    
+    The CLI will:
+    - Prompt you for theme details (name, description, etc.)
+    - Install the Twilight engine
+    - Set up Theme Raed as your starter theme
+    - Initialize a Git repository
+    - Install all required dependencies
+  </Step>
+  
+  <Step title="Navigate to your theme directory">
+    Change to your newly created theme directory:
+    
+    ```bash
+    cd your-theme-name
+    ```
+  </Step>
+</Steps>
+
+For complete CLI documentation, visit the [Salla CLI installation guide](https://docs.salla.dev/doc-422775/?nav=01HNA8QHCPJTCY5VSEZ616JCAK).
+
+## Post-installation setup
+
+After installing Theme Raed, complete these setup steps:
+
+<Steps>
+  <Step title="Install dependencies">
+    Theme Raed uses `pnpm` as its package manager. Install all dependencies:
+    
+    ```bash
+    pnpm install
+    ```
+    
+    <Warning>
+      This theme enforces the use of `pnpm`. If you try to use `npm` or `yarn`, the preinstall script will prevent the installation.
+    </Warning>
+  </Step>
+  
+  <Step title="Build the theme">
+    Compile the theme assets for development:
+    
+    ```bash
+    pnpm run development
+    ```
+    
+    Or for production-ready builds:
+    
+    ```bash
+    pnpm run production
+    ```
+  </Step>
+  
+  <Step title="Start the development server">
+    Enable live preview of your theme during development:
+    
+    ```bash
+    salla theme preview
+    ```
+    
+    Or use the alias:
+    
+    ```bash
+    salla theme p
+    ```
+    
+    <Note>
+      You must be in the theme's root folder to run the preview command.
+    </Note>
+  </Step>
+</Steps>
+
+## Theme preview
+
+Using the Salla CLI, you can preview your theme in real-time as you develop. The `preview` command allows you to see live updates to your theme on a demo store.
+
+### How preview works
+
+1. The CLI connects to your selected demo store
+2. Your theme is loaded in the browser
+3. As you make changes to files, they're automatically synced
+4. The store updates instantly to reflect your changes
+
+### Running preview mode
+
+```bash Terminal
+salla theme preview
+
+# Alias command for preview
+salla theme p
+```
+
+The CLI will:
+- List your available demo stores
+- Let you select which store to preview
+- Open the store in your default browser
+- Watch for file changes and sync them automatically
+
+<Note>
+  Preview mode is an excellent option for developers who want to see live updates to their themes appearing on the store right away.
+</Note>
+
+## Development workflow
+
+Once installed, here's a typical development workflow:
+
+<CodeGroup>
+
+```bash Terminal (development)
+# Watch for changes and rebuild automatically
+pnpm run watch
+
+# In another terminal, start preview
+salla theme preview
+```
+
+```bash Terminal (production)
+# Build optimized assets
+pnpm run production
+
+# Deploy your theme
+salla theme publish
+```
+
+</CodeGroup>
+
+### Available npm scripts
+
+- **`pnpm run production`** - Build minified, optimized files for production
+- **`pnpm run prod`** - Alias for production build
+- **`pnpm run development`** - Build files with source maps for debugging
+- **`pnpm run watch`** - Watch mode for automatic rebuilding during development
+
+## Verify installation
+
+To confirm Theme Raed is installed correctly:
+
+<Steps>
+  <Step title="Check directory structure">
+    Verify the following directories exist:
+    
+    ```bash
+    ls -la src/
+    # Should show: assets, locales, views
+    ```
+  </Step>
+  
+  <Step title="Check configuration file">
+    Ensure `twilight.json` exists in the root directory:
+    
+    ```bash
+    cat twilight.json
+    ```
+    
+    You should see the theme name "Theme Raed" and configuration details.
+  </Step>
+  
+  <Step title="Verify dependencies">
+    Check that all packages are installed:
+    
+    ```bash
+    pnpm list
+    ```
+    
+    Key packages should include:
+    - `@salla.sa/twilight`
+    - `@salla.sa/twilight-components`
+    - `tailwindcss`
+    - `webpack`
+  </Step>
+  
+  <Step title="Test build process">
+    Try building the theme:
+    
+    ```bash
+    pnpm run development
+    ```
+    
+    The build should complete without errors.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Package manager errors
+
+<Warning>
+  If you see "Use 'pnpm' for installing packages", make sure to use `pnpm` instead of `npm` or `yarn`.
+</Warning>
+
+```bash
+# Install pnpm globally if needed
+npm install -g pnpm
+
+# Then install dependencies
+pnpm install
+```
+
+### Build failures
+
+If the build fails, try:
+
+1. Clear the node_modules and reinstall:
+   ```bash
+   rm -rf node_modules
+   pnpm install
+   ```
+
+2. Clear webpack cache:
+   ```bash
+   rm -rf dist
+   pnpm run development
+   ```
+
+### Preview not working
+
+If preview mode doesn't work:
+
+1. Ensure you're logged in:
+   ```bash
+   salla login
+   ```
+
+2. Verify you're in the theme root directory
+
+3. Check that you have at least one demo store in your partner account
+
+## Next steps
+
+Now that Theme Raed is installed, you can:
+
+<CardGroup cols={2}>
+  <Card
+    title="Customize components"
+    icon="palette"
+  >
+    Start modifying the pre-built components in `src/views/components/`
+  </Card>
+  <Card
+    title="Configure theme settings"
+    icon="gear"
+  >
+    Edit `twilight.json` to enable/disable features and customize settings
+  </Card>
+  <Card
+    title="Modify styles"
+    icon="paintbrush"
+  >
+    Customize TailwindCSS configuration in `tailwind.config.js`
+  </Card>
+  <Card
+    title="Read the docs"
+    icon="book"
+    href="https://docs.salla.dev/?nav=01HNFTD5Y5ESFQS3P9MJ0721VM"
+  >
+    Explore the complete Twilight Themes documentation
+  </Card>
+</CardGroup>
+
+## Additional resources
+
+- [Complete Twilight installation guide](https://docs.salla.dev/doc-421877/?nav=01HNFTD5Y5ESFQS3P9MJ0721VM)
+- [Salla CLI documentation](https://www.npmjs.com/package/@salla.sa/cli)
+- [Theme Raed GitHub repository](https://github.com/SallaApp/theme-raed)
+- [Salla Developer Community on Telegram](https://t.me/salladev)

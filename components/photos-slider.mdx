@@ -1,0 +1,160 @@
+---
+title: Photos slider
+description: Animated image carousel with autoplay and pagination controls
+---
+
+The photos slider component displays a carousel of images with automatic rotation, pagination dots, and centered display.
+
+## Component usage
+
+Add an image slider to your home page:
+
+```twig
+<section class="s-block s-block--photos-slider {{ is_repeated ? 'repeated-block' : '' }}">
+  <salla-slider 
+    type="carousel" 
+    class="home-slider photos-slider"
+    centered 
+    auto-play 
+    pagination
+    id="photos-{{ position }}-slider"> 
+    <div slot="items">
+      {% for index, item in items %}
+        <div class="swiper-slide">
+          <a href="{{ item.url }}">
+            <img 
+              loading="eager" 
+              src="{{ item.image.url }}" 
+              class="w-full object-contain rounded-md" 
+              height="300" 
+              width="1200" 
+              alt="{{ store.name }} image-slider-{{ index }}"
+            />
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </salla-slider>
+</section>
+```
+
+## Variables
+
+<ParamField path="items" type="array" required>
+  Array of slide objects containing image and link information
+</ParamField>
+
+<ParamField path="items[].url" type="string">
+  Destination URL when the slide image is clicked
+</ParamField>
+
+<ParamField path="items[].link_type" type="string">
+  Type of link:
+  - `category` - Link to a category page
+  - `product` - Link to a product page
+  - `offers` - Link to offers page
+  - `page` - Link to a custom page
+  - `external_link` - Link to external URL
+  - `brand` - Link to a brand page
+</ParamField>
+
+<ParamField path="items[].image.url" type="string" required>
+  URL of the slide image
+</ParamField>
+
+<ParamField path="items[].image.alt" type="string">
+  Alternative text for the image (for accessibility)
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement (starts from zero)
+</ParamField>
+
+<ParamField path="is_repeated" type="boolean">
+  When true, adds the `repeated-block` class for styling multiple slider instances
+</ParamField>
+
+## Example
+
+```twig
+<section class="s-block s-block--photos-slider">
+  <salla-slider 
+    type="carousel" 
+    class="home-slider photos-slider"
+    centered 
+    auto-play 
+    pagination
+    id="photos-0-slider"> 
+    <div slot="items">
+      <div class="swiper-slide">
+        <a href="/category/electronics">
+          <img 
+            loading="eager" 
+            src="https://cdn.example.com/slide1.jpg" 
+            class="w-full object-contain rounded-md" 
+            height="300" 
+            width="1200" 
+            alt="Electronics banner"
+          />
+        </a>
+      </div>
+      <div class="swiper-slide">
+        <a href="/category/fashion">
+          <img 
+            loading="eager" 
+            src="https://cdn.example.com/slide2.jpg" 
+            class="w-full object-contain rounded-md" 
+            height="300" 
+            width="1200" 
+            alt="Fashion banner"
+          />
+        </a>
+      </div>
+    </div>
+  </salla-slider>
+</section>
+```
+
+## Slider attributes
+
+<ParamField path="type" type="string">
+  Slider type - use `carousel` for image sliders
+</ParamField>
+
+<ParamField path="centered" type="boolean">
+  Centers the active slide
+</ParamField>
+
+<ParamField path="auto-play" type="boolean">
+  Enables automatic slide rotation
+</ParamField>
+
+<ParamField path="pagination" type="boolean">
+  Shows pagination dots at the bottom
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the slider instance
+</ParamField>
+
+## Recommended image size
+
+- Width: 1200 pixels
+- Height: 300 pixels
+- Format: JPG or WebP for best performance
+
+<Note>
+  Images are displayed with `object-contain` to ensure the full image is visible without cropping. Use consistent image dimensions across all slides for best results.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-photos-slider"
+  ]
+}
+```

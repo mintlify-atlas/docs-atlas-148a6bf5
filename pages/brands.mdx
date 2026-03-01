@@ -1,0 +1,232 @@
+---
+title: Brands page
+description: Documentation for the brands listing page template
+---
+
+The brands page displays all store brands organized alphabetically with quick navigation.
+
+## Template location
+
+```
+src/views/pages/brands/index.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+| `brands` | Collection | Brands grouped by first character |
+
+## Brands structure
+
+The `brands` variable is a collection grouped by the first character of brand names:
+
+```twig
+{
+  "A": [
+    {"name": "Adidas", "url": "/brands/adidas", "logo": "..."},
+    {"name": "Apple", "url": "/brands/apple", "logo": "..."}
+  ],
+  "N": [
+    {"name": "Nike", "url": "/brands/nike", "logo": "..."}
+  ]
+}
+```
+
+## Brand object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `brand.name` | string | Brand name |
+| `brand.url` | string | Brand page URL |
+| `brand.logo` | string | Brand logo URL |
+
+## Page structure
+
+The brands page includes:
+
+1. Breadcrumb navigation
+2. Alphabetical navigation bar
+3. Brand sections grouped by letter
+4. Brand grid display
+
+## Code examples
+
+### Alphabetical navigation
+
+```twig
+{% if brands|length %}
+  <div class="brands-nav-wrap">
+    <ul id="brands-nav" class="brands-nav">
+      {% for char, brands_group in brands %}
+        <li>
+          <a class="brands-nav__item"
+             href="#brand-section-{{ loop.index }}"
+             data-id="{{ loop.index }}">
+            <span>{{ char }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+```
+
+### Brand sections
+
+```twig
+{% for char, brandGroup in brands %}
+  <section id="brand-section-{{ loop.index }}">
+    <div class="section-header">
+      <span class="brand-char" data-id="{{ loop.index }}">
+        {{ char }}
+      </span>
+      <div class="separator"></div>
+    </div>
+    
+    <div class="brands-grid">
+      {% for brand in brandGroup %}
+        <a href="{{ brand.url }}" class="brand-item">
+          <img 
+            src="{{ brand.logo }}" 
+            alt="{{ brand.name }}"
+            width="400" 
+            height="300">
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+```
+
+### Complete brands grid
+
+```twig
+<div class="brands-container">
+  {% for char, brandGroup in brands %}
+    <section id="brand-section-{{ loop.index }}" class="brand-section">
+      <div class="brand-separator">
+        <span class="brand-char">{{ char }}</span>
+        <div class="separator-line"></div>
+      </div>
+      
+      <div class="brand-grid">
+        {% for brand in brandGroup %}
+          <a href="{{ brand.url }}" class="brand-card">
+            <img 
+              class="brand-logo" 
+              src="{{ brand.logo }}" 
+              alt="{{ brand.name }}">
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+</div>
+```
+
+### Empty state
+
+```twig
+{% if brands|length %}
+  {# Brands display #}
+{% else %}
+  <div class="no-content-placeholder">
+    <span class="icon-wrapper">
+      <i class="sicon-award-ribbon"></i>
+    </span>
+    <h1>{{ trans('pages.brands.non_brands') }}</h1>
+    <small>{{ trans('pages.brands.try_again') }}</small>
+  </div>
+{% endif %}
+```
+
+### Sticky navigation
+
+The alphabetical navigation can be made sticky:
+
+```javascript
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('brands-nav');
+  const scrollTop = window.pageYOffset;
+  
+  if (scrollTop > 200) {
+    nav.classList.add('sticky');
+  } else {
+    nav.classList.remove('sticky');
+  }
+});
+```
+
+### Smooth scroll to section
+
+```javascript
+document.querySelectorAll('.brands-nav__item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href');
+    const targetSection = document.querySelector(targetId);
+    
+    targetSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  });
+});
+```
+
+## Hooks
+
+The brands page provides hooks for customization:
+
+```twig
+{% hook 'brands:index.items.start' %}
+{# Brand sections #}
+{% hook 'brands:index.items.end' %}
+```
+
+## CSS grid layout
+
+Recommended grid layout for brands:
+
+```css
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .brands-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .brands-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+```
+
+## JavaScript assets
+
+The page loads `pages.js` for interactive features:
+
+```twig
+{% block scripts %}
+  <script defer src="{{ 'pages.js' | asset }}"></script>
+{% endblock %}
+```
+
+<Note>
+Brands are automatically grouped alphabetically. The template loops through each letter group to create organized sections with jump navigation.
+</Note>

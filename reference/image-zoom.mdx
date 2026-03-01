@@ -1,0 +1,333 @@
+---
+title: Image zoom
+description: Magnifier glass functionality for zooming product images
+---
+
+The image zoom module provides a magnifying glass effect for product images, allowing users to see fine details by hovering over or touching the image.
+
+## Overview
+
+The `zoom` function creates an interactive magnifier glass that follows the user's cursor or touch input, displaying a zoomed-in view of the image. This is particularly useful for product detail pages where customers need to see high-resolution details.
+
+## Function signature
+
+```javascript
+import { zoom } from './partials/image-zoom';
+
+zoom(imgID, zoomLevel);
+```
+
+<ParamField path="imgID" type="string" required>
+  The ID attribute of the image element to enable zoom on
+</ParamField>
+
+<ParamField path="zoom" type="number" required>
+  The zoom strength/magnification level (e.g., 2 for 2x zoom, 3 for 3x zoom)
+</ParamField>
+
+## Basic usage
+
+```html
+<img id="product-image" src="/images/product.jpg" alt="Product" />
+
+<script type="module">
+  import { zoom } from './partials/image-zoom';
+  
+  // Enable 3x zoom on the product image
+  zoom('product-image', 3);
+</script>
+```
+
+## How it works
+
+The zoom function creates a magnifying glass effect through the following process:
+
+1. **Glass creation**: A div element with class `img-magnifier-glass` is created and positioned over the image
+2. **Background setup**: The magnifier uses the same image as a background, scaled according to the zoom level
+3. **Event listeners**: Mouse and touch events are attached to track cursor/finger position
+4. **Position calculation**: The magnifier follows the cursor while staying within image boundaries
+5. **Zoom display**: The background position updates to show the magnified portion
+
+## Zoom levels
+
+The zoom parameter controls the magnification strength:
+
+```javascript
+// 2x magnification
+zoom('product-image', 2);
+
+// 3x magnification (recommended for most use cases)
+zoom('product-image', 3);
+
+// 5x magnification (very high detail)
+zoom('product-image', 5);
+```
+
+<Note>
+Higher zoom levels provide more detail but may appear pixelated if the source image resolution is not high enough. Use high-quality images (at least 2x the display size) for best results.
+</Note>
+
+## Event support
+
+The magnifier supports both mouse and touch events:
+
+### Mouse events
+
+- `mousemove` on the image
+- `mousemove` on the magnifier glass
+
+### Touch events
+
+- `touchmove` on the image
+- `touchmove` on the magnifier glass
+
+```javascript
+// Mouse and touch events are handled automatically
+glass.addEventListener('mousemove', moveMagnifier);
+img.addEventListener('mousemove', moveMagnifier);
+glass.addEventListener('touchmove', moveMagnifier);
+img.addEventListener('touchmove', moveMagnifier);
+```
+
+## Boundary detection
+
+The magnifier automatically stays within the image boundaries:
+
+```javascript
+// Prevents magnifier from going beyond image edges
+if (x > img.width - w / zoom) {
+  x = img.width - w / zoom;
+}
+if (x < w / zoom) {
+  x = w / zoom;
+}
+if (y > img.height - h / zoom) {
+  y = img.height - h / zoom;
+}
+if (y < h / zoom) {
+  y = h / zoom;
+}
+```
+
+This ensures the magnifier glass always displays a valid portion of the image.
+
+## Implementation details
+
+### Magnifier glass structure
+
+The function creates a magnifier element with the following properties:
+
+```javascript
+// Create magnifier div
+glass = document.createElement('DIV');
+glass.setAttribute('class', 'img-magnifier-glass');
+
+// Insert before image
+img.parentElement.insertBefore(glass, img);
+
+// Configure background
+glass.style.backgroundImage = "url('" + img.src + "')";
+glass.style.backgroundRepeat = 'no-repeat';
+glass.style.backgroundSize = img.width * zoom + 'px ' + img.height * zoom + 'px';
+```
+
+### Cursor position calculation
+
+The function calculates cursor position relative to the image:
+
+```javascript
+function getCursorPos(e) {
+  var a, x = 0, y = 0;
+  e = e || window.event;
+  
+  // Get image position
+  a = img.getBoundingClientRect();
+  
+  // Calculate cursor coordinates relative to image
+  x = e.pageX - a.left;
+  y = e.pageY - a.top;
+  
+  // Account for page scrolling
+  x = x - window.pageXOffset;
+  y = y - window.pageYOffset;
+  
+  return { x: x, y: y };
+}
+```
+
+## Styling the magnifier
+
+The magnifier glass requires CSS styling. Here's a recommended implementation:
+
+```css
+.img-magnifier-glass {
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  width: 150px;
+  height: 150px;
+  background-color: white;
+  pointer-events: none;
+  z-index: 10;
+}
+```
+
+### Customization options
+
+You can customize the magnifier appearance:
+
+```css
+/* Larger magnifier */
+.img-magnifier-glass {
+  width: 200px;
+  height: 200px;
+}
+
+/* Square magnifier */
+.img-magnifier-glass {
+  border-radius: 0;
+}
+
+/* Different border style */
+.img-magnifier-glass {
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+```
+
+## Multiple images
+
+You can enable zoom on multiple images:
+
+```javascript
+import { zoom } from './partials/image-zoom';
+
+// Enable zoom on main product image
+zoom('main-product-image', 3);
+
+// Enable zoom on thumbnail images
+zoom('thumbnail-1', 2.5);
+zoom('thumbnail-2', 2.5);
+zoom('thumbnail-3', 2.5);
+```
+
+## Integration with product galleries
+
+Example integration with a product image gallery:
+
+```javascript
+import { zoom } from './partials/image-zoom';
+
+// Initialize zoom on the main image
+let currentZoom = zoom('product-main-image', 3);
+
+// Update zoom when thumbnail is clicked
+document.querySelectorAll('.product-thumbnail').forEach(thumb => {
+  thumb.addEventListener('click', (e) => {
+    const mainImg = document.getElementById('product-main-image');
+    mainImg.src = e.target.dataset.fullImage;
+    
+    // Re-initialize zoom with new image
+    setTimeout(() => {
+      zoom('product-main-image', 3);
+    }, 100);
+  });
+});
+```
+
+## Performance considerations
+
+### Image quality
+
+For best results, use high-resolution images:
+
+```javascript
+// If zoom level is 3x, image should be at least 3x the display size
+const displayWidth = 600; // pixels
+const zoomLevel = 3;
+const recommendedImageWidth = displayWidth * zoomLevel; // 1800px
+```
+
+### Event throttling
+
+For better performance on lower-end devices, consider throttling the mousemove events:
+
+```javascript
+let throttleTimeout;
+const throttleDelay = 16; // ~60fps
+
+function throttledMoveMagnifier(e) {
+  if (!throttleTimeout) {
+    throttleTimeout = setTimeout(() => {
+      moveMagnifier(e);
+      throttleTimeout = null;
+    }, throttleDelay);
+  }
+}
+```
+
+## Accessibility
+
+The magnifier function prevents default touch behavior to enable smooth zooming:
+
+```javascript
+function moveMagnifier(e) {
+  // Prevent any other actions that may occur when moving over the image
+  e.preventDefault();
+  // ... rest of function
+}
+```
+
+<Note>
+Ensure your images have appropriate `alt` text for screen readers, as the zoom functionality is primarily visual.
+</Note>
+
+## Browser compatibility
+
+The image zoom function uses standard DOM APIs and is compatible with:
+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Mobile browsers (iOS Safari, Chrome Mobile)
+- Touch-enabled devices
+
+## Troubleshooting
+
+### Magnifier not appearing
+
+Ensure the image ID is correct:
+
+```javascript
+// Check if image exists
+const img = document.getElementById('product-image');
+if (img) {
+  zoom('product-image', 3);
+} else {
+  console.error('Image with ID "product-image" not found');
+}
+```
+
+### Magnifier position incorrect
+
+Ensure the parent element has proper positioning:
+
+```css
+.product-image-container {
+  position: relative;
+  display: inline-block;
+}
+```
+
+### Image quality issues
+
+Use higher resolution images:
+
+```html
+<!-- Use srcset for responsive high-resolution images -->
+<img 
+  id="product-image"
+  src="product-1x.jpg" 
+  srcset="product-2x.jpg 2x, product-3x.jpg 3x"
+  alt="Product"
+/>
+```

@@ -1,0 +1,268 @@
+---
+title: Featured products
+description: Showcase featured products in multiple tabbed styles with special highlighting
+---
+
+The featured products component displays products in three distinct visual styles with optional tabs, featured product highlighting, and flexible layouts.
+
+## Available styles
+
+Theme Raed includes three featured product styles:
+
+1. **Style 1** - Split layout with large featured product and tabbed product grid
+2. **Style 2** - Tabbed products with slider or grid display on colored background
+3. **Style 3** - Two-column layout with featured products in each section
+
+## Style 1: Split layout with featured product
+
+Displays a large featured product on the left with a tabbed product grid on the right.
+
+### Component usage
+
+```twig
+{% set component_id='featured-products-style1-' ~ position %}
+<section class="s-block s-block-tabs s-block--special-products container" id="{{ component_id }}">
+  <div class="s-block__title"> 
+    <div class="right-side">
+      <h2>{{ main_product.title }}</h2>
+    </div>
+    {% if items|length > 1 %}
+      <div class="tabs hide-scroll hidden lg:flex">
+        {% for section in items %}
+          <salla-button shape="link"
+            data-target="{{ component_id }}-{{ section.id }}"
+            data-component-id="{{ component_id }}"
+            class="tab-trigger {{ loop.first ? 'is-active' : '' }}">
+            {{ section.title }}
+          </salla-button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="grid grid-cols-1 {{ main_product ? 'lg:grid-cols-2' : '' }} gap-8">
+    {% if main_product %}
+      <div class="flex flex-col">
+        <custom-salla-product-card 
+          shadow-on-hover 
+          product="{{ main_product.product }}" 
+          isSpecial
+        ></custom-salla-product-card>  
+      </div>
+    {% endif %}
+    
+    <div class="flex flex-col">
+      <div class="tabs-wrapper flex flex-1">
+        {% for section in items %}
+          <div id="{{ component_id }}-{{ section.id }}" 
+               class="tabs__item grid-cols-2 {{ loop.first ? 'is-active' : '' }}">
+            {% for product in section.products|slice(0, main_product ? 4 : 8) %}
+              <custom-salla-product-card product="{{ product }}"></custom-salla-product-card>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+### Variables
+
+<ParamField path="items" type="array" required>
+  Array of product sections for tabs
+</ParamField>
+
+<ParamField path="items[].title" type="string">
+  Tab label text (also available as `items[].name`)
+</ParamField>
+
+<ParamField path="items[].type" type="string">
+  Section type: `category`, `most_sales`, `latest_products`, `chosen_products`
+</ParamField>
+
+<ParamField path="items[].products" type="array">
+  Array of product objects to display
+</ParamField>
+
+<ParamField path="items[].limit" type="integer">
+  Number of products to show in this section
+</ParamField>
+
+<ParamField path="items[].id" type="string">
+  Unique identifier for the tab section
+</ParamField>
+
+<ParamField path="main_product" type="object">
+  Featured product displayed prominently
+</ParamField>
+
+<ParamField path="main_product.id" type="string">
+  Product ID
+</ParamField>
+
+<ParamField path="main_product.title" type="string">
+  Offer or section title
+</ParamField>
+
+<ParamField path="main_product.value" type="string">
+  Product name
+</ParamField>
+
+<ParamField path="main_product.product" type="object">
+  Full product object
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Component position on page (starts from zero)
+</ParamField>
+
+## Style 2: Tabbed products with background
+
+Displays tabbed product sections on a colored background with slider or grid layout.
+
+### Component usage
+
+```twig
+{% set component_id='featured-products-style2-' ~ position %}
+{% set is_vertical = theme.settings.get('vertical_fixed_products', true) %}
+<section class="s-block s-block-tabs s-block--tabs-produtcs s-block--full-bg {{ is_slider ? 'as-slider' : 'as-grid' }} bg-gray-100 py-8 sm:py-16" 
+         id="{{ component_id }}">
+  <div class="container">
+    {% if items|length > 1 %}
+      <div class="tabs hide-scroll">
+        {% for section in items %}
+          <salla-button 
+            class="tab-trigger {{ loop.first ? 'is-active' : '' }}"
+            data-target="{{ component_id }}-{{ section.id }}"
+            data-component-id="{{ component_id }}"
+            fill="outline">
+            {{ section.title }}
+          </salla-button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="tabs-wrapper">
+      {% for section in items %}
+        <div id="{{ component_id }}-{{ section.id }}" 
+             class="tabs__item {{ loop.first ? 'is-active' : '' }}">
+          {% if is_slider %}
+            <salla-products-slider 
+              slider-id="section-{{ section.id }}-slider" 
+              source="{{ section.products.source }}"
+              limit="{{ section.products.limit }}"
+              source-value="{{ section.products.source_value|json_encode }}"
+            ></salla-products-slider>
+          {% else %}
+            <salla-products-list  
+              source="{{ section.products.source }}"
+              limit="{{ section.products.limit }}"
+              source-value="{{ section.products.source_value|json_encode }}"
+              {{ is_vertical ? '' : 'horizontal-cards' }}
+            ></salla-products-list>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+```
+
+### Additional variables
+
+<ParamField path="items[].products.source" type="string">
+  Product source for this section
+</ParamField>
+
+<ParamField path="items[].products.source_value" type="array">
+  Array of IDs for product sources
+</ParamField>
+
+<ParamField path="items[].products.limit" type="integer">
+  Number of products to display
+</ParamField>
+
+<ParamField path="is_slider" type="boolean">
+  Display as slider (true) or static grid (false)
+</ParamField>
+
+## Style 3: Two-column featured layout
+
+Displays one or two featured product sections side by side.
+
+### Component usage
+
+```twig
+<section class="s-block s-block--features-products {% if items|length > 1 %}two-cols{% endif %} container">
+  <div class="inner">
+    {% for section in items %}
+      <div>
+        <div class="s-block__title">
+          <h2>{{ section.title }}</h2>
+        </div> 
+        <div class="flex-1 grid lg:grid-cols-2 gap-4 sm:gap-8">
+          {% if section.featured_product %}
+            <custom-salla-product-card 
+              shadow-on-hover 
+              product="{{ section.featured_product }}" 
+              fullImage
+            ></custom-salla-product-card>
+            <div class="grid gap-4 sm:gap-8">
+              {% for product in section.products|slice(0, 3) %}
+                <custom-salla-product-card 
+                  shadow-on-hover 
+                  product="{{ product }}" 
+                  minimal
+                ></custom-salla-product-card>
+              {% endfor %}
+            </div>
+          {% else %}
+            {% for product in section.products %}
+              <custom-salla-product-card 
+                shadow-on-hover 
+                product="{{ product }}" 
+                minimal
+              ></custom-salla-product-card>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+```
+
+### Variables
+
+<ParamField path="items[].featured_product" type="object">
+  Featured product displayed with full image style
+</ParamField>
+
+<ParamField path="items[].special_product.id" type="string">
+  Product ID as string
+</ParamField>
+
+<ParamField path="items[].special_product.title" type="string">
+  Product name
+</ParamField>
+
+<ParamField path="items[].products" type="array">
+  Array of additional products (3 items when featured product exists)
+</ParamField>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-featured-products"
+  ]
+}
+```
+
+<Note>
+  All three styles support product cards with various attributes like `shadow-on-hover`, `isSpecial`, `fullImage`, and `minimal`. See the [Product card](/components/product-card) documentation for details.
+</Note>

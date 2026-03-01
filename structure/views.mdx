@@ -1,0 +1,517 @@
+---
+title: Views folder
+description: Twig templates for components, layouts, and pages in Theme Raed
+---
+
+The `views/` directory contains all Twig templates that define the theme's structure and markup. Templates are organized into three categories: reusable components, master layouts, and page templates.
+
+## Directory structure
+
+```
+src/views/
+├── components/      # Reusable UI components (21 files)
+│   ├── footer/      # Footer component
+│   ├── header/      # Header component
+│   └── home/        # Homepage block components
+├── layouts/         # Master layout templates (2 files)
+│   ├── master.twig  # Main site layout
+│   └── customer.twig # Customer dashboard layout
+└── pages/           # Page templates (21 files)
+    ├── blog/        # Blog listing and single post
+    ├── brands/      # Brand listing and single brand
+    ├── customer/    # Customer account pages
+    ├── product/     # Product pages
+    └── partials/    # Reusable page sections
+```
+
+<Note>
+All templates use the Twig templating engine, which provides powerful features like template inheritance, includes, and filters.
+</Note>
+
+## Layouts
+
+Layout templates define the overall page structure and are extended by page templates.
+
+### master.twig
+
+**Location**: `src/views/layouts/master.twig`
+
+The main layout template used by all public-facing pages.
+
+**Features**:
+- HTML document structure
+- Header and footer inclusion
+- Meta tags and SEO elements
+- Asset loading (CSS, JavaScript)
+- Content block definitions
+- RTL/LTR language support
+- Analytics and tracking scripts
+
+**Block structure**:
+```twig
+<!DOCTYPE html>
+<html>
+<head>
+    {% block meta %}{% endblock %}
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    {% include 'components/header/header.twig' %}
+    
+    {% block content %}
+        {# Page content goes here #}
+    {% endblock %}
+    
+    {% include 'components/footer/footer.twig' %}
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+```
+
+### customer.twig
+
+**Location**: `src/views/layouts/customer.twig`
+
+Specialized layout for customer dashboard pages.
+
+**Features**:
+- Customer navigation sidebar
+- Account menu
+- User profile information
+- Dashboard-specific styling
+
+**Usage**:
+```twig
+{% extends "layouts/customer.twig" %}
+
+{% block customer_content %}
+    {# Customer page content #}
+{% endblock %}
+```
+
+## Components
+
+Reusable UI components used across multiple pages.
+
+### Header component
+
+**Location**: `src/views/components/header/header.twig`
+
+**Features**:
+- Site logo and branding
+- Main navigation menu
+- Search functionality
+- Shopping cart icon with count
+- User account menu
+- Mobile menu toggle
+- Language/currency switchers
+
+**Included in**: All pages via `master.twig`
+
+### Footer component
+
+**Location**: `src/views/components/footer/footer.twig`
+
+**Features**:
+- Footer navigation links
+- Newsletter subscription form
+- Social media links
+- Payment method icons
+- Copyright and legal links
+- Contact information
+
+**Included in**: All pages via `master.twig`
+
+### Home components
+
+The `components/home/` directory contains 21 specialized block components for building custom homepages.
+
+<Accordion title="Product display blocks">
+**Featured products**:
+- `featured-products-style1.twig` - Grid layout with hover effects
+- `featured-products-style2.twig` - Card-based layout
+- `featured-products-style3.twig` - Compact list view
+- `latest-products.twig` - Recent additions
+- `fixed-products.twig` - Pinned/highlighted products
+
+**Product sliders**:
+- `products-slider.twig` - Horizontal scrolling products
+- `slider-products-with-header.twig` - Slider with title section
+
+**Location**: `src/views/components/home/`
+</Accordion>
+
+<Accordion title="Banner and media blocks">
+- `enhanced-slider.twig` - Hero image slider
+- `enhanced-square-banners.twig` - Grid of square promotional banners
+- `fixed-banner.twig` - Static promotional banner
+- `parallax-background.twig` - Parallax scrolling background
+- `photos-slider.twig` - Image gallery slider
+- `square-photos.twig` - Photo grid layout
+- `youtube.twig` - Embedded YouTube video
+
+**Location**: `src/views/components/home/`
+</Accordion>
+
+<Accordion title="Feature and information blocks">
+- `store-features.twig` - Store benefits (free shipping, returns, etc.)
+- `main-links.twig` - Quick navigation links
+- `brands.twig` - Brand logo carousel
+- `testimonials.twig` - Customer reviews slider
+- `custom-testimonials.twig` - Custom testimonial layout
+
+**Location**: `src/views/components/home/`
+</Accordion>
+
+**Example usage**:
+```twig
+{# In index.twig #}
+{% include 'components/home/enhanced-slider.twig' with {
+    'slides': home_slider,
+    'autoplay': true
+} %}
+
+{% include 'components/home/featured-products-style1.twig' with {
+    'products': featured_products,
+    'title': 'Featured Products'
+} %}
+```
+
+## Pages
+
+Page templates define the content structure for each page type.
+
+### Homepage
+
+**Location**: `src/views/pages/index.twig`
+
+The main landing page that includes various home components based on theme settings.
+
+**Structure**:
+```twig
+{% extends "layouts/master.twig" %}
+
+{% block content %}
+    {# Dynamic home blocks rendered here #}
+{% endblock %}
+```
+
+### Shopping cart
+
+**Location**: `src/views/pages/cart.twig`
+
+**Features**:
+- Cart items list with thumbnails
+- Quantity adjustment controls
+- Remove item functionality
+- Coupon code input
+- Cart totals and summary
+- Checkout button
+- Empty cart state
+- Suggested products
+
+### Product pages
+
+<Accordion title="Product listing">
+**Location**: `src/views/pages/product/index.twig`
+
+**Features**:
+- Product grid/list view toggle
+- Filtering sidebar
+- Sorting options
+- Pagination
+- Breadcrumbs
+- Active filters display
+- No results state
+</Accordion>
+
+<Accordion title="Single product">
+**Location**: `src/views/pages/product/single.twig`
+
+**Features**:
+- Product image gallery with zoom
+- Product title and SKU
+- Price display with discounts
+- Product options (color, size, etc.)
+- Quantity selector
+- Add to cart button
+- Add to wishlist button
+- Product tabs (description, specifications, reviews)
+- Related products
+- Social sharing buttons
+- Stock availability indicator
+- Shipping information
+</Accordion>
+
+### Product partials
+
+Reusable sections for product pages:
+
+**Location**: `src/views/pages/partials/product/`
+
+<CodeGroup>
+```twig options.twig
+{# Product option selectors #}
+- Color swatches
+- Size dropdowns
+- Custom option fields
+- Quantity input
+- Option validation
+```
+
+```twig reservations.twig
+{# Product reservation system #}
+- Reservation form
+- Date/time selection
+- Reservation details
+```
+</CodeGroup>
+
+### Blog pages
+
+**Location**: `src/views/pages/blog/`
+
+<Accordion title="Blog index">
+**File**: `index.twig`
+
+**Features**:
+- Blog post grid
+- Post thumbnails
+- Excerpt text
+- Read more links
+- Pagination
+- Categories filter
+</Accordion>
+
+<Accordion title="Single blog post">
+**File**: `single.twig`
+
+**Features**:
+- Post title and metadata
+- Featured image
+- Full content
+- Author information
+- Share buttons
+- Related posts
+- Comments section
+</Accordion>
+
+### Brand pages
+
+**Location**: `src/views/pages/brands/`
+
+<Accordion title="Brand listing">
+**File**: `index.twig`
+
+Grid display of all brands with logos and links.
+</Accordion>
+
+<Accordion title="Single brand">
+**File**: `single.twig`
+
+Brand information and product listing for specific brand.
+</Accordion>
+
+### Customer pages
+
+Account management pages in the customer dashboard.
+
+**Location**: `src/views/pages/customer/`
+
+<Accordion title="Profile management">
+**File**: `profile.twig`
+
+**Features**:
+- Personal information form
+- Email and mobile number
+- Password change
+- Profile picture upload
+- Shipping addresses management
+- Default address selection
+</Accordion>
+
+<Accordion title="Order history">
+**Location**: `customer/orders/`
+
+**Files**:
+- `index.twig` - Order list with status
+- `single.twig` - Order details and tracking
+
+**Features**:
+- Order number and date
+- Order status badge
+- Product list
+- Shipping information
+- Payment details
+- Invoice download
+- Order tracking
+- Review products
+</Accordion>
+
+<Accordion title="Notifications">
+**File**: `notifications.twig`
+
+User notification center showing:
+- Order updates
+- Promotional messages
+- System notifications
+- Mark as read functionality
+</Accordion>
+
+<Accordion title="Wishlist">
+**File**: `wishlist.twig`
+
+**Features**:
+- Saved product grid
+- Quick add to cart
+- Remove from wishlist
+- Empty state message
+</Accordion>
+
+<Accordion title="Wallet">
+**File**: `wallet.twig`
+
+**Features**:
+- Wallet balance display
+- Transaction history
+- Add funds functionality
+</Accordion>
+
+### Other pages
+
+<Accordion title="Landing page builder">
+**File**: `landing-page.twig`
+
+**Location**: `src/views/pages/landing-page.twig`
+
+Custom landing page template with flexible block system.
+</Accordion>
+
+<Accordion title="Loyalty program">
+**File**: `loyalty.twig`
+
+**Location**: `src/views/pages/loyalty.twig`
+
+**Features**:
+- Points balance
+- Tier status
+- Rewards catalog
+- Points history
+- Redemption options
+</Accordion>
+
+<Accordion title="Testimonials">
+**File**: `testimonials.twig`
+
+**Location**: `src/views/pages/testimonials.twig`
+
+Standalone page for customer reviews and testimonials.
+</Accordion>
+
+<Accordion title="Thank you page">
+**File**: `thank-you.twig`
+
+**Location**: `src/views/pages/thank-you.twig`
+
+**Features**:
+- Order confirmation message
+- Order number
+- Next steps information
+- Continue shopping button
+- Order summary
+</Accordion>
+
+<Accordion title="Static page">
+**File**: `page-single.twig`
+
+**Location**: `src/views/pages/page-single.twig`
+
+Template for static content pages (About, Terms, Privacy, etc.).
+</Accordion>
+
+## Template inheritance
+
+Theme Raed uses Twig's template inheritance for maintainable code:
+
+```twig
+{# Child template extends parent #}
+{% extends "layouts/master.twig" %}
+
+{# Override specific blocks #}
+{% block meta %}
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.description }}">
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page.title }}</h1>
+    {{ page.content }}
+{% endblock %}
+```
+
+## Including components
+
+Components can be included and passed data:
+
+```twig
+{# Include without data #}
+{% include 'components/header/header.twig' %}
+
+{# Include with data #}
+{% include 'components/home/products-slider.twig' with {
+    'products': latest_products,
+    'title': 'New Arrivals',
+    'autoplay': true
+} %}
+
+{# Include only if exists #}
+{% include 'optional-component.twig' ignore missing %}
+```
+
+## Twig filters and functions
+
+Theme Raed provides custom Twig extensions:
+
+```twig
+{# Asset URLs #}
+{{ 'images/logo.png' | asset }}
+
+{# Translations #}
+{{ 'pages.cart.cart_options' | trans }}
+
+{# Number formatting #}
+{{ product.price | currency }}
+
+{# Date formatting #}
+{{ order.date | date('Y-m-d') }}
+```
+
+## Best practices
+
+<Note>
+**Keep templates focused**: Each template should have a single responsibility. Use includes for reusable sections.
+</Note>
+
+<Note>
+**Use semantic HTML**: Structure templates with proper HTML5 elements for accessibility and SEO.
+</Note>
+
+<Note>
+**Leverage template inheritance**: Extend layouts rather than duplicating code across templates.
+</Note>
+
+<Note>
+**Pass explicit data**: When including components, pass required data explicitly for clarity.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Assets folder" icon="folder" href="/structure/assets">
+    Explore JavaScript and SCSS organization
+  </Card>
+  <Card title="Locales" icon="language" href="/structure/locales">
+    Learn about translation system
+  </Card>
+</CardGroup>

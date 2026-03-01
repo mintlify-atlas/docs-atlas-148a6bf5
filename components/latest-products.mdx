@@ -1,0 +1,95 @@
+---
+title: Latest products
+description: Display the most recently added products to your store
+---
+
+The latest products component shows the newest products added to your store in a simple, clean layout.
+
+## Component usage
+
+Add latest products section to your home page:
+
+```twig
+<section class="s-block s-block--latest-products container mt-6 sm:mt-8">
+  <div class="s-block__title">
+    <h2>{{ trans('blocks.home.latest_products') }}</h2>
+  </div>
+  
+  <salla-products-list source="latest"></salla-products-list>
+</section>
+```
+
+## Variables
+
+<ParamField path="products" type="array">
+  Array of product objects (automatically populated from latest products)
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement on the page (starts from zero)
+</ParamField>
+
+## Component attributes
+
+<ParamField path="source" type="string">
+  Set to `"latest"` to automatically fetch and display the newest products
+</ParamField>
+
+## Example with custom title
+
+```twig
+<section class="s-block s-block--latest-products container mt-6 sm:mt-8">
+  <div class="s-block__title">
+    <h2>New Arrivals</h2>
+  </div>
+  
+  <salla-products-list source="latest"></salla-products-list>
+</section>
+```
+
+## Example with limit
+
+To control the number of products displayed, add the `limit` attribute:
+
+```twig
+<section class="s-block s-block--latest-products container mt-6 sm:mt-8">
+  <div class="s-block__title">
+    <h2>{{ trans('blocks.home.latest_products') }}</h2>
+  </div>
+  
+  <salla-products-list 
+    source="latest" 
+    limit="12"
+  ></salla-products-list>
+</section>
+```
+
+## Translation key
+
+The component uses the translation key `blocks.home.latest_products` for the default heading:
+
+- Arabic: "أحدث المنتجات"
+- English: "Latest Products"
+
+## Features
+
+The component automatically:
+
+- Fetches the most recently added products
+- Displays products in a responsive grid
+- Adapts layout for mobile and desktop
+- Shows product cards with standard styling
+- Includes product images, names, prices, and add to cart buttons
+
+<Note>
+  This is a simple, static component without tabs or sliders. For more advanced layouts, consider using the [Featured products](/components/featured-products) or [Product slider](/components/product-slider) components.
+</Note>
+
+## Styling
+
+The component includes:
+
+- Top margin spacing: `mt-6 sm:mt-8`
+- Container wrapper for proper alignment
+- Section title with standard heading style
+- Product grid with automatic responsive columns

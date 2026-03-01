@@ -1,0 +1,53 @@
+---
+title: Home page
+description: Documentation for the home page template (index.twig)
+---
+
+The home page is the main landing page of your store, rendered by the `index.twig` template.
+
+## Template location
+
+```
+src/views/pages/index.twig
+```
+
+## Page structure
+
+The home page uses a simple component-based structure:
+
+```twig
+{% extends "layouts.master" %}
+{% block content %}
+    {% component home %}
+{% endblock %}
+{% block scripts %}
+    <script defer src="{{ 'home.js' | asset }}"></script>
+{% endblock %}
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page` | object | Page object |
+| `page.title` | string | Page title (could be HTML) |
+| `page.slug` | string | Page slug (e.g., "cat.show") |
+
+## Usage example
+
+```twig
+<h1>{{ page.title }}</h1>
+<p>Welcome to {{ page.slug }}</p>
+```
+
+## Home component
+
+The home page renders using the `{% component home %}` tag, which displays the configured home page sections from your store's theme settings.
+
+## JavaScript assets
+
+The page loads `home.js` for interactive functionality like sliders, product carousels, and other dynamic elements.
+
+<Note>
+The home page content is primarily controlled through the home component, which allows merchants to customize sections without editing template files.
+</Note>

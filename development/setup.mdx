@@ -1,0 +1,152 @@
+---
+title: Development environment setup
+description: Set up your local development environment for Theme Raed
+---
+
+This guide walks you through setting up your development environment to work with Theme Raed.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- Basic understanding of HTML, CSS, JavaScript, and the [Twig Template Engine](https://twig.symfony.com/)
+- Partner account at [Salla Partners Portal](https://salla.partners/) to create a demo store
+- A [GitHub](https://github.com) account for theme syncing
+- [Node.js](https://nodejs.org/) installed on your machine
+- [pnpm](https://pnpm.io/) package manager (required)
+
+<Note>
+Theme Raed enforces the use of pnpm as the package manager. The `preinstall` script will prevent installation with npm or yarn.
+</Note>
+
+## Installation
+
+Theme Raed can be installed in two ways:
+
+<Steps>
+  <Step title="Install Salla CLI">
+    Install the Salla CLI globally using npm:
+    
+    ```bash
+    npm install -g @salla.sa/cli
+    ```
+  </Step>
+
+  <Step title="Create a new theme">
+    You can create a theme either through the [Salla Partners Portal](https://salla.partners/) or via the CLI:
+    
+    ```bash
+    salla theme create
+    ```
+    
+    This will install the Twilight Engine along with Theme Raed as the default starter theme.
+  </Step>
+
+  <Step title="Install dependencies">
+    Navigate to your theme directory and install the required packages:
+    
+    ```bash
+    cd your-theme-directory
+    pnpm install
+    ```
+  </Step>
+</Steps>
+
+## Directory structure
+
+Theme Raed follows a structured organization:
+
+```
++---src
+    +---assets
+    |   +---images      # Theme images and graphics
+    |   +---js          # JavaScript files
+    |   +---styles      # SCSS/CSS stylesheets
+    +---locales
+    |       ar.json     # Arabic translations
+    |       en.json     # English translations
+    +---views
+        +---components  # Reusable UI components
+        +---layouts     # Layout templates
+        +---pages       # Page templates
+        +---partials    # Partial templates
+```
+
+### Key directories
+
+- **assets/js**: Contains all JavaScript modules, including page-specific scripts and reusable components
+- **assets/styles**: SCSS files with Tailwind CSS configuration
+- **views/components**: Twig components for theme features and custom components
+- **views/pages**: Main page templates (cart, product, blog, etc.)
+- **views/layouts**: Master layout template that wraps page content
+
+## Configuration files
+
+Theme Raed includes several configuration files:
+
+### package.json
+
+Defines project dependencies and npm scripts:
+
+```json
+{
+  "name": "theme-raed",
+  "version": "1.0.3",
+  "scripts": {
+    "production": "webpack --mode production",
+    "development": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
+  }
+}
+```
+
+### twilight.json
+
+Configures theme metadata, features, and components. This file defines:
+
+- Theme name and repository
+- Supported features (mega-menu, fonts, color, breadcrumb, etc.)
+- Custom components and their settings
+- Theme settings exposed in the Salla Partners Portal
+
+<Warning>
+Do not modify the `twilight.json` file structure unless you understand how it affects theme functionality and the Partners Portal interface.
+</Warning>
+
+### tailwind.config.js
+
+Customizes Tailwind CSS for the theme:
+
+```javascript
+module.exports = {
+  content: [
+    "src/views/**/*.twig",
+    "src/assets/js/**/*.js",
+    'node_modules/@salla.sa/twilight-tailwind-theme/safe-list-css.txt',
+  ],
+  darkMode: 'class',
+  plugins: [
+    require('@salla.sa/twilight-tailwind-theme'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
+  ],
+}
+```
+
+### webpack.config.js
+
+Handles asset bundling and compilation. See the [Build process](/development/build) page for details.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Preview mode" icon="eye" href="/development/preview">
+    Learn how to preview your theme during development
+  </Card>
+  <Card title="Build process" icon="hammer" href="/development/build">
+    Understand the build system and webpack configuration
+  </Card>
+  <Card title="Customization" icon="palette" href="/development/customization">
+    Customize the theme to match your brand
+  </Card>
+</CardGroup>

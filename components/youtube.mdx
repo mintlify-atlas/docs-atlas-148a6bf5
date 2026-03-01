@@ -1,0 +1,79 @@
+---
+title: YouTube
+description: Embed YouTube videos with lazy loading for optimal performance
+---
+
+The YouTube component embeds YouTube videos using lite-youtube for fast loading and better performance.
+
+## Component usage
+
+Add a YouTube video to your home page:
+
+```twig
+<section class="s-block s-block--video mt-16">
+  <div class="container">
+    <div class="videoWrapper">
+      <lite-youtube videoid="{{ youtube_id }}" params="rel=0"></lite-youtube>
+    </div>
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="youtube_id" type="string" required>
+  The YouTube video ID found in the video URL. For example, in `https://www.youtube.com/watch?v=dQw4w9WgXcQ`, the ID is `dQw4w9WgXcQ`
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for the component placement on the page (starts from zero)
+</ParamField>
+
+## Example
+
+```twig
+<section class="s-block s-block--video mt-16">
+  <div class="container">
+    <div class="videoWrapper">
+      <lite-youtube 
+        videoid="dQw4w9WgXcQ" 
+        params="rel=0"
+      ></lite-youtube>
+    </div>
+  </div>
+</section>
+```
+
+## Lite YouTube element
+
+The component uses the `lite-youtube` custom element which provides:
+
+- Lazy loading: Video loads only when clicked
+- Fast initial page load: No heavy YouTube iframe until needed
+- Thumbnail preview: Shows video thumbnail before loading
+- Reduced data usage: Video only downloads when user initiates playback
+
+## Parameters
+
+The `params` attribute accepts YouTube embed parameters:
+
+- `rel=0` - Disables related videos from other channels at the end
+- `autoplay=1` - Enables autoplay (requires user interaction)
+- `controls=0` - Hides video controls
+- `start=30` - Starts video at specified second
+
+<Note>
+  The lite-youtube component significantly improves page load performance by deferring the YouTube iframe until the user clicks play.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-youtube"
+  ]
+}
+```

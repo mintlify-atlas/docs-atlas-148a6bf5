@@ -1,0 +1,408 @@
+---
+title: Localization files
+description: Translation system supporting Arabic and English in Theme Raed
+---
+
+Theme Raed includes a robust localization system that supports bilingual e-commerce stores. Translation files are structured JSON documents that contain all user-facing text, organized by context and usage.
+
+## Directory structure
+
+```
+src/locales/
+├── ar.json          # Arabic (العربية) translations
+└── en.json          # English translations
+```
+
+<Note>
+The theme supports both RTL (Right-to-Left) for Arabic and LTR (Left-to-Right) for English, with appropriate styling adjustments for each direction.
+</Note>
+
+## File structure
+
+Locale files follow a hierarchical JSON structure organized by scope:
+
+```json
+{
+  "blocks": {
+    "header": { ... },
+    "footer": { ... },
+    "appBanner": { ... }
+  },
+  "pages": {
+    "cart": { ... },
+    "order": { ... },
+    "product": { ... }
+  },
+  "common": {
+    // Shared translations
+  }
+}
+```
+
+### Top-level keys
+
+<Accordion title="blocks">
+Translations for reusable components like header, footer, and promotional banners.
+
+**Usage**: Text that appears in components shared across multiple pages.
+
+**Examples**:
+- Navigation menu items
+- Footer links
+- App download banners
+- Search placeholders
+- Cart button labels
+</Accordion>
+
+<Accordion title="pages">
+Page-specific translations organized by page type.
+
+**Usage**: Content that only appears on specific pages.
+
+**Examples**:
+- Cart page messages
+- Order details labels
+- Product page buttons
+- Customer dashboard text
+- Checkout form labels
+</Accordion>
+
+<Accordion title="common">
+Shared translations used across multiple contexts.
+
+**Usage**: Generic text that doesn't belong to a specific component or page.
+
+**Examples**:
+- Button labels (Save, Cancel, Delete)
+- Status messages (Success, Error)
+- Form validation messages
+- Date and time formats
+- Common phrases
+</Accordion>
+
+## English translations
+
+**Location**: `src/locales/en.json`
+
+### Structure example
+
+```json
+{
+  "blocks": {
+    "header": {
+      "cart": "Cart"
+    },
+    "appBanner": {
+      "download_now": "download now"
+    }
+  },
+  "pages": {
+    "cart": {
+      "cart_options": "Cart Options"
+    },
+    "order": {
+      "can_edit_or_delete_your_review_within": "You can edit or delete your review within",
+      "edit_period_ended": "The period to edit the review has ended",
+      "delete_period_ended": "The period to delete the review has ended",
+      "days_since_added": "days since it was added",
+      "option_name": "Option name",
+      "option_content": "Content"
+    }
+  },
+  "common": {
+    "bank_offer_sub_title_multiple": "Pay for your purchases via one of the following bank cards and get the specified discount",
+    "bank_offer_sub_title_single": "Pay for your purchases via :bank_name bank card and get discount"
+  }
+}
+```
+
+### Key features
+
+- **Sentence case**: English translations use standard sentence capitalization
+- **Natural phrasing**: Text reads naturally for native English speakers
+- **Placeholder support**: Variables like `:bank_name` for dynamic content
+
+## Arabic translations
+
+**Location**: `src/locales/ar.json`
+
+### Structure example
+
+```json
+{
+  "blocks": {
+    "header": {
+      "cart": "السلة"
+    },
+    "appBanner": {
+      "download_now": "حمله الان"
+    }
+  },
+  "pages": {
+    "cart": {
+      "cart_options": "خيارات السلة"
+    },
+    "order": {
+      "can_edit_or_delete_your_review_within": "يمكنك تعديل أو حذف تقييمك خلال",
+      "edit_period_ended": "تم انتهاء المدة المحددة لتعديل التقييم",
+      "delete_period_ended": "تم انتهاء المدة المحددة لحذف التقييم",
+      "days_since_added": "أيام من إضافته",
+      "option_name": "الخيار",
+      "option_content": "المحتوى"
+    }
+  },
+  "common": {
+    "bank_offer_sub_title_multiple": "ادفع قيمة مشترياتك عبر أحد البطاقات البنكة التالية واحصل على الخصم المحدد",
+    "bank_offer_sub_title_single": "ادفع قيمة مشترياتك عبر أحد بطاقات بنك :bank_name واحصل على خصم بنسبة "
+  }
+}
+```
+
+### Key features
+
+- **RTL support**: Arabic text flows right-to-left
+- **Cultural adaptation**: Translations adapted for Arabic-speaking audiences
+- **Placeholder support**: Same variable system as English
+
+## Using translations in templates
+
+Translations are accessed in Twig templates using the `trans` filter:
+
+### Basic usage
+
+```twig
+{# Access nested translation key #}
+<button>{{ 'blocks.header.cart' | trans }}</button>
+{# Output (EN): Cart #}
+{# Output (AR): السلة #}
+
+{# Page-specific translation #}
+<h2>{{ 'pages.cart.cart_options' | trans }}</h2>
+{# Output (EN): Cart Options #}
+{# Output (AR): خيارات السلة #}
+```
+
+### With placeholders
+
+```twig
+{# Translation with variable #}
+{{ 'common.bank_offer_sub_title_single' | trans({'bank_name': 'Alrajhi'}) }}
+{# Output (EN): Pay for your purchases via Alrajhi bank card and get discount #}
+{# Output (AR): ادفع قيمة مشترياتك عبر أحد بطاقات بنك Alrajhi واحصل على خصم بنسبة #}
+```
+
+### Fallback behavior
+
+```twig
+{# If key doesn't exist, returns the key itself #}
+{{ 'non.existent.key' | trans }}
+{# Output: non.existent.key #}
+```
+
+## Translation key naming
+
+Follow these conventions when adding new translations:
+
+<CodeGroup>
+```json blocks
+{
+  "blocks": {
+    "componentName": {
+      "descriptive_key": "Translation text"
+    }
+  }
+}
+```
+
+```json pages
+{
+  "pages": {
+    "pageName": {
+      "specific_action_or_label": "Translation text"
+    }
+  }
+}
+```
+
+```json common
+{
+  "common": {
+    "generic_message_or_label": "Translation text"
+  }
+}
+```
+</CodeGroup>
+
+### Naming guidelines
+
+- Use `snake_case` for all keys
+- Be descriptive: `add_to_cart` not `add`
+- Group related keys under parent objects
+- Use present tense for actions: `edit_profile` not `edited_profile`
+- Include context in ambiguous cases: `cart_total` vs `order_total`
+
+## Adding new translations
+
+To add custom translations:
+
+1. **Identify the scope**:
+   - Component-specific → `blocks`
+   - Page-specific → `pages`  
+   - Generic → `common`
+
+2. **Add to both locale files**:
+
+```json
+// en.json
+{
+  "pages": {
+    "checkout": {
+      "payment_method": "Payment Method"
+    }
+  }
+}
+
+// ar.json
+{
+  "pages": {
+    "checkout": {
+      "payment_method": "طريقة الدفع"
+    }
+  }
+}
+```
+
+3. **Use in templates**:
+
+```twig
+<label>{{ 'pages.checkout.payment_method' | trans }}</label>
+```
+
+<Note>
+Always add translations to **both** `en.json` and `ar.json` to maintain bilingual support. Missing translations will display the translation key instead of text.
+</Note>
+
+## Common translation categories
+
+### Order and review management
+
+The order page includes time-sensitive actions:
+
+```json
+{
+  "pages": {
+    "order": {
+      "can_edit_or_delete_your_review_within": "...",
+      "edit_period_ended": "...",
+      "delete_period_ended": "...",
+      "days_since_added": "..."
+    }
+  }
+}
+```
+
+**Usage**: Review management on order details page
+
+### Product options
+
+Customizable product attributes:
+
+```json
+{
+  "pages": {
+    "order": {
+      "option_name": "...",
+      "option_content": "..."
+    }
+  }
+}
+```
+
+**Usage**: Displaying selected product options in order summary
+
+### Bank offers and promotions
+
+Payment promotions with dynamic content:
+
+```json
+{
+  "common": {
+    "bank_offer_sub_title_multiple": "...",
+    "bank_offer_sub_title_single": "..."
+  }
+}
+```
+
+**Usage**: Checkout page promotional messages
+
+## RTL/LTR considerations
+
+### Automatic direction handling
+
+The theme automatically applies the correct text direction:
+
+```html
+<!-- Arabic (RTL) -->
+<html dir="rtl" lang="ar">
+
+<!-- English (LTR) -->
+<html dir="ltr" lang="en">
+```
+
+### Style adjustments
+
+Separate SCSS files handle directional styling:
+
+- `src/assets/styles/02-generic/rtl.scss` - RTL-specific styles
+- `src/assets/styles/02-generic/ltr.scss` - LTR-specific styles
+
+### Number and date formatting
+
+Locale-aware formatting is handled by Salla platform:
+
+```twig
+{# Automatically formatted based on locale #}
+{{ product.price | currency }}
+{{ order.date | date('medium') }}
+```
+
+## Best practices
+
+<Note>
+**Keep keys synchronized**: Ensure both `en.json` and `ar.json` have matching key structures, even if some translations are the same.
+</Note>
+
+<Note>
+**Use descriptive keys**: Translation keys should be self-documenting. `edit_profile_button` is better than `btn_1`.
+</Note>
+
+<Note>
+**Group by context**: Organize translations logically by component or page to make them easier to find and maintain.
+</Note>
+
+<Note>
+**Test both languages**: Always preview your changes in both Arabic and English to ensure proper rendering and layout.
+</Note>
+
+<Note>
+**Handle pluralization**: For count-dependent text, use separate keys or placeholder logic to handle singular/plural forms correctly in both languages.
+</Note>
+
+## Translation workflow
+
+1. **Development**: Add English translations first
+2. **Translation**: Get professional Arabic translations
+3. **Integration**: Add to both locale files
+4. **Testing**: Test in both languages on all devices
+5. **Review**: Check text length and layout in both directions
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Customization" icon="palette" href="/customize/overview">
+    Learn how to customize the theme
+  </Card>
+  <Card title="Assets folder" icon="folder" href="/structure/assets">
+    Explore JavaScript and SCSS files
+  </Card>
+</CardGroup>

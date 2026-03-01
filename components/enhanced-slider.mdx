@@ -1,0 +1,139 @@
+---
+title: Enhanced slider
+description: Full-width animated image slider with overlay text and parallax effects
+---
+
+## Overview
+
+The enhanced slider displays full-width animated images with overlay text, perfect for highlighting products, promotions, or brand messaging. It includes parallax effects for titles and descriptions.
+
+<Note>
+  This component is not suitable for displaying banners. Use the standard "Animated images" component instead for full banner display.
+</Note>
+
+## Location
+
+```
+src/views/components/home/enhanced-slider.twig
+```
+
+## Component path
+
+```
+home.enhanced-slider
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `186b3f4f-25cf-4d3c-abca-cef7eed6f0ab`.
+
+### Available fields
+
+<ParamField path="slides" type="collection" required>
+  Collection of slides to display (min: 1, max: 10)
+</ParamField>
+
+<ParamField path="slides[].image" type="string" format="image" required>
+  Slide image URL. Recommended size: 900×600 pixels
+</ParamField>
+
+<ParamField path="slides[].title" type="string" maxLength={100}>
+  Main heading displayed on the image with prominent size. Includes entrance animation for visual appeal.
+</ParamField>
+
+<ParamField path="slides[].description" type="string" format="textarea" maxLength={255}>
+  Additional text displayed below the title with smaller font. Includes entrance animation.
+</ParamField>
+
+<ParamField path="slides[].without_overlay" type="boolean" default={false}>
+  Remove the dark overlay layer from the image
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.enhanced-slider' %}
+```
+
+## Template structure
+
+```twig
+<section class="s-block s-block--hero-slider s-block--full-bg wide-placeholder"> 
+  <salla-slider 
+    id="main-slider-{{ position }}"
+    auto-play
+    static-when-single
+    slider-config='{"lazy":"false"}'
+    {{ component.slides|length > 1 ? '' : 'show-controls="false"' }}
+    type="fullwidth">
+    <div slot="items">
+      {% for slide in component.slides %}
+        <div class="swiper-slide w-full min-h-[300px] lg:min-h-[528px] bg-dark relative">
+          <div style="background-image: url({{ slide.image }});" 
+               class="{{ slide.without_overlay ? '' : 'overlay-bg' }} bg-cover bg-center absolute inset-0">
+          </div>
+          <div class="flex-center container pb-16 sm:pb-0 home-slider__content relative h-full">
+            <div class="w-4/6 text-center md:w-7/12 lg:w-5/12 text-white">
+              <h2 data-swiper-parallax="-500" 
+                  class="lg:text-title-size font-bold leading-tight mb-4">
+                {{ slide.title }}
+              </h2>
+              <p data-swiper-parallax="-300" class="line-clamp-2 description">
+                {{ slide.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </salla-slider>
+</section>
+```
+
+## Features
+
+### Parallax effects
+
+The slider uses Swiper's parallax feature:
+- Title: `data-swiper-parallax="-500"`
+- Description: `data-swiper-parallax="-300"`
+
+### Responsive design
+
+- Mobile: Minimum height of 300px
+- Desktop: Minimum height of 528px
+- Content width adjusts from 66% on mobile to 42% on large screens
+
+### Overlay control
+
+The `without_overlay` option controls the dark overlay:
+
+```twig
+class="{{ slide.without_overlay ? '' : 'overlay-bg' }}"
+```
+
+### Auto-play behavior
+
+The slider includes:
+- `auto-play`: Automatic slide progression
+- `static-when-single`: Disables animation when only one slide exists
+- Controls are hidden when there's only one slide
+
+## Styling
+
+The component uses these main CSS classes:
+
+- `.s-block--hero-slider`: Main container styling
+- `.s-block--full-bg`: Full background treatment
+- `.overlay-bg`: Dark overlay for text readability
+- `.home-slider__content`: Content positioning and spacing
+
+## Accessibility
+
+- Uses semantic `<h2>` tags for slide titles
+- Includes proper alt text for images
+- Maintains text contrast with overlay
+
+<Tip>
+  For best results, ensure your images are high quality and properly sized at 900×600 pixels. The overlay helps maintain text readability across different images.
+</Tip>

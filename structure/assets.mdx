@@ -1,0 +1,363 @@
+---
+title: Assets folder
+description: Images, JavaScript modules, and SCSS stylesheets that power Theme Raed
+---
+
+The `assets/` directory contains all static resources required by the theme, including images, JavaScript functionality, and SCSS stylesheets. These assets are processed during build time and optimized for production.
+
+## Directory structure
+
+```
+src/assets/
+├── images/          # Theme images and icons
+├── js/              # JavaScript functionality
+│   ├── partials/    # Reusable JS modules
+│   └── *.js         # Page-specific scripts
+└── styles/          # SCSS stylesheets
+    ├── 01-settings/ # Configuration
+    ├── 02-generic/  # Base styles
+    ├── 03-elements/ # HTML elements
+    ├── 04-components/ # Components
+    └── 05-utilities/  # Utilities
+```
+
+## Images
+
+The `images/` directory contains essential theme graphics:
+
+```
+images/
+├── check.svg              # Checkmark icon
+├── delivery-bro.svg       # Delivery illustration
+├── placeholder.png        # Default image placeholder
+├── s-empty.png           # Empty state (default)
+├── s-empty-small.png     # Empty state (small)
+├── s-empty-square.png    # Empty state (square)
+└── s-empty-wide.png      # Empty state (wide)
+```
+
+<Note>
+Placeholder images are used during lazy loading and for empty states throughout the theme. Multiple aspect ratios are provided to maintain proper layout during loading.
+</Note>
+
+## JavaScript
+
+Theme Raed uses vanilla JavaScript with ES6 modules for all interactive functionality.
+
+### Core JavaScript files
+
+<Accordion title="app.js - Main application controller">
+The central application class that initializes all theme functionality.
+
+**Location**: `src/assets/js/app.js`
+
+**Key responsibilities**:
+- Mobile menu initialization using mmenu-light
+- Sticky header behavior
+- Add to cart functionality
+- Dropdown and modal management
+- Collapse component handling
+- Wishlist event listeners
+- Notification system
+
+**Dependencies**:
+```javascript
+import MobileMenu from 'mmenu-light';
+import Swal from 'sweetalert2';
+import Anime from './partials/anime';
+import initTootTip from './partials/tooltip';
+import AppHelpers from "./app-helpers";
+```
+
+**Initialization**:
+```javascript
+class App extends AppHelpers {
+  constructor() {
+    super();
+    window.app = this;
+  }
+
+  loadTheApp() {
+    this.commonThings();
+    this.initiateNotifier();
+    this.initiateMobileMenu();
+    // ... more initialization
+  }
+}
+```
+</Accordion>
+
+<Accordion title="app-helpers.js - Utility functions">
+Helper methods used throughout the application.
+
+**Location**: `src/assets/js/app-helpers.js`
+
+Provides common utility functions for:
+- DOM manipulation
+- Event handling
+- API requests
+- Data formatting
+- Common UI interactions
+</Accordion>
+
+<Accordion title="base-page.js - Base page class">
+Base class for page-specific JavaScript functionality.
+
+**Location**: `src/assets/js/base-page.js`
+
+Provides a foundation for page controllers to extend from.
+</Accordion>
+
+### Page-specific JavaScript
+
+Each major page type has its own JavaScript controller:
+
+| File | Purpose | Location |
+|------|---------|----------|
+| `home.js` | Homepage interactive blocks | `src/assets/js/home.js` |
+| `cart.js` | Shopping cart functionality | `src/assets/js/cart.js` |
+| `product.js` | Single product page features | `src/assets/js/product.js` |
+| `products.js` | Product listing and filters | `src/assets/js/products.js` |
+| `blog.js` | Blog functionality | `src/assets/js/blog.js` |
+| `brands.js` | Brand listing page | `src/assets/js/brands.js` |
+| `order.js` | Order details and tracking | `src/assets/js/order.js` |
+| `wishlist.js` | Wishlist management | `src/assets/js/wishlist.js` |
+| `loyalty.js` | Loyalty program features | `src/assets/js/loyalty.js` |
+| `testimonials.js` | Testimonials display | `src/assets/js/testimonials.js` |
+| `thankyou.js` | Order confirmation page | `src/assets/js/thankyou.js` |
+| `twilight.js` | Twilight mode integration | `src/assets/js/twilight.js` |
+
+### JavaScript partials
+
+Reusable modules in `js/partials/`:
+
+<CodeGroup>
+```javascript partials/anime.js
+// Animation utilities
+// Handles scroll animations and transitions
+```
+
+```javascript partials/tooltip.js
+// Tooltip initialization and management
+// Provides hover tooltips throughout the theme
+```
+
+```javascript partials/main-menu.js
+// Main navigation menu functionality
+// Handles desktop menu interactions
+```
+
+```javascript partials/product-card.js
+// Product card component logic
+// Quick view, add to cart from listing
+```
+
+```javascript partials/add-product-toast.js
+// Add to cart notification
+// Toast message when product added
+```
+
+```javascript partials/image-zoom.js
+// Product image zoom functionality
+// Magnifying glass effect on product images
+```
+
+```javascript partials/wishlist-card.js
+// Wishlist item management
+// Add/remove from wishlist UI
+```
+
+```javascript partials/validate-product-options.js
+// Product option validation
+// Ensures required options are selected
+```
+
+```javascript partials/digital-files.js
+// Digital product file handling
+// Download and access digital products
+```
+</CodeGroup>
+
+## Styles
+
+Theme Raed uses SCSS with Tailwind CSS, following the ITCSS architecture for scalable and maintainable styles.
+
+### Main stylesheet
+
+**Location**: `src/assets/styles/app.scss`
+
+The main SCSS file imports all style modules in order:
+
+```scss
+/*
+ * IMPORTANT NOTE: Theme based on Tailwindcss but for the purpose of 
+ * simplifying the DOM we use tailwind classes with @apply directive 
+ * in the SCSS files
+ */
+
+// Settings layer
+@import '01-settings/tailwind';
+@import '01-settings/fonts';
+@import '01-settings/global';
+@import '01-settings/breakpoints';
+
+// Generic layer
+@import '02-generic/reset';
+@import '02-generic/common';
+@import '02-generic/animations';
+// ... more imports
+```
+
+<Note>
+The theme uses Tailwind's `@apply` directive to keep HTML templates clean while maintaining the utility-first approach in SCSS files.
+</Note>
+
+### 01-settings: Configuration
+
+Global configuration and variables:
+
+<Accordion title="tailwind.scss">
+Imports Tailwind CSS base, components, and utilities.
+
+```scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+</Accordion>
+
+<Accordion title="fonts.scss">
+Font family definitions and custom font imports.
+
+Defines typography used throughout the theme.
+</Accordion>
+
+<Accordion title="global.scss">
+Global variables for colors, spacing, and theme configuration.
+
+Contains SCSS variables that control the theme's appearance.
+</Accordion>
+
+<Accordion title="breakpoints.scss">
+Responsive breakpoint mixins for mobile-first design.
+
+Provides mixins like `@include mobile`, `@include tablet`, etc.
+</Accordion>
+
+### 02-generic: Base styles
+
+Foundation styles that apply globally:
+
+| File | Purpose |
+|------|----------|
+| `reset.scss` | CSS reset for consistent cross-browser styling |
+| `common.scss` | Common styles and helper classes |
+| `animations.scss` | Animation keyframes from anime.css library |
+| `lazyload.scss` | Placeholder styles for lazy-loaded images |
+| `rtl.scss` | Right-to-left language adjustments |
+| `ltr.scss` | Left-to-right language adjustments |
+| `tooltip.scss` | Base tooltip component styles |
+| `_mixins.scss` | Reusable SCSS mixins |
+
+### 03-elements: HTML elements
+
+Styling for bare HTML elements:
+
+```scss
+// buttons.scss
+.btn {
+  @apply px-4 py-2 rounded transition-colors;
+  
+  &--primary {
+    @apply bg-primary text-white hover:bg-primary-dark;
+  }
+}
+```
+
+| File | Elements Styled |
+|------|----------------|
+| `buttons.scss` | Button elements and variants |
+| `form.scss` | Input, textarea, select, label |
+| `radio.scss` | Custom radio button styling |
+| `radio-images.scss` | Image-based radio options |
+
+### 04-components: UI components
+
+Component-specific styles organized by feature:
+
+<Accordion title="Layout components">
+- `header.scss` - Header, logo, search bar, cart icon
+- `footer.scss` - Footer links, newsletter, social media
+- `menus.scss` - Main navigation and mobile menu
+- `user-menu.scss` - User account dropdown
+</Accordion>
+
+<Accordion title="Homepage components">
+- `home-blocks.scss` - All homepage block variations
+- `slider.scss` - Image and product sliders
+</Accordion>
+
+<Accordion title="Product components">
+- `product.scss` - Single product page layout and features
+- `filters.scss` - Product filtering sidebar and controls
+- `add-product-toast.scss` - Add to cart notification
+</Accordion>
+
+<Accordion title="User area components">
+- `user-pages.scss` - Profile, orders, notifications styling
+- `loyalty.scss` - Loyalty program UI
+- `gifting.scss` - Gift wrapping and messaging
+</Accordion>
+
+<Accordion title="Other components">
+- `brands.scss` - Brand listing grid
+- `landing-page.scss` - Custom landing page builder
+- `no-content-placeholder.scss` - Empty state displays
+- `virtooal.scss` - Virtual try-on integration
+</Accordion>
+
+### 05-utilities: Helpers
+
+Utility styles and third-party integrations:
+
+| File | Purpose |
+|------|----------|
+| `swal.scss` | Sweet Alert modal customization |
+| `chat-bots.scss` | Chat widget positioning and styling |
+| `safari-fixes.scss` | Safari-specific CSS bug fixes |
+| `font-customization.scss` | Custom font utilities |
+
+## Asset optimization
+
+During the build process:
+
+1. **JavaScript**: Bundled, minified, and tree-shaken
+2. **SCSS**: Compiled to CSS, autoprefixed, minified
+3. **Images**: Optimized and compressed
+4. **Fonts**: Subset and optimized for web delivery
+
+## Using assets in templates
+
+Assets are referenced in Twig templates using the `asset()` function:
+
+```twig
+{# Images #}
+<img src="{{ 'images/placeholder.png' | asset }}" alt="Placeholder">
+
+{# JavaScript #}
+<script src="{{ 'app.js' | asset }}"></script>
+
+{# Styles #}
+<link rel="stylesheet" href="{{ 'app.css' | asset }}">
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Views folder" icon="file" href="/structure/views">
+    Learn about Twig templates and components
+  </Card>
+  <Card title="Customization" icon="palette" href="/customize/overview">
+    Customize styles and add functionality
+  </Card>
+</CardGroup>

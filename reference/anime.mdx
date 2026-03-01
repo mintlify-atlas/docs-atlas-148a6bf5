@@ -1,0 +1,333 @@
+---
+title: Anime
+description: Wrapper class for Anime.js animations in Theme Raed
+---
+
+The `Anime` class provides a fluent interface for creating animations using Anime.js library. It simplifies the process of defining and executing animations with a chainable API.
+
+## Overview
+
+The Anime class wraps the popular [Anime.js](https://animejs.com/) animation library, providing a convenient way to create animations with sensible defaults and a chainable method pattern.
+
+## Constructor
+
+<ParamField path="selector" type="string | HTMLElement | NodeList" required>
+  Target element(s) to animate
+</ParamField>
+
+<ParamField path="options" type="object">
+  Initial animation configuration options
+</ParamField>
+
+```javascript
+import Anime from './partials/anime';
+
+// Create animation with default options
+const animation = new Anime('.product-card');
+
+// Create animation with custom options
+const customAnimation = new Anime('.fade-in', {
+  opacity: [0, 1],
+  duration: 1000
+});
+```
+
+## Default options
+
+The Anime class initializes with these default settings:
+
+```javascript
+{
+  targets: selector,        // The provided selector
+  opacity: [0, 1],         // Fade in from 0 to 1
+  delay: (el, i) => i * 100, // Stagger delay by 100ms
+  duration: 2000           // 2 second duration
+}
+```
+
+## Configuration methods
+
+### setOptions
+
+Merges custom options with current animation options.
+
+<ParamField path="options" type="object" required>
+  Animation options to merge
+</ParamField>
+
+```javascript
+const anime = new Anime('.element');
+anime.setOptions({
+  easing: 'easeInOutQuad',
+  direction: 'alternate'
+});
+```
+
+### duration
+
+Sets the animation duration in milliseconds.
+
+<ParamField path="duration" type="number" required>
+  Duration in milliseconds
+</ParamField>
+
+```javascript
+const anime = new Anime('.box');
+anime.duration(1500); // 1.5 seconds
+```
+
+### delay
+
+Sets the animation delay.
+
+<ParamField path="delay" type="number | function" required>
+  Delay in milliseconds or function returning delay
+</ParamField>
+
+```javascript
+// Fixed delay
+anime.delay(500);
+
+// Staggered delay
+anime.delay((el, i) => i * 200);
+```
+
+### easing
+
+Sets the animation easing function.
+
+<ParamField path="easing" type="string" required>
+  Easing function name (see Anime.js documentation)
+</ParamField>
+
+```javascript
+anime.easing('easeInOutQuad');
+```
+
+## Transform methods
+
+### opacity
+
+Animates element opacity.
+
+<ParamField path="opacity" type="number | array" required>
+  Target opacity value or [from, to] array
+</ParamField>
+
+```javascript
+anime.opacity([0, 1]); // Fade in
+anime.opacity([1, 0]); // Fade out
+```
+
+### scale
+
+Animates element scale.
+
+<ParamField path="scale" type="number | array" required>
+  Scale value or [from, to] array
+</ParamField>
+
+```javascript
+anime.scale([0.5, 1]); // Scale up from 50% to 100%
+```
+
+### translateX
+
+Animates horizontal translation.
+
+<ParamField path="translateX" type="number | string | array" required>
+  Translation value (pixels or percentage)
+</ParamField>
+
+```javascript
+anime.translateX([-100, 0]); // Slide in from left
+anime.translateX(['100%', '0%']); // Slide in from right
+```
+
+### translateY
+
+Animates vertical translation.
+
+<ParamField path="translateY" type="number | string | array" required>
+  Translation value (pixels or percentage)
+</ParamField>
+
+```javascript
+anime.translateY([50, 0]); // Slide up from below
+anime.translateY(['-100%', '0%']); // Slide down from above
+```
+
+## Layout methods
+
+### height
+
+Animates element height.
+
+<ParamField path="height" type="number | string | array" required>
+  Height value or [from, to] array
+</ParamField>
+
+```javascript
+anime.height([0, 'auto']); // Expand height
+```
+
+### margin
+
+Animates element margin.
+
+<ParamField path="margin" type="number | string | array" required>
+  Margin value or [from, to] array
+</ParamField>
+
+```javascript
+anime.margin([0, 20]); // Animate margin
+```
+
+### paddingTop
+
+Animates top padding.
+
+<ParamField path="padding" type="number | string | array" required>
+  Padding value or [from, to] array
+</ParamField>
+
+```javascript
+anime.paddingTop([0, 16]);
+```
+
+### paddingBottom
+
+Animates bottom padding.
+
+<ParamField path="padding" type="number | string | array" required>
+  Padding value or [from, to] array
+</ParamField>
+
+```javascript
+anime.paddingBottom([0, 16]);
+```
+
+## Advanced methods
+
+### stagger
+
+Creates a staggered delay for multiple elements.
+
+<ParamField path="number" type="number" required>
+  Stagger interval in milliseconds
+</ParamField>
+
+```javascript
+const anime = new Anime('.list-item');
+anime.stagger(100); // 100ms between each item
+```
+
+### complete
+
+Sets a callback function to execute when animation completes.
+
+<ParamField path="complete" type="function" required>
+  Callback function
+</ParamField>
+
+```javascript
+anime.complete(() => {
+  console.log('Animation finished');
+});
+```
+
+### set
+
+Generic method to set any animation property.
+
+<ParamField path="key" type="string" required>
+  Property name
+</ParamField>
+
+<ParamField path="value" type="any" required>
+  Property value
+</ParamField>
+
+```javascript
+anime.set('direction', 'reverse');
+anime.set('loop', true);
+```
+
+### play
+
+Executes the animation with all configured options.
+
+```javascript
+const anime = new Anime('.card')
+  .opacity([0, 1])
+  .translateY([20, 0])
+  .duration(800)
+  .play(); // Starts the animation
+```
+
+## Usage examples
+
+### Basic fade in animation
+
+```javascript
+import Anime from './partials/anime';
+
+new Anime('.hero-content')
+  .opacity([0, 1])
+  .duration(1000)
+  .play();
+```
+
+### Staggered list animation
+
+```javascript
+new Anime('.product-grid .product-card')
+  .opacity([0, 1])
+  .translateY([30, 0])
+  .delay((el, i) => i * 100)
+  .duration(600)
+  .easing('easeOutQuad')
+  .play();
+```
+
+### Scale and fade animation
+
+```javascript
+new Anime('.modal')
+  .opacity([0, 1])
+  .scale([0.8, 1])
+  .duration(400)
+  .easing('easeOutCubic')
+  .complete(() => {
+    console.log('Modal animation complete');
+  })
+  .play();
+```
+
+### Slide in from left
+
+```javascript
+new Anime('.sidebar')
+  .translateX(['-100%', '0%'])
+  .duration(500)
+  .easing('easeInOutQuad')
+  .play();
+```
+
+## Global access
+
+The Anime.js library is also available globally:
+
+```javascript
+// Access Anime.js directly
+window.anime({
+  targets: '.element',
+  translateX: 250,
+  rotate: '1turn',
+  duration: 800
+});
+```
+
+<Note>
+While the global `anime` object provides direct access to Anime.js, using the `Anime` class wrapper provides a more consistent API and chainable methods.
+</Note>

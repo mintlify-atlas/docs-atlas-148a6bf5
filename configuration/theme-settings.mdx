@@ -1,0 +1,378 @@
+---
+title: Theme settings and features
+description: Comprehensive guide to Theme Raed's customizable settings and features
+---
+
+Theme Raed provides a wide range of customizable settings and features that can be configured through the Salla theme dashboard. This guide covers all available options organized by section.
+
+## Overview
+
+Theme Raed supports 17 core features and over 15 customizable settings that control various aspects of your store's appearance and behavior.
+
+## Feature flags
+
+These features are automatically enabled when using Theme Raed:
+
+<Accordion title="Navigation features">
+  **Mega menu**
+  
+  Advanced dropdown menus with support for multiple columns, images, and nested categories.
+  
+  **Breadcrumb navigation**
+  
+  Automatic breadcrumb trails showing the current page location within the site hierarchy.
+  
+  **Menu images**
+  
+  Display category images within menu items for enhanced visual navigation.
+</Accordion>
+
+<Accordion title="Styling and layout">
+  **Custom fonts**
+  
+  Support for custom font selection and typography settings.
+  
+  **Color customization**
+  
+  Full color scheme customization through the theme dashboard.
+  
+  **Unite cards height**
+  
+  Automatically align product card heights for a uniform grid layout.
+</Accordion>
+
+<Accordion title="Product features">
+  **Product filters**
+  
+  Advanced filtering options for product listings (price, brand, attributes).
+</Accordion>
+
+<Accordion title="Page builder components">
+  The following components are available in the page builder:
+  
+  - Featured products
+  - Fixed banner
+  - Fixed products section
+  - Products slider
+  - Photos slider
+  - Parallax background
+  - Testimonials
+  - Square photos gallery
+  - Store features
+  - YouTube video embed
+</Accordion>
+
+## Header settings
+
+Control the appearance and behavior of your store's header section.
+
+### Sticky header
+
+<ParamField path="header_is_sticky" type="boolean" default={true}>
+  Fix the main navigation menu at the top of the page when scrolling down.
+  
+  ```json
+  {
+    "id": "header_is_sticky",
+    "type": "boolean",
+    "value": true
+  }
+  ```
+  
+  <Note>
+    It is recommended to disable this setting if you have many items in dropdown menus, as it may affect usability on smaller screens.
+  </Note>
+</ParamField>
+
+### Top navigation bar
+
+<ParamField path="topnav_is_dark" type="boolean" default={false}>
+  Enable dark mode for the top navigation bar.
+  
+  When enabled, the top bar will use a dark background with light text.
+</ParamField>
+
+<ParamField path="important_links" type="boolean" default={true}>
+  Display important page links in the top navigation bar.
+  
+  Includes links to:
+  - Landing pages
+  - Blog
+  - Info pages (About, Contact, etc.)
+</ParamField>
+
+### Main navigation
+
+<ParamField path="enable_more_menu" type="boolean" default={true}>
+  Enable the "More" overflow menu in the main navigation.
+  
+  When enabled, navigation items that don't fit in the available space will automatically move into a dropdown menu labeled "More". This ensures the navigation remains usable on all screen sizes.
+</ParamField>
+
+## Footer settings
+
+Customize the appearance of your store's footer.
+
+<ParamField path="footer_is_dark" type="boolean" default={false}>
+  Enable dark mode for the footer section.
+  
+  ```json
+  {
+    "id": "footer_is_dark",
+    "type": "boolean",
+    "value": false
+  }
+  ```
+</ParamField>
+
+## Product page settings
+
+Control how products are displayed and how customers interact with them.
+
+### Add to cart behavior
+
+<ParamField path="enable_add_product_toast" type="boolean" default={true}>
+  Enable enhanced add to cart notification.
+  
+  When a product is added to cart, displays an improved toast notification with product details and quick actions.
+</ParamField>
+
+<ParamField path="sticky_add_to_cart" type="boolean" default={true}>
+  Fix the add to cart button at the bottom of mobile screens.
+  
+  On mobile devices, the add to cart button and quantity selector will remain visible at the bottom of the screen when scrolling through product details.
+</ParamField>
+
+### Product information
+
+<ParamField path="show_tags" type="boolean" default={true}>
+  Display product tags on product pages.
+  
+  Shows tags associated with products, allowing customers to discover related items.
+</ParamField>
+
+### Product image display
+
+<ParamField path="slider_background_size" type="dropdown" default="contain">
+  Control how images are displayed in the product image slider.
+  
+  **Options:**
+  
+  - **cover** - Cover the entire area while maintaining the image's aspect ratio. May crop parts of the image.
+  - **contain** - Show the full image centered within the slider. May show empty space around the image.
+  
+  ```json
+  {
+    "id": "slider_background_size",
+    "type": "items",
+    "format": "dropdown-list",
+    "selected": [{"value": "contain"}],
+    "options": [
+      {"label": "Cover", "value": "cover"},
+      {"label": "Contain", "value": "contain"}
+    ]
+  }
+  ```
+</ParamField>
+
+<ParamField path="imageZoom" type="boolean" default={false}>
+  Enable image zoom functionality in the product slider.
+  
+  When enabled, customers can hover over or tap product images to zoom in and see more details.
+  
+  <Note>
+    This feature enhances the shopping experience by allowing customers to examine product details more closely.
+  </Note>
+</ParamField>
+
+## Home page settings
+
+Customize the layout and behavior of your store's home page.
+
+<ParamField path="vertical_fixed_products" type="boolean" default={false}>
+  Use vertical layout for products in the fixed products section.
+  
+  When enabled, products in the fixed products component will stack vertically instead of displaying in a horizontal grid.
+</ParamField>
+
+<ParamField path="is_more_button_enabled" type="boolean">
+  Show "View All" buttons on the home page.
+  
+  When enabled, product sections will include a "View All" button that links to the full category or product listing.
+</ParamField>
+
+<ParamField path="squar_photo_bg_image_size" type="dropdown" default="contain">
+  Control how images are displayed in the square items list section.
+  
+  **Options:**
+  
+  - **cover** - Cover the entire area while maintaining aspect ratio
+  - **contain** - Show the full image centered
+</ParamField>
+
+## Component configuration
+
+Theme Raed includes several page builder components that can be added to your home page:
+
+### Enhanced animated images
+
+**Component ID:** `home.enhanced-slider`
+
+Image carousel with animated text overlays and entrance effects.
+
+**Configuration:**
+- Minimum slides: 1
+- Maximum slides: 10
+- Image size: 900×600 pixels (recommended)
+
+**Fields per slide:**
+- Background image (required)
+- Title with animation
+- Description text
+- Overlay toggle
+
+<Note>
+  This component is not suitable for displaying full banners. Use the standard "Animated images" component for full banner display.
+</Note>
+
+### Quick links
+
+**Component ID:** `home.main-links`
+
+Scrollable quick link cards with icons, titles, and custom destinations.
+
+**Configuration:**
+- Minimum items: 3
+- Maximum items: 100
+- Show navigation arrows (optional)
+- Display category images (optional)
+- Merge with previous component (optional)
+
+**Link options:**
+- Products
+- Categories
+- Brands
+- Pages
+- Blog articles
+- Blog categories
+- Special pages (Offers, Brands, Blog)
+- External URLs
+
+### Animated products with background
+
+**Component ID:** `home.slider-products-with-header`
+
+Product carousel with custom background image, title, and description.
+
+**Configuration:**
+- Background image: 1233×500 pixels (recommended)
+- Minimum products: 1
+- Maximum products: 8
+- Optional title and description
+- Optional "View All" link
+
+### Enhanced square images
+
+**Component ID:** `home.enhanced-square-banners`
+
+Square image gallery with text overlays and links.
+
+**Configuration:**
+- Minimum images: 1
+- Maximum images: 5
+- Image size: 640×427 pixels (recommended)
+
+**Fields per image:**
+- Background image (required)
+- Optional title
+- Optional description
+- Optional link destination
+
+<Note>
+  Images are cropped from the edges to fit different screen sizes. Consider the cropped areas when designing to ensure important content remains visible.
+</Note>
+
+### Brands
+
+**Component ID:** `home.brands`
+
+Brand logo carousel displaying selected brands from your store.
+
+**Configuration:**
+- Optional section title
+- Select brands from dropdown
+- Automatic logo display from brand settings
+
+### Custom testimonials
+
+**Component ID:** `home.custom-testimonials`
+
+Customer testimonials carousel with avatars, ratings, and review text.
+
+**Configuration:**
+- Minimum testimonials: 1
+- Maximum testimonials: 30
+- Avatar size: 68×68 pixels (recommended)
+
+**Fields per testimonial:**
+- Customer name
+- Customer avatar (required)
+- Star rating (1-5)
+- Review text (multilingual)
+
+## Setting types reference
+
+### Boolean settings
+
+Boolean settings appear as toggle switches in the theme dashboard:
+
+```json
+{
+  "type": "boolean",
+  "format": "switch",
+  "id": "header_is_sticky",
+  "label": "Fix header when scrolling",
+  "value": true
+}
+```
+
+### Dropdown settings
+
+Dropdown settings allow selection from predefined options:
+
+```json
+{
+  "type": "items",
+  "format": "dropdown-list",
+  "id": "slider_background_size",
+  "options": [
+    {"label": "Cover", "value": "cover"},
+    {"label": "Contain", "value": "contain"}
+  ]
+}
+```
+
+### Text settings
+
+Text settings support single-line or multi-line input:
+
+```json
+{
+  "type": "string",
+  "format": "text",
+  "id": "title",
+  "multilanguage": true,
+  "maxLength": 100
+}
+```
+
+## Best practices
+
+1. **Test on multiple devices** - Always preview changes on mobile, tablet, and desktop
+2. **Use high-quality images** - Follow recommended image dimensions for optimal display
+3. **Enable sticky header carefully** - Disable for mega menus with many items
+4. **Optimize performance** - Limit the number of components on the home page
+5. **Maintain consistency** - Use similar settings across header and footer (both dark or both light)
+6. **Provide multilingual content** - Fill in all language fields for international stores
+7. **Use descriptive link titles** - Make quick links clear and actionable
+8. **Test cart notifications** - Ensure add to cart notifications work properly with your theme customizations

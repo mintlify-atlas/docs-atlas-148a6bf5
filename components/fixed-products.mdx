@@ -1,0 +1,186 @@
+---
+title: Fixed products
+description: Static product grid with vertical or horizontal layout options
+---
+
+The fixed products component displays a grid of products with configurable vertical or horizontal layouts.
+
+## Component usage
+
+Add fixed products section to your home page:
+
+```twig
+{% set is_vertical = theme.settings.get('vertical_fixed_products', true) %}
+<section class="s-block container">
+  {% if title %}
+    <div class="s-block__title">
+      <div class="right-side">
+        <h2>{{ title }}</h2>
+      </div>
+      {% if display_all_url %}
+        <a href="{{ display_all_url }}" class="s-block__display-all">
+          {{ trans('blocks.home.display_all') }} <i class="sicon-arrow-left"></i>
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <salla-products-list
+    source="{{ products.source }}"
+    limit="{{ limit }}"
+    source-value="{{ products.source_value|json_encode }}"
+    class="{{ is_vertical ? 'vertical-products' : 'horizontal-products' }}"
+    {{ is_vertical ? '' : 'horizontal-cards' }}
+  ></salla-products-list>
+</section>
+```
+
+## Variables
+
+<ParamField path="products.source" type="string" required>
+  Source type for products:
+  - `latest` - Latest products
+  - `most_sales` - Best selling products
+  - `chosen_products` - Manually selected products
+  - `category` - Products from specific category
+  - `brand` - Products from specific brand
+</ParamField>
+
+<ParamField path="products.source_value" type="array">
+  Array of IDs when source is `chosen_products`, `category`, or `brand`. Example: `[123, 456, 789]`
+</ParamField>
+
+<ParamField path="title" type="string">
+  Section heading displayed above the products
+</ParamField>
+
+<ParamField path="display_all_url" type="string">
+  URL for "View All" link. If empty, the link is hidden
+</ParamField>
+
+<ParamField path="limit" type="integer" required>
+  Number of products to display
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement (starts from zero)
+</ParamField>
+
+## Layout configuration
+
+The layout is controlled by the `vertical_fixed_products` theme setting in `twilight.json`:
+
+```json
+{
+  "settings": [
+    {
+      "type": "boolean",
+      "id": "vertical_fixed_products",
+      "label": "Vertical layout for fixed products in home page",
+      "format": "switch",
+      "value": false,
+      "selected": false
+    }
+  ]
+}
+```
+
+### Vertical layout
+
+```twig
+<salla-products-list
+  source="latest"
+  limit="8"
+  class="vertical-products"
+></salla-products-list>
+```
+
+### Horizontal layout
+
+```twig
+<salla-products-list
+  source="most_sales"
+  limit="6"
+  class="horizontal-products"
+  horizontal-cards
+></salla-products-list>
+```
+
+## Example with latest products
+
+```twig
+<section class="s-block container">
+  <div class="s-block__title">
+    <div class="right-side">
+      <h2>New Arrivals</h2>
+    </div>
+    <a href="/products" class="s-block__display-all">
+      View All <i class="sicon-arrow-left"></i>
+    </a>
+  </div>
+
+  <salla-products-list
+    source="latest"
+    limit="8"
+    class="vertical-products"
+  ></salla-products-list>
+</section>
+```
+
+## Example with category products
+
+```twig
+<section class="s-block container">
+  <div class="s-block__title">
+    <div class="right-side">
+      <h2>Electronics</h2>
+    </div>
+    <a href="/category/electronics" class="s-block__display-all">
+      View All <i class="sicon-arrow-left"></i>
+    </a>
+  </div>
+
+  <salla-products-list
+    source="category"
+    source-value="[123]"
+    limit="6"
+    class="horizontal-products"
+    horizontal-cards
+  ></salla-products-list>
+</section>
+```
+
+## Example with chosen products
+
+```twig
+<section class="s-block container">
+  <div class="s-block__title">
+    <div class="right-side">
+      <h2>Featured Products</h2>
+    </div>
+  </div>
+
+  <salla-products-list
+    source="chosen_products"
+    source-value="[101, 102, 103, 104, 105, 106, 107, 108]"
+    limit="8"
+    class="vertical-products"
+  ></salla-products-list>
+</section>
+```
+
+<Note>
+  Unlike the product slider component, this component displays products in a static grid without animation or autoplay.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-fixed-products"
+  ]
+}
+```

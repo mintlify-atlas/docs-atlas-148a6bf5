@@ -1,0 +1,169 @@
+---
+title: Checkout and thank you page
+description: Documentation for the order confirmation and thank you page template
+---
+
+The thank you page is displayed after a customer successfully completes an order. It shows order confirmation details and next steps.
+
+## Template location
+
+```
+src/views/pages/thank-you.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+| `order` | Order | Order object |
+| `thank_you` | string | Thank you message |
+| `share_message` | string | Message for sharing |
+| `short_share_message` | string | Short share message |
+
+## Order object
+
+The `order` object contains detailed information about the completed order. For full order object documentation, see the [customer orders page](/pages/customer-orders).
+
+Key order properties:
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.id` | int | Order ID |
+| `order.reference_id` | int | Customer-facing order number |
+| `order.url` | string | Order details page URL |
+| `order.total` | float | Order total |
+| `order.customer.email` | string | Customer email |
+| `order.instructions` | string | Order instructions (HTML) |
+| `order.email_sent` | bool | Whether confirmation email was sent |
+
+## Page structure
+
+The thank you page typically includes:
+
+1. Order confirmation message
+2. Order reference number
+3. Link to view order details
+4. Email confirmation status
+5. Support contact information
+
+## Code examples
+
+### Display order confirmation
+
+```twig
+<div class="thank-you-message">
+  <h1>{{ thank_you_title }}</h1>
+  
+  <p>
+    {{ trans('pages.thank_you.order_id') }}
+    <salla-button 
+      onclick="app.copyToClipboard(event)" 
+      data-content="{{ order.reference_id }}">
+      <span>#{{ order.reference_id }}</span>
+      <i class="sicon-swap-stroke"></i>
+    </salla-button>
+  </p>
+  
+  <salla-button 
+    onclick="salla.order.show({order_id:'{{ order.id }}', url:'{{ order.url }}'})">
+    <i class="sicon-newspaper"></i>
+    {{ trans('pages.thank_you.order_details') }}
+  </salla-button>
+</div>
+```
+
+### Show order instructions
+
+```twig
+{% if order.instructions %}
+  <article class="order-instructions">
+    {{ order.instructions|raw }}
+  </article>
+{% endif %}
+```
+
+### Email confirmation status
+
+```twig
+{% if order.email_sent %}
+  <div class="email-sent-notice">
+    <i class="sicon-newspaper-alt"></i>
+    <p>{{ trans('pages.thank_you.email_sent') }}</p>
+    <b>{{ order.customer.email }}</b>
+  </div>
+{% else %}
+  <div class="resend-email-form">
+    <i class="sicon-newspaper-alt"></i>
+    <p>{{ trans('pages.thank_you.resend_email') }}</p>
+    
+    <form onsubmit="return salla.form.onSubmit('order.sendInvoice', event)">
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="your@email.com" 
+        required>
+      <salla-button type="submit">
+        {{ trans('blocks.comments.submit') }}
+      </salla-button>
+    </form>
+  </div>
+{% endif %}
+```
+
+### Support contact information
+
+```twig
+<div class="support-section">
+  <i class="sicon-mail-letter"></i>
+  <p>{{ trans('common.titles.support') }}</p>
+  
+  <div class="contact-methods">
+    {% if store.contacts.mobile %}
+      <div class="contact-item">
+        <i class="sicon-phone"></i>
+        <a href="tel:{{ store.contacts.mobile }}">
+          {{ store.contacts.mobile }}
+        </a>
+      </div>
+    {% endif %}
+    
+    {% if store.contacts.whatsapp %}
+      <div class="contact-item">
+        <i class="sicon-whatsapp"></i>
+        <a href="https://wa.me/{{ store.contacts.whatsapp|replace({' ': '', '+': '', '-': ''}) }}" 
+           target="_blank">
+          {{ store.contacts.whatsapp }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+```
+
+### Display messages
+
+```twig
+{% for message in messages %}
+  <div class="confirmation-message">
+    <span>{{ message }}</span>
+  </div>
+{% endfor %}
+```
+
+## Hooks
+
+The thank you page provides hooks for customization:
+
+```twig
+{% hook 'thank-you:start' %}
+{# Page content #}
+{% hook 'thank-you:items.start' %}
+{% hook 'thank-you:items.end' %}
+{% hook 'thank-you:end' %}
+```
+
+<Note>
+The thank you page does not handle the actual checkout process. Checkout is managed by Salla's built-in checkout system. This page only displays confirmation after successful order completion.
+</Note>

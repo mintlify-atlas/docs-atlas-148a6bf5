@@ -1,0 +1,254 @@
+---
+title: Blog page
+description: Documentation for the blog listing page template
+---
+
+The blog page displays a list of blog articles with category filtering and featured article slider.
+
+## Template location
+
+```
+src/views/pages/blog/index.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+| `slides` | array | Featured articles for slider |
+| `articles` | array | List of articles with pagination |
+| `categories` | array | Blog categories |
+| `articles.next_page` | string | URL for next page of articles |
+
+## Article object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `article.title` | string | Article title |
+| `article.url` | string | Article URL |
+| `article.summary` | string | Article excerpt/summary |
+| `article.image.url` | string | Article image URL |
+| `article.image.alt` | string | Image alt text |
+| `article.created_at` | date | Article publish date |
+| `article.author.name` | string | Author name |
+| `article.author.url` | string | Author profile URL |
+| `article.tags` | array | Article tags |
+| `article.likes_count` | int | Number of likes |
+| `article.comments_count` | int | Number of comments |
+| `article.has_image` | bool | Whether article has featured image |
+
+## Category object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `category.name` | string | Category name |
+| `category.url` | string | Category URL |
+| `category.is_current` | bool | Whether category is currently active |
+
+## Page structure
+
+The blog page includes:
+
+1. Breadcrumb navigation
+2. Category filter (sidebar on desktop, dropdown on mobile)
+3. Featured articles slider (if slides exist)
+4. Article grid
+5. Pagination
+
+## Code examples
+
+### Featured articles slider
+
+```twig
+{% if slides|length %}
+  <salla-slider 
+    id="blog-home-slider"
+    type="blog" 
+    auto-play 
+    auto-height
+    pagination>
+    <div slot="items">
+      {% for article in slides %}
+        <div class="blog-slide">
+          <img src="{{ article.image.url }}" alt="{{ article.image.alt }}">
+          <div class="slide-content">
+            <div class="metadata">
+              <span>
+                <i class="sicon-calendar-date"></i>
+                {{ article.created_at|date }}
+              </span>
+              <a href="{{ article.author.url }}">
+                <i class="sicon-user"></i>
+                {{ article.author.name }}
+              </a>
+            </div>
+            <h3><a href="{{ article.url }}">{{ article.title }}</a></h3>
+            <p>{{ article.summary }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </salla-slider>
+{% endif %}
+```
+
+### Category sidebar
+
+```twig
+<nav class="categories-sidebar">
+  <h2>{{ trans('pages.blog_categories.categories') }}</h2>
+  <ul>
+    {% for category in categories %}
+      <li class="{{ category.is_current ? 'active' : '' }}">
+        <a href="{{ category.url }}">{{ category.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
+```
+
+### Category dropdown (mobile)
+
+```twig
+<div class="dropdown-toggler">
+  <button class="dropdown__trigger">
+    <i class="sicon-filter"></i>
+    <span>{{ trans('pages.blog_categories.categories') }}</span>
+  </button>
+  <div class="dropdown__menu">
+    <ul>
+      {% for category in categories %}
+        <li>
+          <a href="{{ category.url }}" 
+             class="{{ category.is_current ? 'is-active' : '' }}">
+            {{ category.name }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+```
+
+### Articles grid
+
+```twig
+{% if articles|length %}
+  <salla-infinite-scroll 
+    class="articles-grid"
+    next-page="{{ articles.next_page }}"
+    autoload>
+    {% for article in articles %}
+      <article class="article-card">
+        <a href="{{ article.url }}" class="article-image">
+          <img src="{{ article.image.url }}" alt="{{ article.image.alt }}">
+        </a>
+        
+        <div class="article-content">
+          <div class="article-meta">
+            <span>
+              <i class="sicon-calendar-date"></i>
+              {{ article.created_at|date }}
+            </span>
+            <a href="{{ article.author.url }}">
+              <i class="sicon-user"></i>
+              {{ article.author.name }}
+            </a>
+          </div>
+          
+          <h3 class="article-title">
+            <a href="{{ article.url }}">{{ article.title }}</a>
+          </h3>
+          
+          <p class="article-summary">{{ article.summary }}</p>
+          
+          {% if store.settings.blog.allow_likes_and_comments %}
+            <div class="article-stats">
+              {% if article.likes_count %}
+                <span>
+                  <i class="sicon-thumbs-up"></i>
+                  {{ article.likes_count }}
+                </span>
+              {% endif %}
+              {% if article.comments_count %}
+                <span>
+                  <i class="sicon-chat"></i>
+                  {{ article.comments_count }}
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+        
+        {% if article.tags|length %}
+          <div class="article-tags">
+            {% for tag in article.tags %}
+              <a href="{{ tag.url }}">
+                <i class="sicon-tag"></i>
+                {{ tag.name }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </salla-infinite-scroll>
+{% else %}
+  <div class="no-content-placeholder">
+    <i class="sicon-inbox"></i>
+    <p>{{ trans('pages.blog_categories.no_articles') }}</p>
+  </div>
+{% endif %}
+```
+
+### Check for placeholder images
+
+```twig
+<img 
+  class="{{ article.image.url|is_placeholder ? 'placeholder' : '' }}"
+  src="{{ article.image.url }}" 
+  alt="{{ article.image.alt }}">
+```
+
+### Article tags
+
+```twig
+{% if article.tags|length %}
+  <div class="article-tags">
+    {% for tag in article.tags %}
+      <a href="{{ tag.url }}" class="tag">
+        <i class="sicon-tag"></i>
+        <span>{{ tag.name }}</span>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+```
+
+## Hooks
+
+The blog page provides hooks for customization:
+
+```twig
+{% hook 'blog:index.items.start' %}
+{# Articles grid #}
+{% hook 'blog:index.items.end' %}
+```
+
+## Pagination
+
+The page uses `salla-infinite-scroll` for automatic pagination:
+
+```twig
+<salla-infinite-scroll 
+  next-page="{{ articles.next_page }}"
+  autoload>
+  {# Article items #}
+</salla-infinite-scroll>
+```
+
+<Note>
+The blog page extends the `layouts.master` layout. Use the `salla-infinite-scroll` component for seamless pagination without page reloads.
+</Note>

@@ -1,0 +1,208 @@
+---
+title: Product options
+description: Display and manage product options, variants, and customization fields
+---
+
+The product options component handles all product customization options including variants, sizes, colors, dates, custom text fields, and file uploads.
+
+## Component usage
+
+The options component uses the `<salla-product-options>` web component which automatically renders all available options for a product.
+
+```twig
+{% if product.options|length %}
+  <salla-product-options 
+    options="{{ product.options }}" 
+    product-id="{{ product.id }}"
+  ></salla-product-options>
+{% endif %}
+```
+
+## Option types
+
+The component supports multiple option types:
+
+<ParamField path="single-option" type="radio">
+  Single selection from available choices (radio buttons)
+</ParamField>
+
+<ParamField path="multi-options" type="checkbox">
+  Multiple selections from available choices (checkboxes)
+</ParamField>
+
+<ParamField path="color" type="color picker">
+  Color selection with visual color swatches
+</ParamField>
+
+<ParamField path="thumbnail" type="image selector">
+  Visual selection using product images
+</ParamField>
+
+<ParamField path="date" type="date picker">
+  Date selection for booking or scheduling
+</ParamField>
+
+<ParamField path="datetime" type="datetime picker">
+  Date and time selection
+</ParamField>
+
+<ParamField path="time" type="time picker">
+  Time selection only
+</ParamField>
+
+<ParamField path="text" type="text input">
+  Short text input for customization
+</ParamField>
+
+<ParamField path="textarea" type="textarea">
+  Long text input for detailed customization
+</ParamField>
+
+<ParamField path="number" type="number input">
+  Numeric input with validation
+</ParamField>
+
+<ParamField path="image" type="file upload">
+  Image upload for custom designs
+</ParamField>
+
+<ParamField path="donation" type="donation amount">
+  Custom amount input for donation products
+</ParamField>
+
+<ParamField path="splitter" type="visual separator">
+  Section divider for grouping options
+</ParamField>
+
+## Option structure
+
+Each option in the `product.options` array contains:
+
+```javascript
+{
+  id: 123,
+  name: "Size",
+  type: "single-option",
+  required: true,
+  placeholder: "Select size",
+  details: [
+    {
+      id: 456,
+      name: "Small",
+      full_name: "Small (+10 SAR)",
+      additional_price: 10.00,
+      is_out: false,
+      is_selected: false
+    }
+  ]
+}
+```
+
+## Conditional visibility
+
+Options can be shown or hidden based on other option selections:
+
+```javascript
+{
+  visibility_condition: {
+    option: 123,      // ID of the controlling option
+    operator: "=",    // = or !=
+    value: 456        // ID of the option detail
+  },
+  condition_attributes: 'data-show-when="options[123] = 456"'
+}
+```
+
+## Date options
+
+Date-based options support availability ranges:
+
+```javascript
+{
+  type: "date",
+  not_same_day_order: true,
+  availability_range: true,
+  from_date_time: "2024-01-01 00:00:00",
+  to_date_time: "2024-12-31 23:59:59"
+}
+```
+
+## Bundle products
+
+For products with bundles, use the bundle component:
+
+```twig
+{% if product.has_bundle_products %}
+  <salla-multiple-bundle-product 
+    bundle-sections='{{ product|json_encode }}'
+  ></salla-multiple-bundle-product>
+{% endif %}
+```
+
+## Product weight and size guide
+
+Display product weight and size guide links:
+
+```twig
+{% if product.weight or product.has_size_guide %}
+  <section class="bg-white p-5 rounded-md mb-5">
+    {% if product.weight %}
+      <div class="center-between">
+        <b class="form-label">
+          <i class="sicon-luggage-cart"></i>
+          <span>{{ trans('pages.products.weight') }}</span>
+        </b>
+        <span class="product-weight text-sm">{{ product.weight }}</span>
+      </div>
+    {% endif %}
+    
+    {% if product.has_size_guide %}
+      <salla-button shape="link" 
+        onclick="salla.event.dispatch('size-guide::open', '{{ product.id }}')">
+        {{ trans('pages.products.show_size_guides') }}
+      </salla-button>
+      <salla-product-size-guide></salla-product-size-guide>
+    {% endif %}
+  </section>
+{% endif %}
+```
+
+## Notes and file attachments
+
+Allow customers to add notes or upload files:
+
+```twig
+{% if product.can_add_note or product.can_upload_file %}
+  <section class="bg-white p-5 rounded-md mb-5">
+    {% if product.can_add_note %}
+      <textarea
+        class="form-input h-16 bg-gray-50 block"
+        placeholder="{{ trans('pages.products.notes_placeholder') }}"
+        name="notes"
+      >{{ product.notes }}</textarea>
+    {% endif %}
+    
+    {% if product.can_upload_file %}
+      <salla-file-upload
+        accept="image/png, image/jpeg, image/jpg, image/gif, video/*, application/pdf"
+        class="product-option-uploader"
+      ></salla-file-upload>
+    {% endif %}
+  </section>
+{% endif %}
+```
+
+## Price modifications
+
+Option details can include additional pricing:
+
+- `additional_price`: Extra cost added to base product price
+- `full_name`: Display name including price modifier (e.g., "Large (+20 SAR)")
+
+<Note>
+  The component automatically updates the product price when options with additional costs are selected.
+</Note>
+
+## Validation
+
+Required options must be selected before adding the product to cart. The component handles validation automatically and displays error messages for invalid selections.

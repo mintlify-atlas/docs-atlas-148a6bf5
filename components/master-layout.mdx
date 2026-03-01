@@ -1,0 +1,238 @@
+---
+title: Master layout
+description: The base layout template that wraps all pages in Theme Raed
+---
+
+## Overview
+
+The master layout (`master.twig`) is the base template that provides the HTML structure for all pages in Theme Raed. It includes the head section, body wrapper, header, footer, and essential scripts.
+
+## Location
+
+```
+src/views/layouts/master.twig
+```
+
+## Structure
+
+The master layout follows this structure:
+
+```twig
+<!DOCTYPE html>
+<html lang="{{ user.language.code }}" dir="{{ user.language.dir }}">
+<head>
+  {# Head content #}
+</head>
+<body id="app">
+  <div class="app-inner flex flex-col min-h-full">
+    {% component 'header.header' %}
+    <main id="main-content" role="main">
+      {% block content %}{% endblock %}
+    </main>
+    {% component 'footer.footer' %}
+  </div>
+  {# Scripts and components #}
+</body>
+</html>
+```
+
+## Global variables
+
+The layout has access to comprehensive store and theme variables:
+
+### Store variables
+
+<ParamField path="store.id" type="integer">
+  Store unique identifier
+</ParamField>
+
+<ParamField path="store.name" type="string">
+  Store name
+</ParamField>
+
+<ParamField path="store.username" type="string">
+  Store username/slug
+</ParamField>
+
+<ParamField path="store.description" type="string">
+  Store description
+</ParamField>
+
+<ParamField path="store.logo" type="string">
+  Store logo URL
+</ParamField>
+
+<ParamField path="store.url" type="string">
+  Store base URL
+</ParamField>
+
+<ParamField path="store.contacts" type="object">
+  Contact information: mobile, phone, email, whatsapp, telegram
+</ParamField>
+
+<ParamField path="store.social" type="object">
+  Social media links: instagram, snapchat, twitter, youtube, facebook, pinterest, maroof, whatsapp
+</ParamField>
+
+### Theme variables
+
+<ParamField path="theme.id" type="integer">
+  Theme unique identifier
+</ParamField>
+
+<ParamField path="theme.name" type="string">
+  Theme name
+</ParamField>
+
+<ParamField path="theme.mode" type="string">
+  Either `live` or `preview`
+</ParamField>
+
+<ParamField path="theme.is_rtl" type="boolean">
+  Whether the current language is RTL
+</ParamField>
+
+<ParamField path="theme.color.primary" type="string">
+  Primary brand color (hex)
+</ParamField>
+
+<ParamField path="theme.color.text" type="string">
+  Suitable text color for primary background (#000000 or #FFFFFF)
+</ParamField>
+
+<ParamField path="theme.font.name" type="string">
+  Font family name
+</ParamField>
+
+<ParamField path="theme.font.url" type="string">
+  Font CSS file URL
+</ParamField>
+
+## Head section
+
+The head includes:
+
+```twig
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  {# Deferred scripts #}
+  <script defer src="{{ 'product-card.js'|asset }}"></script>
+  <script defer src="{{ 'main-menu.js'|asset }}"></script>
+  
+  {# Hooks for customization #}
+  {% hook 'head:start' %}
+  {% hook head %}
+  
+  {# Styles #}
+  {% block styles %}{% endblock %}
+  <link rel="stylesheet" href="{{ 'app.css' | asset }}">
+  <link rel="stylesheet" href="{{ theme.font.path|cdn }}" />
+  <link rel="stylesheet" href="{{ 'fonts/sallaicons.css'|cdn }}" />
+  
+  {# CSS variables #}
+  <style>
+    :root {
+      --font-main: '{{ theme.font.name }}';
+      --color-primary: {{ theme.color.primary }};
+      --color-primary-dark: {{ theme.color.darker(0.15) }};
+      --color-primary-light: {{ theme.color.lighter(0.15) }};
+      --color-primary-reverse: {{ theme.color.reverse_text }};
+    }
+  </style>
+  
+  {% hook 'head:end' %}
+</head>
+```
+
+## Body classes
+
+The body tag receives dynamic classes based on settings:
+
+```twig
+<body id="app" class="theme-raed overflow-x-hidden
+  {{ theme.settings.get('footer_is_dark') ? 'footer-is-dark' : 'footer-is-light' }}
+  {{ theme.settings.get('topnav_is_dark') ? 'topnav-is-dark' : '' }}
+  {{ theme.settings.get('sticky_add_to_cart') ? 'is-sticky-product-bar' : '' }}
+">
+```
+
+## Window variables
+
+Global JavaScript configuration:
+
+```javascript
+window.header_is_sticky = "{{ theme.settings.get('header_is_sticky', 'Default Value') }}"
+window.imageZoom = "{{ theme.settings.get('imageZoom') }}"
+window.can_access_wallet = {{ user.can_access_wallet | json_encode }}
+window.enable_more_menu = "{{ theme.settings.get('enable_more_menu', true) }}"
+window.enable_add_product_toast = "{{ theme.settings.get('enable_add_product_toast', true) }}"
+```
+
+## Blocks
+
+The master layout provides these Twig blocks for extension:
+
+<ParamField path="head_scripts" type="block">
+  Add custom scripts in the head section
+</ParamField>
+
+<ParamField path="styles" type="block">
+  Add custom stylesheets
+</ParamField>
+
+<ParamField path="content" type="block" required>
+  Main page content
+</ParamField>
+
+<ParamField path="scripts" type="block">
+  Add custom scripts before closing body tag
+</ParamField>
+
+## Hooks
+
+Salla theme hooks allow customization at key points:
+
+- `{% hook 'head:start' %}`: Beginning of head section
+- `{% hook head %}`: Main head section
+- `{% hook 'head:end' %}`: End of head section
+- `{% hook 'body:start' %}`: Beginning of body
+- `{% hook 'body:classes' %}`: Add body classes
+- `{% hook 'body:end' %}`: End of body
+
+## Essential components
+
+The layout includes these Salla web components:
+
+```twig
+<salla-offer-modal></salla-offer-modal>
+<salla-search></salla-search>
+<salla-login-modal></salla-login-modal>
+<salla-scopes></salla-scopes>
+<salla-add-product-toast></salla-add-product-toast>
+```
+
+## Extending the layout
+
+Create page templates that extend the master layout:
+
+```twig
+{% extends "layouts.master" %}
+
+{% block content %}
+  <div class="container">
+    <h1>My Custom Page</h1>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Custom page scripts
+  </script>
+{% endblock %}
+```
+
+<Note>
+  The master layout uses deferred script loading for better performance. All non-critical scripts are loaded with the `defer` attribute.
+</Note>

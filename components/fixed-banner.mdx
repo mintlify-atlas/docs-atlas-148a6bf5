@@ -1,0 +1,116 @@
+---
+title: Fixed banner
+description: Full-width banner with responsive images and mobile optimization
+---
+
+The fixed banner component displays a clickable full-width banner with support for separate mobile and desktop images.
+
+## Component usage
+
+Add a fixed banner to your home page:
+
+```twig
+<section class="s-block s-block--fixed-banner wide-placeholder">
+  <div class="container">
+    {% set alt_text = image.alt|trim ? image.alt : 'fixed banner' %}
+    <a href="{{ url }}" 
+       class="banner banner--fixed overflow-hidden" 
+       aria-label="Banner {{ alt_text }}">
+      <picture>
+        {% if image.small_url %}
+          <source
+            media="(max-width: 767px)"
+            srcset="{{ image.small_url }}"
+          />
+        {% endif %}
+        <img
+          width="1200"
+          height="300"
+          src="{{ image.url }}"
+          loading="lazy"
+          alt="{{ alt_text }}"
+          style="height:auto;max-width:100%;object-fit: contain;"
+          fetchpriority="high"
+        />
+      </picture>
+    </a>
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="url" type="string" required>
+  Destination URL when the banner is clicked
+</ParamField>
+
+<ParamField path="image.url" type="string" required>
+  Main banner image URL for desktop display
+</ParamField>
+
+<ParamField path="image.alt" type="string">
+  Alternative text for the image (for accessibility). Defaults to `"fixed banner"` if not provided
+</ParamField>
+
+<ParamField path="image.small_url" type="string">
+  Optional mobile-optimized image URL displayed on screens smaller than 768px
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement on the page (starts from zero)
+</ParamField>
+
+## Example
+
+```twig
+<section class="s-block s-block--fixed-banner wide-placeholder">
+  <div class="container">
+    <a href="/special-offer" class="banner banner--fixed overflow-hidden">
+      <picture>
+        <source
+          media="(max-width: 767px)"
+          srcset="https://cdn.example.com/banner-mobile.jpg"
+        />
+        <img
+          width="1200"
+          height="300"
+          src="https://cdn.example.com/banner-desktop.jpg"
+          loading="lazy"
+          alt="Special offer banner"
+          style="height:auto;max-width:100%;object-fit: contain;"
+        />
+      </picture>
+    </a>
+  </div>
+</section>
+```
+
+## Recommended image sizes
+
+- Desktop image: 1200×300 pixels
+- Mobile image: 768×400 pixels
+
+<Note>
+  Using the `picture` element with separate mobile and desktop images ensures optimal display and file size for each device.
+</Note>
+
+## Image optimization
+
+The component includes:
+
+- `loading="lazy"` - Defers loading until the image is near viewport
+- `fetchpriority="high"` - Prioritizes loading for above-fold banners
+- `object-fit: contain` - Ensures full image visibility without cropping
+- Responsive width with `max-width:100%` for all screen sizes
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-fixed-banner"
+  ]
+}
+```

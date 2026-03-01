@@ -1,0 +1,258 @@
+---
+title: Custom testimonials
+description: Carousel of customer reviews with avatars, ratings, and testimonial text
+---
+
+## Overview
+
+The custom testimonials component displays customer reviews in an elegant carousel format. Each testimonial includes a customer avatar, star rating, review text, and customer name.
+
+## Location
+
+```
+src/views/components/home/custom-testimonials.twig
+```
+
+## Component path
+
+```
+home.custom-testimonials
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `541cc423-90c7-4230-8a33-a0342cfde4ad`.
+
+### Available fields
+
+<ParamField path="items" type="collection" required>
+  Collection of testimonials (min: 1, max: 30)
+</ParamField>
+
+<ParamField path="items[].name" type="string">
+  Customer name displayed below the testimonial text
+</ParamField>
+
+<ParamField path="items[].avatar" type="string" format="image" required>
+  Customer avatar image URL. Recommended size: 68×68 pixels
+</ParamField>
+
+<ParamField path="items[].stars" type="number" format="integer" min={1} max={5} default={5}>
+  Star rating from 1 to 5
+</ParamField>
+
+<ParamField path="items[].text" type="string" format="textarea">
+  The testimonial review text
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.custom-testimonials' %}
+```
+
+## Template structure
+
+```twig
+<section class="s-block s-block--testimonials s-block--custom-testimonials container overflow-hidden">
+  <div class="s-reviews-container">
+    <div class="s-reviews-header-wrapper">
+      <h1 class="s-reviews-header">{{ trans('blocks.home.testimonials') }}</h1>
+    </div>
+    <salla-slider 
+      id="custom-testimonials-{{ position }}-slider" 
+      centered 
+      slides-per-view="1" 
+      type="testimonials" 
+      class="testimonials-slider s-slider-wrapper" 
+      controls-outer 
+      auto-play>
+      <div slot="items">
+        {% for index, item in component.items %}
+          <div class="s-reviews-swiper-slide swiper-slide" style="width: 830px;">
+            <div class="s-reviews-testimonial">
+              <div class="s-reviews-testimonial__inner">
+                <div class="s-reviews-testimonial__avatar">
+                  <img src="{{ item.avatar }}" 
+                       loading="lazy" 
+                       alt="{{ item.name|trim ? item.name : 'testimonial-' ~ index }}" 
+                       class="loaded" 
+                       width="68" 
+                       height="68">
+                </div>
+                <div class="s-reviews-testimonial__text">
+                  <p>{{ item.text }}</p>
+                  <div class="s-reviews-testimonial__name_wrapper items-center">
+                    <div class="s-reviews-testimonial__info">
+                      <h2 class="font-bold text-xs xs:text-sm">{{ item.name }}</h2>
+                    </div>
+                    <div class="s-reviews-testimonial__rating !mx-0">
+                      <salla-rating-stars class="flex" size="small" value="{{ item.stars }}"></salla-rating-stars>
+                    </div>
+                  </div>
+                </div>
+                <span class="s-reviews-testimonial__icon">
+                  <!-- Quote SVG icon -->
+                </span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </salla-slider>
+  </div>
+</section>
+```
+
+## Slider configuration
+
+The testimonials slider includes:
+
+<ParamField path="centered" type="boolean" default={true}>
+  Centers the active slide
+</ParamField>
+
+<ParamField path="slides-per-view" type="string" default="1">
+  Shows one testimonial at a time
+</ParamField>
+
+<ParamField path="type" type="string" default="testimonials">
+  Applies testimonials-specific styling
+</ParamField>
+
+<ParamField path="controls-outer" type="boolean" default={true}>
+  Positions navigation controls outside the slider
+</ParamField>
+
+<ParamField path="auto-play" type="boolean" default={true}>
+  Automatically cycles through testimonials
+</ParamField>
+
+## Testimonial structure
+
+Each testimonial card contains:
+
+### Avatar section
+
+```twig
+<div class="s-reviews-testimonial__avatar">
+  <img src="{{ item.avatar }}" 
+       loading="lazy" 
+       alt="{{ item.name|trim ? item.name : 'testimonial-' ~ index }}" 
+       width="68" 
+       height="68">
+</div>
+```
+
+- 68×68 pixel circular avatar
+- Lazy loading for performance
+- Fallback alt text if no name provided
+
+### Text section
+
+```twig
+<div class="s-reviews-testimonial__text">
+  <p>{{ item.text }}</p>
+  <div class="s-reviews-testimonial__name_wrapper">
+    <div class="s-reviews-testimonial__info">
+      <h2 class="font-bold text-xs xs:text-sm">{{ item.name }}</h2>
+    </div>
+    <div class="s-reviews-testimonial__rating">
+      <salla-rating-stars class="flex" size="small" value="{{ item.stars }}"></salla-rating-stars>
+    </div>
+  </div>
+</div>
+```
+
+- Review text at top
+- Customer name and rating below
+- Responsive text sizing
+
+### Quote icon
+
+A decorative quote SVG icon appears in each testimonial:
+
+```twig
+<span class="s-reviews-testimonial__icon">
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32">
+    <path d="M8 12v-5.333c0-0.737..."></path>
+  </svg>
+</span>
+```
+
+## Default examples
+
+The component comes with 4 default testimonials:
+
+1. **Nada Al-Husseini** - 5 stars  
+   "Received it today and it turned out beautiful, excited to try it ❤️"
+
+2. **Khaled Al-Ahmad** - 5 stars  
+   "I bought from here for my kids and honestly it's unbeatable 👏"
+
+3. **Khaled Al-Masudi** - 5 stars  
+   "They're amazing, solve problems. 👌"
+
+4. **Abdulaziz Al-Yami** - 5 stars  
+   "I love this store and their classy customer service ❤️"
+
+## Styling classes
+
+The component uses these main CSS classes:
+
+- `.s-block--testimonials`: Main container styling
+- `.s-block--custom-testimonials`: Custom testimonials variant
+- `.s-reviews-container`: Reviews wrapper
+- `.s-reviews-header`: Section heading
+- `.s-reviews-testimonial`: Individual testimonial card
+- `.s-reviews-testimonial__inner`: Inner card content
+- `.s-reviews-testimonial__avatar`: Avatar container
+- `.s-reviews-testimonial__text`: Text content area
+- `.s-reviews-testimonial__icon`: Quote icon styling
+
+## Header translation
+
+The section title uses Salla's translation system:
+
+```twig
+<h1 class="s-reviews-header">{{ trans('blocks.home.testimonials') }}</h1>
+```
+
+This displays localized text like "Customer testimonials" or "آراء العملاء".
+
+## Rating stars
+
+Rating display uses the Salla web component:
+
+```twig
+<salla-rating-stars class="flex" size="small" value="{{ item.stars }}"></salla-rating-stars>
+```
+
+- Small size variant
+- Dynamic value from testimonial data
+- Flexbox layout alignment
+
+## Accessibility
+
+- Semantic `<h1>` for section title
+- Semantic `<h2>` for customer names
+- Proper alt text for avatars
+- Fallback alt text pattern: "testimonial-{index}"
+- SVG includes `<title>` element
+
+## Responsive design
+
+The component is fully responsive:
+- Container constrains width
+- Single testimonial per view
+- Centered alignment
+- Text sizing adjusts: `text-xs xs:text-sm`
+- Fixed slide width of 830px with overflow handling
+
+<Tip>
+  Use genuine customer feedback with real names and photos (with permission) for authenticity. The 68×68 pixel avatar size ensures crisp display across all devices.
+</Tip>
+
+<Note>
+  Testimonials auto-play by default, creating an engaging showcase of customer satisfaction. You can display up to 30 testimonials in the carousel.
+</Note>

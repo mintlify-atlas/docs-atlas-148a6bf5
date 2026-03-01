@@ -1,0 +1,208 @@
+---
+title: Cart page
+description: Documentation for the shopping cart page template
+---
+
+The cart page displays items added to the shopping cart and allows customers to update quantities, apply coupons, and proceed to checkout.
+
+## Template location
+
+```
+src/views/pages/cart.twig
+```
+
+## Cart object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `cart.id` | string | Unique cart identifier |
+| `cart.items` | array | Array of cart items |
+| `cart.sub_total` | float | Sum of items price without shipping |
+| `cart.total` | float | Final cart total |
+| `cart.discount` | float | Total discount amount |
+| `cart.tax_amount` | float | Tax amount |
+| `cart.coupon` | string | Applied coupon code |
+| `cart.is_require_shipping` | bool | Whether cart requires shipping |
+| `cart.has_shipping` | bool | Whether shipping company is selected |
+| `cart.real_shipping_cost` | float | Actual shipping cost |
+
+### Free shipping bar
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `cart.free_shipping_bar.minimum_amount` | float | Minimum amount for free shipping |
+| `cart.free_shipping_bar.has_free_shipping` | bool | Whether free shipping is achieved |
+| `cart.free_shipping_bar.percent` | float | Progress percentage (0-100) |
+| `cart.free_shipping_bar.remaining` | float | Remaining amount for free shipping |
+
+## Cart item object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `item.id` | int | Cart item ID |
+| `item.product_id` | int | Product ID |
+| `item.product_name` | string | Product name |
+| `item.product_image` | string | Product image URL |
+| `item.url` | string | Product URL |
+| `item.quantity` | int | Item quantity |
+| `item.type` | string | Product type |
+| `item.price` | Money | Item price |
+| `item.total` | Money | Item total (price × quantity) |
+| `item.product_price` | MoneyTaxable | Original product price |
+| `item.is_available` | bool | Whether item is still available |
+| `item.is_hidden_quantity` | bool | Whether quantity field is hidden |
+| `item.can_add_note` | bool | Whether notes can be added |
+| `item.can_upload_file` | bool | Whether files can be uploaded |
+
+### Item offers
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `item.offer` | object | Applied offer |
+| `item.offer.discount` | float | Discount amount |
+| `item.offer.is_free` | bool | Whether item is free |
+| `item.offer.names` | string | Offer name/description |
+
+## Code examples
+
+### Display cart items
+
+```twig
+{% for item in cart.items %}
+  <div class="cart-item">
+    <img src="{{ item.product_image }}" alt="{{ item.product_name }}">
+    <h3>{{ item.product_name }}</h3>
+    <p>{{ item.price|money }}</p>
+    
+    <salla-quantity-input 
+      cart-item-id="{{ item.id }}"
+      max="{{ item.max_quantity }}"
+      value="{{ item.quantity }}"
+      name="quantity">
+    </salla-quantity-input>
+    
+    <p>Total: {{ item.total|money }}</p>
+  </div>
+{% endfor %}
+```
+
+### Update cart item
+
+```twig
+<form onchange="salla.form.onChange('cart.updateItem', event)" id="item-{{ item.id }}">
+  <input type="hidden" name="id" value="{{ item.id }}">
+  
+  <salla-quantity-input 
+    cart-item-id="{{ item.id }}"
+    value="{{ item.quantity }}"
+    name="quantity">
+  </salla-quantity-input>
+</form>
+```
+
+### Delete cart item
+
+```twig
+<salla-button
+  onclick="salla.cart.deleteItem('{{ item.id }}').then(() => document.querySelector('#item-{{ item.id }}').remove())">
+  <i class="sicon-cancel"></i>
+</salla-button>
+```
+
+### Free shipping progress
+
+```twig
+{% if cart.free_shipping_bar %}
+  <div class="free-shipping-bar">
+    {% set is_free = cart.free_shipping_bar.has_free_shipping %}
+    
+    <p>
+      {% if is_free %}
+        {{ trans('pages.cart.has_free_shipping') }}
+      {% else %}
+        {{ trans('pages.cart.free_shipping_alert', {
+          'amount': cart.free_shipping_bar.remaining|money
+        }) }}
+      {% endif %}
+    </p>
+    
+    <div class="progress-bar">
+      <div style="width:{{ cart.free_shipping_bar.percent }}%"></div>
+    </div>
+  </div>
+{% endif %}
+```
+
+### Apply coupon
+
+```twig
+<div class="coupon-section">
+  <input 
+    type="text" 
+    id="coupon-input"
+    name="coupon"
+    value="{{ cart.coupon }}"
+    {{ cart.coupon ? 'disabled' : '' }}
+    placeholder="{{ trans('pages.cart.coupon_placeholder') }}">
+  
+  <salla-button 
+    id="coupon-btn"
+    class="{{ cart.coupon ? 'has-coupon' : 'has-not-coupon' }}">
+    {{ trans('pages.cart.save_coupon') }}
+  </salla-button>
+</div>
+```
+
+### Cart summary
+
+```twig
+<div class="cart-summary">
+  <div class="summary-row">
+    <span>{{ trans('pages.cart.items_total') }}</span>
+    <b>{{ cart.sub_total|money }}</b>
+  </div>
+  
+  {% if cart.has_shipping %}
+    <div class="summary-row">
+      <span>{{ trans('pages.cart.shipping_cost') }}</span>
+      <b>{{ cart.real_shipping_cost|money }}</b>
+    </div>
+  {% endif %}
+  
+  {% if cart.total_discount %}
+    <div class="summary-row">
+      <span>{{ trans('pages.cart.discount') }}</span>
+      <b>- {{ cart.total_discount|money }}</b>
+    </div>
+  {% endif %}
+  
+  {% if cart.tax_amount %}
+    <div class="summary-row">
+      <span>{{ trans('pages.cart.VAT_tax_amount') }}</span>
+      <b>{{ cart.tax_amount|money }}</b>
+    </div>
+  {% endif %}
+  
+  <div class="summary-row total">
+    <span>{{ trans('pages.cart.final_total') }}</span>
+    <b>{{ cart.total|money }}</b>
+  </div>
+  
+  <salla-button id="cart-submit" width="wide">
+    {{ trans('pages.cart.complete_order') }}
+  </salla-button>
+</div>
+```
+
+### Show item offers
+
+```twig
+{% if item.offer %}
+  <span class="item-regular-price">{{ item.product_price|money }}</span>
+  <span class="offer-name">{{ item.offer.names }}</span>
+{% endif %}
+```
+
+<Note>
+The cart page supports dynamic updates through the Salla API. Use `salla.form.onChange('cart.updateItem', event)` for automatic updates when quantities change.
+</Note>

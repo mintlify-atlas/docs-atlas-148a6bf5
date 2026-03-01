@@ -1,0 +1,193 @@
+---
+title: Getting started
+description: Quick overview of Theme Raed and what you need to begin developing
+---
+
+# Getting started with Theme Raed
+
+Theme Raed is the starting point for developers to design themes for merchant stores on the Salla Platform. It allows you to not only design Salla themes with custom HTML/CSS/JS files and reusable custom UI components, but also to build custom actions that trigger JS events and hooks.
+
+## What is Theme Raed?
+
+Theme Raed is the default starter theme that comes bundled with Twilight, Salla's powerful themes engine. It provides:
+
+- A complete theme structure with organized directories
+- Pre-built components for common e-commerce features
+- Customizable templates using Twig
+- Modern styling with TailwindCSS
+- JavaScript functionality with Webpack bundling
+- Multi-language support (Arabic and English)
+
+## Prerequisites
+
+Before you start developing with Theme Raed, make sure you have:
+
+<Steps>
+  <Step title="Technical knowledge">
+    Basic understanding of:
+    - HTML, CSS, and JavaScript
+    - [Twig Template Engine](https://twig.symfony.com/)
+    - Command line interface
+  </Step>
+  
+  <Step title="Salla Partner account">
+    Create a partner account at [Salla Partners Portal](https://salla.partners/) to:
+    - Create demo stores for testing
+    - Publish and manage your themes
+    - Access theme configuration tools
+  </Step>
+  
+  <Step title="GitHub account">
+    A [GitHub](https://github.com) account for:
+    - Syncing your theme code
+    - Version control
+    - Collaboration with team members
+  </Step>
+  
+  <Step title="Salla CLI">
+    Install the [Salla CLI](https://www.npmjs.com/package/@salla.sa/cli) tool:
+    
+    ```bash
+    npm install -g @salla.sa/cli
+    ```
+    
+    The CLI enables theme preview, development, and deployment.
+  </Step>
+</Steps>
+
+<Note>
+  You'll need Node.js and npm installed on your system to use the Salla CLI and run the development tools.
+</Note>
+
+## Directory structure
+
+Theme Raed follows a well-organized structure for easy development:
+
+```
++---src
+    +---assets
+    |   +---images      # Theme images and icons
+    |   +---js          # JavaScript files
+    |   +---styles      # SCSS/CSS stylesheets
+    +---locales
+    |       ar.json     # Arabic translations
+    |       en.json     # English translations
+    +---views
+        +---components  # Reusable UI components
+        |   +---footer
+        |   +---header
+        |   +---home
+        |   +---product
+        +---layouts
+        |       master.twig  # Main layout template
+        +---pages       # Page templates
+            |   cart.twig
+            |   index.twig
+            |   loyalty.twig
+            |   page-single.twig
+            |   thank-you.twig
+            +---blog
+            |       index.twig
+            |       single.twig
+            +---brands
+            |       index.twig
+            |       single.twig
+            +---customer
+            |   |   notifications.twig
+            |   |   profile.twig
+            |   |   wishlist.twig
+            |   +---orders
+            |           index.twig
+            |           single.twig
+            +---partials
+            |   |   single-comment.twig
+            |   +---product
+            |           card-full-image.twig
+            |           card-mini.twig
+            |           card.twig
+            |           options.twig
+            |           slider.twig
+            +---product
+                    index.twig
+                    single.twig
+```
+
+### Key directories explained
+
+<CardGroup cols={2}>
+  <Card title="assets/" icon="folder">
+    Contains all static assets including images, JavaScript, and stylesheets
+  </Card>
+  <Card title="locales/" icon="language">
+    Translation files for multi-language support (Arabic and English)
+  </Card>
+  <Card title="views/components/" icon="puzzle-piece">
+    Reusable UI components for headers, footers, products, and home sections
+  </Card>
+  <Card title="views/pages/" icon="file">
+    Complete page templates for cart, products, blog, customer area, and more
+  </Card>
+</CardGroup>
+
+## Theme configuration
+
+The `twilight.json` file is the heart of your theme configuration. It defines:
+
+- Theme name and metadata
+- Enabled features (mega-menu, fonts, colors, breadcrumb, etc.)
+- Component definitions and settings
+- Custom theme options
+
+```json twilight.json (excerpt)
+{
+  "name": {
+    "ar": "رائد",
+    "en": "Theme Raed"
+  },
+  "repository": "https://github.com/SallaApp/theme-raed",
+  "features": [
+    "mega-menu",
+    "fonts",
+    "color",
+    "breadcrumb",
+    "component-featured-products",
+    "component-products-slider",
+    "component-testimonials"
+  ]
+}
+```
+
+## Build scripts
+
+Theme Raed uses Webpack for building and bundling. The available npm scripts are:
+
+```json package.json
+{
+  "scripts": {
+    "production": "webpack --mode production",
+    "prod": "webpack --mode production",
+    "development": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
+  }
+}
+```
+
+- **`npm run production`** - Build optimized files for production
+- **`npm run development`** - Build files for development with source maps
+- **`npm run watch`** - Watch for file changes and rebuild automatically
+
+<Warning>
+  This theme uses `pnpm` as its package manager. The preinstall script enforces this, so make sure to install dependencies with `pnpm install` instead of `npm install`.
+</Warning>
+
+## Next steps
+
+Now that you understand what Theme Raed is and what you need, proceed to the installation guide:
+
+<Card
+  title="Installation guide"
+  icon="download"
+  href="/installation"
+>
+  Learn how to install Theme Raed via Salla Partners Portal or Salla CLI
+</Card>

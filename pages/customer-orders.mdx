@@ -1,0 +1,270 @@
+---
+title: Customer orders page
+description: Documentation for customer order list and order details pages
+---
+
+Customers can view their order history and detailed information about each order.
+
+## Template locations
+
+### Order list page
+
+```
+src/views/pages/customer/orders/index.twig
+```
+
+### Order details page
+
+```
+src/views/pages/customer/orders/single.twig
+```
+
+## Order list page
+
+### Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+| `orders` | Collection | Collection of orders |
+
+### Code example
+
+```twig
+{% if orders|length %}
+  <salla-orders></salla-orders>
+{% else %}
+  <div class="no-content-placeholder">
+    <i class="sicon-packed-box"></i>
+    <p>{{ trans('pages.orders.non_orders') }}</p>
+  </div>
+{% endif %}
+```
+
+## Order details page
+
+### Order object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.id` | int | Order ID |
+| `order.reference_id` | int | Customer-facing order number |
+| `order.created_at` | date | Order creation date |
+| `order.sub_total` | float | Order subtotal |
+| `order.total` | float | Order total |
+| `order.cod_cost` | float | Cash on delivery cost |
+| `order.can_reorder` | bool | Whether order can be reordered |
+| `order.can_cancel` | bool | Whether order can be cancelled |
+| `order.can_rate` | bool | Whether order can be rated |
+| `order.cancel_url` | string | URL to cancel order |
+| `order.payment_url` | string | URL to complete payment |
+| `order.is_pending_payment` | bool | Whether payment is pending |
+| `order.pending_payment_ends_in` | int | Seconds until pending payment expires |
+
+### Order status
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.status.name` | string | Status name |
+| `order.status.icon` | string | Status icon class |
+| `order.status.color` | string | Status color |
+
+### Order shipping
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.shipping.id` | int | Shipping method ID |
+| `order.shipping.name` | string | Shipping company name |
+| `order.shipping.number` | string | Tracking number |
+| `order.shipping.logo` | string | Shipping company logo URL |
+| `order.shipping.cost` | Money | Shipping cost |
+| `order.shipments` | array | Array of shipment objects |
+
+### Order tax
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.tax.amount` | float | Tax amount |
+| `order.tax.percent` | float | Tax percentage |
+
+### Order items
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.items` | array | Array of order items |
+| `order.items[].name` | string | Item name |
+| `order.items[].image` | string | Item image URL |
+| `order.items[].price` | TaxableMoney | Item price |
+| `order.items[].quantity` | int | Item quantity |
+| `order.items[].total` | TaxableMoney | Item total |
+| `order.items[].product` | Product | Product object (nullable) |
+| `order.items[].note` | string | Item note |
+| `order.items[].options` | array | Item options |
+| `order.items[].rating` | Rating | Item rating |
+
+### Order rating
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `order.rating.store` | Rating | Store rating |
+| `order.rating.shipping` | Rating | Shipping rating |
+| `order.is_rated` | bool | Whether order is rated |
+
+## Code examples
+
+### Display order header
+
+```twig
+<div class="order-header">
+  <div class="order-date">
+    <span>{{ trans('pages.orders.date') }}</span>
+    <b>{{ order.created_at|date|number }}</b>
+  </div>
+  
+  <div class="order-status">
+    <span style="color: {{ order.status.color }}">
+      <i class="{{ order.status.icon }}"></i>
+      {{ order.status.name }}
+    </span>
+  </div>
+</div>
+```
+
+### Display order items
+
+```twig
+{% for package in order.packages %}
+  <div class="order-package">
+    {% if package.shipping_company %}
+      <div class="shipping-info">
+        <span>{{ package.shipping_company.name }}</span>
+        {% if package.shipping_company.number %}
+          <span>{{ trans('pages.orders.shipment_no') }}: 
+            {{ package.shipping_company.number|raw }}
+          </span>
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    {% for item in package.items %}
+      <div class="order-item" data-order-item-id="{{ item.id }}">
+        <img src="{{ item.image }}" alt="{{ item.name }}">
+        <div class="item-details">
+          <h3>{{ item.name }}</h3>
+          <p>{{ trans('pages.products.quantity') }}: {{ item.quantity }}</p>
+          <p>{{ trans('pages.products.price') }}: {{ item.price|money }}</p>
+          <p>{{ trans('pages.orders.total') }}: {{ item.total|money }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+```
+
+### Order totals
+
+```twig
+<salla-order-totals-card order="{{ order }}"></salla-order-totals-card>
+```
+
+### Pending payment
+
+```twig
+{% if order.is_pending_payment %}
+  {% if order.pending_payment_ends_in == 0 %}
+    <span class="text-red-500">
+      {{ trans('pages.orders.pending_payment_expired') }}
+    </span>
+  {% else %}
+    <salla-button href="{{ order.payment_url }}">
+      <i class="sicon-wallet"></i>
+      {{ trans('pages.orders.finish_payment') }}
+    </salla-button>
+  {% endif %}
+{% endif %}
+```
+
+### Reorder button
+
+```twig
+{% if order.can_reorder %}
+  <salla-button 
+    onclick="document.querySelector('#reorder-modal').open()">
+    <i class="sicon-rotate"></i>
+    {{ trans('pages.orders.reorder') }}
+  </salla-button>
+  
+  <salla-modal 
+    id="reorder-modal"
+    modal-title="{{ trans('pages.orders.reorder') }}"
+    sub-title="{{ trans('pages.orders.reorder_confirmation') }}">
+    <div slot="footer">
+      <salla-button id="btn-reorder">
+        {{ trans('common.elements.ok') }}
+      </salla-button>
+    </div>
+  </salla-modal>
+{% endif %}
+```
+
+### Cancel order
+
+```twig
+{% if order.can_cancel %}
+  <salla-button 
+    color="danger"
+    onclick="document.querySelector('#modal-order-cancel').open()">
+    <i class="sicon-cancel-circle"></i>
+    {{ trans('pages.orders.cancel') }}
+  </salla-button>
+  
+  <salla-modal 
+    id="modal-order-cancel"
+    icon-style="error"
+    modal-title="{{ trans('common.elements.warning') }}"
+    sub-title="{{ trans('pages.orders.cancel_confirmation') }}">
+    <div slot="footer">
+      <salla-button id="confirm-cancel" color="danger">
+        {{ trans('common.elements.ok') }}
+      </salla-button>
+    </div>
+  </salla-modal>
+{% endif %}
+```
+
+### Rate order
+
+```twig
+{% if order.can_rate %}
+  <div class="rating-section">
+    <h2>{{ trans('pages.order.order_rating_title') }}</h2>
+    <p>{{ trans('pages.order.order_rating_message') }}</p>
+    <salla-button onclick="salla.event.dispatch('rating::open')">
+      {{ trans('pages.rating.rate') }}
+    </salla-button>
+  </div>
+  
+  <salla-rating-modal></salla-rating-modal>
+{% endif %}
+```
+
+## Hooks
+
+### Order list hooks
+
+```twig
+{% hook 'customer:orders.index.items.start' %}
+{% hook 'customer:orders.index.items.end' %}
+```
+
+### Order details hooks
+
+```twig
+{% hook 'customer:orders.single.details.start' %}
+{% hook 'customer:orders.single.details.end' %}
+```
+
+<Note>
+Both order pages extend the `layouts.customer` layout, which provides a customer account sidebar with navigation.
+</Note>

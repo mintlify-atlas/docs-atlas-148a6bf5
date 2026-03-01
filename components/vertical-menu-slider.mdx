@@ -1,0 +1,161 @@
+---
+title: Vertical menu slider
+description: Products slider with background image and overlay text
+---
+
+The vertical menu slider (also known as slider products with header) displays an animated product carousel with a prominent background image and customizable header content.
+
+## Component usage
+
+Add a slider with background to your home page:
+
+```twig
+<section id="best-offers-{{ position }}-slider" 
+  class="s-block s-block--best-offers container overflow-hidden">
+  <div class="slider-products-with-header">
+    <div class="header-section" style="background-image: url({{ background }});">
+      <div class="content">
+        {% if title %}
+          <h2 class="text-2xl font-bold">{{ title }}</h2>
+        {% endif %}
+        {% if description %}
+          <p class="text-base">{{ description }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if products|length %}
+      <salla-products-slider
+        source="{{ products.source }}"
+        limit="{{ limit }}"
+        autoplay
+        source-value="{{ products.source_value|json_encode }}"
+        display-all-url="{{ display_all_url }}"
+        slider-id="slider-with-bg-{{ position }}"
+      ></salla-products-slider>
+    {% endif %}
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="background" type="string" required>
+  Background image URL for the header section (recommended size: 1233×500 pixels)
+</ParamField>
+
+<ParamField path="title" type="string">
+  Main heading displayed over the background image
+</ParamField>
+
+<ParamField path="description" type="string">
+  Descriptive text displayed below the title
+</ParamField>
+
+<ParamField path="products.source" type="string" required>
+  Product source type: `latest`, `most_sales`, `chosen_products`, `category`, `brand`
+</ParamField>
+
+<ParamField path="products.source_value" type="array">
+  Array of IDs when using specific sources (products, categories, or brands)
+</ParamField>
+
+<ParamField path="limit" type="integer">
+  Maximum number of products to display (recommended maximum: 8)
+</ParamField>
+
+<ParamField path="display_all_url" type="string">
+  URL for "View All" button. If empty, button is hidden
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting position for component on page (starts from zero)
+</ParamField>
+
+## Example
+
+```twig
+<section class="s-block s-block--best-offers container overflow-hidden">
+  <div class="slider-products-with-header">
+    <div class="header-section" style="background-image: url(https://cdn.example.com/summer-bg.jpg);">
+      <div class="content">
+        <h2 class="text-2xl font-bold">Summer Collection</h2>
+        <p class="text-base">Discover our latest summer arrivals with special discounts</p>
+      </div>
+    </div>
+    
+    <salla-products-slider
+      source="category"
+      source-value="[123]"
+      limit="8"
+      autoplay
+      display-all-url="/category/summer-collection"
+      slider-id="summer-slider"
+    ></salla-products-slider>
+  </div>
+</section>
+```
+
+## Configuration in twilight.json
+
+The background image is configured as a component field:
+
+```json
+{
+  "components": [
+    {
+      "key": "9a758d20-2ce4-4782-91fe-c04466464588",
+      "title": {
+        "en": "Animated products with a background",
+        "ar": "منتجات متحركة مع خلفية"
+      },
+      "icon": "sicon-list-play",
+      "path": "home.slider-products-with-header",
+      "fields": [
+        {
+          "type": "string",
+          "id": "background",
+          "format": "image",
+          "label": "Background image",
+          "description": "Recommended size: 1233×500 pixels",
+          "required": true
+        },
+        {
+          "type": "string",
+          "id": "title",
+          "format": "text",
+          "label": "Main title",
+          "multilanguage": true,
+          "maxLength": 80
+        },
+        {
+          "type": "string",
+          "id": "description",
+          "format": "textarea",
+          "label": "Description",
+          "multilanguage": true,
+          "maxLength": 256
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Layout structure
+
+The component consists of two main sections:
+
+1. **Header section** - Background image with overlay text
+2. **Products section** - Animated slider showing selected products
+
+<Note>
+  This component combines visual branding (background image with text) with product promotion, making it ideal for seasonal campaigns or special collections.
+</Note>
+
+## Recommended image specifications
+
+- Width: 1233 pixels
+- Height: 500 pixels
+- Format: JPG or WebP
+- Content: Ensure important content is centered to remain visible across all screen sizes

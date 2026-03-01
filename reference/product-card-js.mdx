@@ -1,0 +1,330 @@
+---
+title: Product card JS
+description: Custom web component for rendering product cards with various layouts and features
+---
+
+The `ProductCard` custom element provides a flexible, feature-rich product card component that supports multiple layouts, wishlist integration, donation products, and dynamic pricing.
+
+## Overview
+
+The `custom-salla-product-card` web component renders product information with support for:
+
+- Multiple layout variations (vertical, horizontal, full image, minimal)
+- Wishlist functionality
+- Product badges and promotions
+- Donation products with progress bars
+- Special products with countdown timers
+- Responsive pricing display
+- Product ratings
+- Add to cart integration
+
+## Usage
+
+```html
+<custom-salla-product-card 
+  product='{"id": 123, "name": "Product Name", ...}'
+  horizontal
+  shadowOnHover
+></custom-salla-product-card>
+```
+
+## Attributes
+
+<ParamField path="product" type="string" required>
+  JSON string containing product data
+</ParamField>
+
+<ParamField path="horizontal" type="boolean">
+  Renders the card in horizontal layout
+</ParamField>
+
+<ParamField path="shadowOnHover" type="boolean">
+  Adds shadow effect on hover
+</ParamField>
+
+<ParamField path="hideAddBtn" type="boolean">
+  Hides the add to cart button
+</ParamField>
+
+<ParamField path="fullImage" type="boolean">
+  Renders card with full-width image background
+</ParamField>
+
+<ParamField path="minimal" type="boolean">
+  Renders minimal card layout
+</ParamField>
+
+<ParamField path="isSpecial" type="boolean">
+  Renders special product card with countdown timer
+</ParamField>
+
+<ParamField path="showQuantity" type="boolean">
+  Displays remaining quantity badge
+</ParamField>
+
+## Product data structure
+
+The `product` attribute expects a JSON object with the following structure:
+
+```javascript
+{
+  id: 123,
+  name: "Product Name",
+  url: "/product/product-name",
+  price: 99.99,
+  regular_price: 129.99,
+  sale_price: 99.99,
+  starting_price: null,
+  is_on_sale: true,
+  promotion_title: "Sale",
+  quantity: 50,
+  is_out_of_stock: false,
+  status: "sale",
+  type: "product",
+  image: {
+    url: "https://...",
+    alt: "Product image"
+  },
+  subtitle: "Product subtitle",
+  rating: {
+    stars: 4.5
+  },
+  discount_ends: "2026-12-31",
+  donation: {
+    can_donate: true,
+    custom_amount_enabled: true
+  },
+  preorder: {
+    label: "Pre-order"
+  },
+  has_preorder_campaign: false,
+  add_to_cart_label: null
+}
+```
+
+## Layout variations
+
+### Vertical card (default)
+
+```html
+<custom-salla-product-card 
+  product='{...}'
+></custom-salla-product-card>
+```
+
+### Horizontal card
+
+```html
+<custom-salla-product-card 
+  product='{...}'
+  horizontal
+></custom-salla-product-card>
+```
+
+### Full image card
+
+```html
+<custom-salla-product-card 
+  product='{...}'
+  fullImage
+></custom-salla-product-card>
+```
+
+### Minimal card
+
+```html
+<custom-salla-product-card 
+  product='{...}'
+  minimal
+></custom-salla-product-card>
+```
+
+### Special product card
+
+```html
+<custom-salla-product-card 
+  product='{...}'
+  isSpecial
+  showQuantity
+></custom-salla-product-card>
+```
+
+## Key methods
+
+### getProductBadge
+
+Determines and returns the appropriate badge HTML for the product.
+
+Priority order:
+1. Pre-order label
+2. Promotion title
+3. Quantity remaining (if `showQuantity` is true)
+4. Out of stock badge
+
+### getProductPrice
+
+Generates the price display HTML based on product pricing:
+
+- Sale price with strikethrough regular price
+- Starting price for products with variants
+- Regular price
+
+```javascript
+// Called internally during render
+this.getProductPrice();
+```
+
+### getAddButtonLabel
+
+Returns the appropriate button label based on product status:
+
+- "Pre-order now" for pre-order products
+- "Book now" for booking products
+- "Add to cart" for regular products
+- "Out of stock" for unavailable products
+- "Donation exceed" for donation products
+
+### formatDate
+
+Formats a date string for countdown timers.
+
+<ParamField path="date" type="string" required>
+  Date string to format
+</ParamField>
+
+```javascript
+formatDate('2026-12-31'); // Returns: "2026-12-31"
+```
+
+### initCircleBar
+
+Initializes the circular progress bar for special products showing quantity.
+
+```javascript
+// Called automatically for special products with quantity
+this.initCircleBar();
+```
+
+## Features
+
+### Wishlist integration
+
+The product card automatically integrates with Salla's wishlist functionality:
+
+```javascript
+// Wishlist toggle button
+onclick="salla.wishlist.toggle(${this.product.id})"
+```
+
+The heart icon updates automatically based on wishlist status.
+
+### Donation products
+
+For donation products, the card displays:
+
+- Progress bar showing donation progress
+- Custom amount input field (if enabled)
+- Donation-specific messaging
+
+```html
+<custom-salla-product-card 
+  product='{"donation": {"can_donate": true, "custom_amount_enabled": true}}'
+></custom-salla-product-card>
+```
+
+### Product ratings
+
+Displays star rating if available:
+
+```html
+<div class="s-product-card-rating">
+  <i class="sicon-star2"></i>
+  <span>4.5</span>
+</div>
+```
+
+### Countdown timer
+
+For special products with `discount_ends` date:
+
+```html
+<salla-count-down 
+  date="2026-12-31" 
+  end-of-day="true" 
+  boxed="true"
+  labeled="true"
+/>
+```
+
+## Event handling
+
+### Theme ready event
+
+The component waits for the theme to be ready before initializing:
+
+```javascript
+if (window.app?.status === 'ready') {
+  this.onReady();
+} else {
+  document.addEventListener('theme::ready', () => this.onReady());
+}
+```
+
+### Language loading
+
+Translations are loaded dynamically:
+
+```javascript
+salla.lang.onLoaded(() => {
+  this.remained = salla.lang.get('pages.products.remained');
+  this.addToCart = salla.lang.get('pages.cart.add_to_cart');
+  this.render();
+});
+```
+
+## Styling classes
+
+The component applies various CSS classes based on configuration:
+
+- `s-product-card-entry` - Base class
+- `s-product-card-vertical` - Vertical layout
+- `s-product-card-horizontal` - Horizontal layout
+- `s-product-card-full-image` - Full image layout
+- `s-product-card-minimal` - Minimal layout
+- `s-product-card-special` - Special product
+- `s-product-card-donation` - Donation product
+- `s-product-card-shadow` - Shadow on hover
+- `s-product-card-out-of-stock` - Out of stock state
+- `s-product-card-fit-height` - Fit image height
+
+## JavaScript integration
+
+```javascript
+// Define the custom element
+customElements.define('custom-salla-product-card', ProductCard);
+
+// Use in HTML
+const card = document.createElement('custom-salla-product-card');
+card.setAttribute('product', JSON.stringify(productData));
+card.setAttribute('horizontal', '');
+document.querySelector('.product-grid').appendChild(card);
+```
+
+## Security
+
+The component includes HTML escaping to prevent XSS attacks:
+
+```javascript
+escapeHTML(str = '') {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+```
+
+<Note>
+Product names and image alt text are automatically escaped to prevent security vulnerabilities.
+</Note>

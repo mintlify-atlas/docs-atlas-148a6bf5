@@ -1,0 +1,181 @@
+---
+title: Square photos
+description: Grid of square images with optional text overlays and links
+---
+
+The square photos component displays a responsive grid of square images with optional text overlays and customizable background sizing.
+
+## Component usage
+
+Add square photo grid to your home page:
+
+```twig
+<section class="s-block s-block--banners container">
+  {% if title %}
+    <div class="s-block__title">
+      <div class="right-side">
+        <h2>{{ title }}</h2>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="grid {{ items|length <= 3 ? 'one-row md:grid-cols-' ~ items|length : 'md:grid-cols-3 two-row' }} grid-flow-row gap-3 sm:gap-8">
+    {% for item in items %}
+      <a class="banner-entry square-photos {{ item.text ? 'has-overlay with-hover' : '' }}" 
+         href="{{ item.url }}" 
+         {% if item.link_type == 'external_link' %}target="_blank"{% endif %}>
+        <div class="lazy__bg lazy bg-no-repeat" 
+             data-bg="{{ item.image.url }}"
+             style="background-size: {{ theme.settings.get('squar_photo_bg_image_size', 'contain') }};"
+        ></div>
+        {% if item.text %}
+          <h3 class="text-with-border"><span>{{ item.text }}</span></h3> 
+        {% endif %}
+      </a>
+    {% endfor %}
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="title" type="string">
+  Section heading displayed above the photo grid
+</ParamField>
+
+<ParamField path="items" type="array" required>
+  Array of image objects
+</ParamField>
+
+<ParamField path="items[].url" type="string" required>
+  Destination URL when the image is clicked
+</ParamField>
+
+<ParamField path="items[].link_type" type="string">
+  Type of link:
+  - `category` - Link to a category page
+  - `product` - Link to a product page
+  - `offers` - Link to offers page
+  - `page` - Link to a custom page
+  - `external_link` - Link to external URL (opens in new tab)
+  - `brand` - Link to a brand page
+</ParamField>
+
+<ParamField path="items[].image.url" type="string" required>
+  URL of the image
+</ParamField>
+
+<ParamField path="items[].image.alt" type="string">
+  Alternative text for the image (for accessibility)
+</ParamField>
+
+<ParamField path="items[].text" type="string">
+  Optional text overlay displayed on the image with border styling
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement (starts from zero)
+</ParamField>
+
+## Example with 3 items
+
+```twig
+<section class="s-block s-block--banners container">
+  <div class="s-block__title">
+    <div class="right-side">
+      <h2>Shop by Category</h2>
+    </div>
+  </div>
+
+  <div class="grid one-row md:grid-cols-3 grid-flow-row gap-3 sm:gap-8">
+    <a class="banner-entry square-photos has-overlay with-hover" href="/category/electronics">
+      <div class="lazy__bg lazy bg-no-repeat" 
+           data-bg="https://cdn.example.com/electronics.jpg"
+           style="background-size: contain;"
+      ></div>
+      <h3 class="text-with-border"><span>Electronics</span></h3>
+    </a>
+    
+    <a class="banner-entry square-photos has-overlay with-hover" href="/category/fashion">
+      <div class="lazy__bg lazy bg-no-repeat" 
+           data-bg="https://cdn.example.com/fashion.jpg"
+           style="background-size: contain;"
+      ></div>
+      <h3 class="text-with-border"><span>Fashion</span></h3>
+    </a>
+    
+    <a class="banner-entry square-photos" href="/category/home">
+      <div class="lazy__bg lazy bg-no-repeat" 
+           data-bg="https://cdn.example.com/home.jpg"
+           style="background-size: contain;"
+      ></div>
+    </a>
+  </div>
+</section>
+```
+
+## Grid layout
+
+The component automatically adjusts the grid layout:
+
+- 3 or fewer items: Single row with columns matching item count
+- More than 3 items: Multiple rows with 3 columns on desktop
+- Mobile: Automatically adjusts to fewer columns
+
+## Background image sizing
+
+The component uses the `squar_photo_bg_image_size` theme setting:
+
+- `contain` - Shows full image centered without cropping (default)
+- `cover` - Fills entire area while maintaining aspect ratio
+
+This setting is configured in `twilight.json`:
+
+```json
+{
+  "settings": [
+    {
+      "id": "squar_photo_bg_image_size",
+      "type": "items",
+      "format": "dropdown-list",
+      "selected": [{
+        "value": "contain"
+      }],
+      "options": [
+        {
+          "label": "Cover",
+          "value": "cover"
+        },
+        {
+          "label": "Contain",
+          "value": "contain"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Lazy loading
+
+Images use lazy loading with the `lazy__bg` class:
+
+- Images load only when they enter the viewport
+- Improves initial page load performance
+- Reduces bandwidth usage
+
+<Note>
+  For best results, use square images with consistent dimensions. The component applies the square aspect ratio automatically.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-square-photos"
+  ]
+}
+```

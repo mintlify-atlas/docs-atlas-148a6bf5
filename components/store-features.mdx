@@ -1,0 +1,161 @@
+---
+title: Store features
+description: Highlight key store features with icons and descriptions
+---
+
+The store features component displays a grid of your store's key features or benefits with icons and descriptions.
+
+## Component usage
+
+Add store features to your home page:
+
+```twig
+<section class="s-block s-block--features container">
+  <div class="grid grid-cols-[repeat(2,minmax(0,1fr))] md:grid-cols-[repeat(3,minmax(0,1fr))] gap-4 sm:gap-6 xl:gap-8">
+    {% for item in items %}
+      <div class="s-block--features__item">
+        <div class="feature-icon">
+          <i class="{{ item.icon }}"></i>
+        </div>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.text }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="items" type="array" required>
+  Array of feature objects (maximum 3 items for optimal display)
+</ParamField>
+
+<ParamField path="items[].icon" type="string" required>
+  Salla icon CSS class (e.g., `sicon-shopping-bag`, `sicon-truck`, `sicon-shield-check`)
+</ParamField>
+
+<ParamField path="items[].title" type="string" required>
+  Main heading for the feature
+</ParamField>
+
+<ParamField path="items[].text" type="string" required>
+  Description or subtitle explaining the feature
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement (starts from zero)
+</ParamField>
+
+## Example
+
+```twig
+<section class="s-block s-block--features container">
+  <div class="grid grid-cols-[repeat(2,minmax(0,1fr))] md:grid-cols-[repeat(3,minmax(0,1fr))] gap-4 sm:gap-6 xl:gap-8">
+    <div class="s-block--features__item">
+      <div class="feature-icon">
+        <i class="sicon-truck"></i>
+      </div>
+      <h2>Free Shipping</h2>
+      <p>On orders over 200 SAR</p>
+    </div>
+    
+    <div class="s-block--features__item">
+      <div class="feature-icon">
+        <i class="sicon-shield-check"></i>
+      </div>
+      <h2>Secure Payment</h2>
+      <p>100% secure transactions</p>
+    </div>
+    
+    <div class="s-block--features__item">
+      <div class="feature-icon">
+        <i class="sicon-refresh"></i>
+      </div>
+      <h2>Easy Returns</h2>
+      <p>14-day return policy</p>
+    </div>
+  </div>
+</section>
+```
+
+## Common feature examples
+
+### Shipping benefits
+
+```twig
+{
+  "icon": "sicon-truck",
+  "title": "Fast Delivery",
+  "text": "Same day delivery available"
+}
+```
+
+### Payment security
+
+```twig
+{
+  "icon": "sicon-shield-check",
+  "title": "Secure Checkout",
+  "text": "Protected by SSL encryption"
+}
+```
+
+### Customer support
+
+```twig
+{
+  "icon": "sicon-headset",
+  "title": "24/7 Support",
+  "text": "Always here to help you"
+}
+```
+
+### Money-back guarantee
+
+```twig
+{
+  "icon": "sicon-money-bill-circle",
+  "title": "Money Back",
+  "text": "30-day guarantee"
+}
+```
+
+### Quality assurance
+
+```twig
+{
+  "icon": "sicon-award-ribbon",
+  "title": "Premium Quality",
+  "text": "Certified products only"
+}
+```
+
+## Available Salla icons
+
+Some popular icons for store features:
+
+- `sicon-truck` - Delivery/shipping
+- `sicon-shield-check` - Security/protection
+- `sicon-refresh` - Returns/exchange
+- `sicon-headset` - Customer support
+- `sicon-award-ribbon` - Quality/premium
+- `sicon-money-bill-circle` - Money/payment
+- `sicon-gift` - Gifts/rewards
+- `sicon-discount-star` - Discounts/offers
+
+<Note>
+  The grid automatically adjusts to show 2 columns on mobile and 3 columns on desktop screens.
+</Note>
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-store-features"
+  ]
+}
+```

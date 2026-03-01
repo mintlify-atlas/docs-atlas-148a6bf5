@@ -1,0 +1,199 @@
+---
+title: Brands
+description: Display a grid of brand logos with links to brand pages
+---
+
+## Overview
+
+The brands component displays a responsive grid of brand logos, allowing customers to browse products by brand. It includes an optional title and "View All" button to link to the complete brands page.
+
+## Location
+
+```
+src/views/components/home/brands.twig
+```
+
+## Component path
+
+```
+home.brands
+```
+
+## Configuration
+
+In `twilight.json`, this component is identified by key `25f6cf26-a53f-4954-9b32-739b311b32c7`.
+
+### Available fields
+
+<ParamField path="title" type="string" maxLength={200}>
+  Section heading displayed above the brand grid. Default: "Browse All Brands" (en) / "تصفح من خلال العلامات التجارية" (ar)
+</ParamField>
+
+<ParamField path="brands" type="items" format="dropdown-list" required>
+  Selected brands to display. Multiple selection, searchable.
+</ParamField>
+
+## Usage example
+
+```twig
+{% component 'home.brands' %}
+```
+
+## Template structure
+
+```twig
+{% set display_all_url = theme.settings.get('is_more_button_enabled') %}
+<section class="s-block s-block--logos-slider s-block--full-bg bg-gray-100 pt-8 sm:pt-12 pb-8 sm:pb-20">
+  <div class="container">
+  
+    {% if component.title or component.show_all %}
+      <div class="s-block__title">
+        {% if component.title %}
+          <div class="right-side">
+            <h2>{{ component.title }}</h2>
+          </div>
+        {% endif %}
+        {% if display_all_url %}
+          <a href="{{ link('brands') }}" class="s-block__display-all">
+            {{ trans('blocks.home.display_all') }} <i class="sicon-arrow-left"></i>
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 {{ component.brands|length > 5 ? 'md:grid-cols-4' : 'md:grid-cols-5' }} grid-flow-row gap-4 lg:gap-8">
+      {% for brand in component.brands %}
+        {% if loop.first or loop.index0%3==0 %}
+          <a href="{{ brand.url }}" class="brand-item {{ component.brands|length > 5 ? 'sm:row-span-2 sm:h-auto' : '' }}">
+            <img class="max-h-full" width="400" height="300" src="{{ brand.logo }}" alt="{{ brand.name }}" />
+          </a>
+        {% else %}
+          <a href="{{ brand.url }}" class="brand-item">
+            <img class="max-h-full" width="400" height="300" src="{{ brand.logo }}" alt="{{ brand.name }}" />
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+```
+
+## Brand object
+
+Each brand in the `component.brands` array contains:
+
+<ParamField path="brand.url" type="string">
+  Link to the brand's product listing page
+</ParamField>
+
+<ParamField path="brand.logo" type="string">
+  Brand logo image URL
+</ParamField>
+
+<ParamField path="brand.name" type="string">
+  Brand name (used for alt text)
+</ParamField>
+
+## Grid layout
+
+The grid adapts based on the number of brands:
+
+### 5 or fewer brands
+
+```twig
+class="grid-cols-2 md:grid-cols-5"
+```
+
+- Mobile: 2 columns
+- Desktop: 5 columns
+- Standard brand item sizing
+
+### More than 5 brands
+
+```twig
+class="grid-cols-2 md:grid-cols-4"
+```
+
+- Mobile: 2 columns
+- Desktop: 4 columns
+- Every 3rd brand spans 2 rows for visual variety
+
+## Featured brand styling
+
+When there are more than 5 brands, some brands span multiple rows:
+
+```twig
+{% if loop.first or loop.index0%3==0 %}
+  <a class="brand-item sm:row-span-2 sm:h-auto">
+{% else %}
+  <a class="brand-item">
+{% endif %}
+```
+
+This creates a visually interesting grid with varying brand sizes.
+
+## Display all button
+
+The "View All" button appears when the theme setting is enabled:
+
+```twig
+{% set display_all_url = theme.settings.get('is_more_button_enabled') %}
+{% if display_all_url %}
+  <a href="{{ link('brands') }}" class="s-block__display-all">
+    {{ trans('blocks.home.display_all') }} <i class="sicon-arrow-left"></i>
+  </a>
+{% endif %}
+```
+
+## Background styling
+
+The component uses a light gray background:
+
+```twig
+class="s-block--full-bg bg-gray-100 pt-8 sm:pt-12 pb-8 sm:pb-20"
+```
+
+### Responsive spacing
+
+- Top padding: `pt-8` (mobile) to `sm:pt-12` (desktop)
+- Bottom padding: `pb-8` (mobile) to `sm:pb-20` (desktop)
+- Gap between brands: `gap-4` (mobile) to `lg:gap-8` (large screens)
+
+## Styling classes
+
+The component uses these main CSS classes:
+
+- `.s-block--logos-slider`: Main container styling
+- `.s-block--full-bg`: Full background treatment
+- `.s-block__title`: Header section with title and "View All" link
+- `.brand-item`: Individual brand container with hover effects
+- `.s-block__display-all`: "View All" link styling
+
+## Accessibility
+
+```twig
+<img class="max-h-full" 
+     width="400" 
+     height="300" 
+     src="{{ brand.logo }}" 
+     alt="{{ brand.name }}" />
+```
+
+- Proper alt text with brand name
+- Semantic `<h2>` for section title
+- Width and height attributes for layout stability
+
+## Image sizing
+
+Brand logos:
+- Maximum height constraint: `max-h-full`
+- Declared dimensions: 400×300 pixels
+- Automatically scales within brand item container
+
+<Tip>
+  For best results, use brand logos with transparent backgrounds and consistent sizing. The grid layout automatically adjusts to highlight featured brands when displaying more than 5.
+</Tip>
+
+<Note>
+  The "View All" button only appears when the `is_more_button_enabled` theme setting is active. This setting is shared across multiple homepage components.
+</Note>

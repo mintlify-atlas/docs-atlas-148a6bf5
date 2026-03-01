@@ -1,0 +1,211 @@
+---
+title: Wishlist page
+description: Documentation for the customer wishlist page template
+---
+
+The wishlist page allows customers to save products they're interested in for future purchase.
+
+## Template location
+
+```
+src/views/pages/customer/wishlist.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+
+## Page structure
+
+The wishlist page uses the `salla-products-list` component with a custom card component:
+
+```twig
+{% extends "layouts.customer" %}
+
+{% block head_scripts %}
+  <script defer src="{{ 'wishlist-card.js'|asset }}"></script>
+{% endblock %}
+
+{% block inner_content %}
+  <div id="wishlist">
+    <salla-products-list 
+      source="wishlist" 
+      row-cards 
+      product-card-component="custom-wishlist-card">
+    </salla-products-list>
+  </div>
+{% endblock %}
+```
+
+## Code examples
+
+### Basic wishlist display
+
+```twig
+<div class="wishlist-container">
+  <salla-products-list source="wishlist"></salla-products-list>
+</div>
+```
+
+### Custom wishlist card
+
+```twig
+<salla-products-list 
+  source="wishlist"
+  row-cards
+  product-card-component="custom-wishlist-card">
+</salla-products-list>
+```
+
+The `custom-wishlist-card` is defined in `wishlist-card.js` and can be customized to match your theme design.
+
+### Empty wishlist state
+
+```twig
+<div id="wishlist">
+  <salla-products-list source="wishlist">
+    <div slot="empty" class="no-content-placeholder">
+      <i class="sicon-heart"></i>
+      <p>{{ trans('pages.wishlist.empty') }}</p>
+      <a href="{{ link('/') }}" class="btn btn--primary">
+        {{ trans('pages.wishlist.continue_shopping') }}
+      </a>
+    </div>
+  </salla-products-list>
+</div>
+```
+
+### Manual wishlist rendering
+
+If you prefer to manually render wishlist items:
+
+```twig
+{% for product in wishlist_products %}
+  <div class="wishlist-item">
+    <a href="{{ product.url }}">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      <h3>{{ product.name }}</h3>
+    </a>
+    
+    <div class="item-details">
+      <span class="price">{{ product.price|money }}</span>
+      
+      {% if product.is_on_sale %}
+        <span class="regular-price">{{ product.regular_price|money }}</span>
+      {% endif %}
+    </div>
+    
+    <div class="item-actions">
+      <salla-button 
+        onclick="salla.wishlist.toggle('{{ product.id }}')">
+        <i class="sicon-trash"></i>
+        {{ trans('pages.wishlist.remove') }}
+      </salla-button>
+      
+      <salla-add-product-button
+        product-id="{{ product.id }}"
+        product-type="{{ product.type }}"
+        product-status="{{ product.status }}">
+        {{ trans('pages.products.add_to_cart') }}
+      </salla-add-product-button>
+    </div>
+  </div>
+{% endfor %}
+```
+
+### Toggle wishlist item
+
+```twig
+<salla-button 
+  class="wishlist-toggle"
+  onclick="salla.wishlist.toggle('{{ product.id }}')">
+  <i class="sicon-heart {{ product.is_in_wishlist ? 'filled' : '' }}"></i>
+</salla-button>
+```
+
+### Add to cart from wishlist
+
+```twig
+<salla-add-product-button
+  product-id="{{ product.id }}"
+  product-type="{{ product.type }}"
+  product-status="{{ product.status }}"
+  amount="{{ product.base_currency_price }}">
+  <i class="sicon-cart"></i>
+  {{ trans('pages.products.add_to_cart') }}
+</salla-add-product-button>
+```
+
+## Hooks
+
+The wishlist page provides hooks for customization:
+
+```twig
+{% hook 'customer:wishlist.items.start' %}
+<salla-products-list source="wishlist"></salla-products-list>
+{% hook 'customer:wishlist.items.end' %}
+```
+
+## JavaScript integration
+
+### Toggle product in wishlist
+
+```javascript
+salla.wishlist.toggle(productId)
+  .then(response => {
+    console.log('Wishlist updated', response);
+  })
+  .catch(error => {
+    console.error('Error updating wishlist', error);
+  });
+```
+
+### Add product to wishlist
+
+```javascript
+salla.wishlist.add(productId)
+  .then(response => {
+    console.log('Product added to wishlist');
+  });
+```
+
+### Remove product from wishlist
+
+```javascript
+salla.wishlist.remove(productId)
+  .then(response => {
+    console.log('Product removed from wishlist');
+  });
+```
+
+## Product card customization
+
+The `wishlist-card.js` file allows you to create a custom web component for wishlist items:
+
+```javascript
+class CustomWishlistCard extends HTMLElement {
+  connectedCallback() {
+    const product = JSON.parse(this.getAttribute('product'));
+    
+    this.innerHTML = `
+      <div class="wishlist-card">
+        <img src="${product.image.url}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <span class="price">${product.price}</span>
+        <button onclick="salla.wishlist.remove('${product.id}')">
+          Remove
+        </button>
+      </div>
+    `;
+  }
+}
+
+customElements.define('custom-wishlist-card', CustomWishlistCard);
+```
+
+<Note>
+The wishlist page extends the `layouts.customer` layout. The `salla-products-list` component with `source="wishlist"` automatically fetches and displays wishlist items with pagination support.
+</Note>

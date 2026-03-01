@@ -1,0 +1,149 @@
+---
+title: Customer notifications page
+description: Documentation for the customer notifications page template
+---
+
+The notifications page displays system notifications and updates for the customer.
+
+## Template location
+
+```
+src/views/pages/customer/notifications.twig
+```
+
+## Available variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `page.title` | string | Page title |
+| `page.slug` | string | Page slug |
+| `notifications` | Paginator | Paginated notifications collection |
+| `notifications.next_page` | string | URL for next page of results |
+| `notifications.count` | int | Total notification count |
+
+## Notification object
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `notification.is_new` | bool | Whether notification is unread |
+| `notification.url` | string | Notification link URL |
+| `notification.title` | string | Notification title |
+| `notification.sub_title` | string | Notification subtitle/description |
+| `notification.date` | string | Notification date |
+
+## Page structure
+
+The notifications page uses the `salla-notifications` web component to handle displaying and managing notifications:
+
+```twig
+{% extends "layouts.customer" %}
+{% block inner_content %}
+  <salla-notifications></salla-notifications>
+{% endblock %}
+```
+
+## Code examples
+
+### Basic notifications display
+
+```twig
+{% if notifications|length %}
+  {% for notification in notifications %}
+    <div class="notification {{ notification.is_new ? 'unread' : 'read' }}">
+      <a href="{{ notification.url }}">
+        <h3>{{ notification.title }}</h3>
+        <p>{{ notification.sub_title }}</p>
+        <span class="date">{{ notification.date }}</span>
+      </a>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="no-notifications">
+    <p>{{ trans('pages.notifications.no_notifications') }}</p>
+  </div>
+{% endif %}
+```
+
+### Using the Salla component
+
+```twig
+<salla-notifications></salla-notifications>
+```
+
+This component automatically handles:
+- Displaying notifications with proper styling
+- Marking notifications as read
+- Pagination
+- Real-time updates
+
+### Custom notification styling
+
+```twig
+{% for notification in notifications %}
+  <div class="notification-item {{ notification.is_new ? 'new' : '' }}">
+    {% if notification.is_new %}
+      <span class="badge">{{ trans('pages.notifications.new') }}</span>
+    {% endif %}
+    
+    <a href="{{ notification.url }}" class="notification-link">
+      <div class="notification-content">
+        <h4 class="notification-title">{{ notification.title }}</h4>
+        <p class="notification-subtitle">{{ notification.sub_title }}</p>
+      </div>
+      <time class="notification-date">{{ notification.date }}</time>
+    </a>
+  </div>
+{% endfor %}
+```
+
+### Pagination
+
+```twig
+<div class="notifications-container">
+  {% for notification in notifications %}
+    {# Notification content #}
+  {% endfor %}
+</div>
+
+{% if notifications.next_page %}
+  <a href="{{ notifications.next_page }}" class="load-more">
+    {{ trans('common.elements.load_more') }}
+  </a>
+{% endif %}
+```
+
+### Notification count
+
+```twig
+<div class="notifications-header">
+  <h1>{{ trans('pages.notifications.title') }}</h1>
+  {% if notifications.count %}
+    <span class="count">{{ notifications.count }}</span>
+  {% endif %}
+</div>
+```
+
+## Hooks
+
+The notifications page provides hooks for customization:
+
+```twig
+{% hook 'customer:notifications.items.start' %}
+<salla-notifications></salla-notifications>
+{% hook 'customer:notifications.items.end' %}
+```
+
+## Common notification types
+
+Notifications may include:
+- Order status updates
+- Shipping updates
+- Product availability alerts
+- Promotional messages
+- Account activity
+- Product reviews
+- Wishlist updates
+
+<Note>
+The notifications page extends the `layouts.customer` layout. The `salla-notifications` component handles all notification logic including loading, marking as read, and real-time updates.
+</Note>

@@ -1,0 +1,114 @@
+---
+title: Parallax background
+description: Full-screen banner with parallax effect and overlay content
+---
+
+The parallax background component creates an immersive full-width banner with a fixed background image and overlay content.
+
+## Component usage
+
+Add a parallax banner to your home page:
+
+```twig
+<section class="s-block s-block--full-banner s-block--full-bg">
+  <div class="full-banner-entry" style="background-image: url({{ image.url }});">
+    <div class="overlay h-full w-full {{ is_opacity ? 'bg-black' : '' }} opacity-60 absolute top-0 left-0"></div>
+    <div class="flex h-full items-center justify-center p-5 xs:p-11 relative">
+      <div>
+        {% if title %}
+          <h2 class="text-2xl font-bold leading-12">{{ title }}</h2>
+        {% endif %}
+        
+        {% if url and link_text %}
+          <a href="{{ url }}" class="inline-block text-white text-sm border rounded-md font-bold px-8 py-4">
+            {{ link_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+## Variables
+
+<ParamField path="image" type="string" required>
+  Background image URL for the parallax effect
+</ParamField>
+
+<ParamField path="url" type="string">
+  Destination URL for the call-to-action button
+</ParamField>
+
+<ParamField path="title" type="string">
+  Main heading text displayed over the background
+</ParamField>
+
+<ParamField path="link_text" type="string">
+  Text for the call-to-action button. Button only appears if both `url` and `link_text` are provided
+</ParamField>
+
+<ParamField path="is_opacity" type="boolean" default="false">
+  When true, adds a dark overlay on the background image for better text readability
+</ParamField>
+
+<ParamField path="position" type="integer">
+  Sorting number for component placement on the page (starts from zero)
+</ParamField>
+
+## Example with overlay
+
+```twig
+<section class="s-block s-block--full-banner s-block--full-bg">
+  <div class="full-banner-entry" style="background-image: url(https://cdn.example.com/banner.jpg);">
+    <div class="overlay h-full w-full bg-black opacity-60 absolute top-0 left-0"></div>
+    <div class="flex h-full items-center justify-center p-5 xs:p-11 relative">
+      <div>
+        <h2 class="text-2xl font-bold leading-12">Summer Collection 2024</h2>
+        <a href="/summer-sale" class="inline-block text-white text-sm border rounded-md font-bold px-8 py-4">
+          Shop Now
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+## Example without button
+
+```twig
+<section class="s-block s-block--full-banner s-block--full-bg">
+  <div class="full-banner-entry" style="background-image: url(https://cdn.example.com/hero.jpg);">
+    <div class="overlay h-full w-full absolute top-0 left-0"></div>
+    <div class="flex h-full items-center justify-center p-5 relative">
+      <div>
+        <h2 class="text-2xl font-bold leading-12">Welcome to Our Store</h2>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+<Note>
+  The dark overlay (`is_opacity: true`) is recommended when using images with light colors to ensure text remains readable.
+</Note>
+
+## Styling notes
+
+- The component creates a full-screen banner that takes the entire viewport height
+- Background image is positioned using CSS `background-image`
+- Content is centered both horizontally and vertically
+- The overlay has 60% opacity when enabled
+- Responsive padding adjusts for mobile devices
+
+## Configuration in twilight.json
+
+This component is registered in `twilight.json` under features:
+
+```json
+{
+  "features": [
+    "component-parallax-background"
+  ]
+}
+```

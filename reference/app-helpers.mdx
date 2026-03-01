@@ -1,0 +1,265 @@
+---
+title: App helpers
+description: Utility class providing DOM manipulation and event handling helpers for Theme Raed
+---
+
+The `AppHelpers` class provides a collection of utility methods for common DOM manipulation tasks, event handling, and element management in Theme Raed.
+
+## Class overview
+
+`AppHelpers` is a helper class that simplifies working with DOM elements through a chainable API. It provides methods for querying elements, managing classes, handling events, and controlling element visibility.
+
+## Methods
+
+### toggleClassIf
+
+Toggles between two sets of CSS classes on elements based on a callback condition.
+
+<ParamField path="selector" type="string" required>
+  CSS selector for target elements
+</ParamField>
+
+<ParamField path="classes1" type="array<string>" required>
+  First set of CSS classes to toggle
+</ParamField>
+
+<ParamField path="classes2" type="array<string>" required>
+  Second set of CSS classes to toggle
+</ParamField>
+
+<ParamField path="callback" type="function" required>
+  Function that determines which classes to apply
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.toggleClassIf('.menu-item', ['active', 'highlight'], ['inactive'], 
+  (element) => element.dataset.selected === 'true'
+);
+```
+
+### element
+
+Retrieves a DOM element by selector or returns the element if already an HTMLElement.
+
+<ParamField path="selector" type="string | HTMLElement" required>
+  CSS selector string or HTMLElement object
+</ParamField>
+
+<ParamField path="returns" type="HTMLElement | NodeList | null">
+  The matched element(s) or null if not found
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+const button = helpers.element('#submit-btn');
+```
+
+<Note>
+For certain selectors like `.total-price`, `.before-price`, and `.product-weight`, this method returns a `NodeList` instead of a single element.
+</Note>
+
+### watchElement
+
+Stores a reference to an element on the helper instance for later use.
+
+<ParamField path="name" type="string" required>
+  Property name to store the element reference
+</ParamField>
+
+<ParamField path="selector" type="string" required>
+  CSS selector for the element to watch
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.watchElement('submitBtn', '#submit-btn');
+// Access later via helpers.submitBtn
+```
+
+### watchElements
+
+Stores references to multiple elements at once.
+
+<ParamField path="elements" type="Object.<string, string>" required>
+  Object mapping property names to CSS selectors
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.watchElements({
+  submitBtn: '#submit-btn',
+  cancelBtn: '#cancel-btn',
+  form: '#checkout-form'
+});
+```
+
+### on
+
+Attaches event listeners to elements with optional configuration.
+
+<ParamField path="action" type="string" required>
+  Event type (e.g., 'click', 'keyup', 'change')
+</ParamField>
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement
+</ParamField>
+
+<ParamField path="callback" type="function" required>
+  Event handler function
+</ParamField>
+
+<ParamField path="options" type="object">
+  Event listener options (optional)
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.on('click', '.add-to-cart', (event) => {
+  console.log('Product added to cart');
+});
+```
+
+### onClick
+
+Convenience method for attaching click event listeners.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement
+</ParamField>
+
+<ParamField path="callback" type="function" required>
+  Click handler function
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.onClick('#menu-toggle', (event) => {
+  document.body.classList.toggle('menu-open');
+});
+```
+
+### onKeyUp
+
+Convenience method for attaching keyup event listeners.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement
+</ParamField>
+
+<ParamField path="callback" type="function" required>
+  Keyup handler function
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.onKeyUp('#search-input', (event) => {
+  performSearch(event.target.value);
+});
+```
+
+### all
+
+Iterates over all elements matching a selector and executes a callback.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector for elements to iterate
+</ParamField>
+
+<ParamField path="callback" type="function" required>
+  Function to execute for each element
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.all('.product-card', (card) => {
+  card.addEventListener('mouseenter', showQuickView);
+});
+```
+
+### hideElement
+
+Hides an element by setting its display style to 'none'.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement to hide
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.hideElement('#loading-spinner');
+```
+
+### showElement
+
+Shows a hidden element by setting its display style.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement to show
+</ParamField>
+
+<ParamField path="display" type="string" default="block">
+  CSS display value (e.g., 'block', 'flex', 'grid')
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.showElement('#success-message', 'flex');
+```
+
+### removeClass
+
+Removes one or more CSS classes from an element.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement
+</ParamField>
+
+<ParamField path="className" type="string" required>
+  Class name(s) to remove
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.removeClass('#alert', 'hidden', 'opacity-0');
+```
+
+<Note>
+You can pass multiple class names as separate arguments to remove them all at once.
+</Note>
+
+### addClass
+
+Adds one or more CSS classes to an element.
+
+<ParamField path="element" type="string | HTMLElement" required>
+  CSS selector or HTMLElement
+</ParamField>
+
+<ParamField path="className" type="string" required>
+  Class name(s) to add
+</ParamField>
+
+```javascript
+const helpers = new AppHelpers();
+helpers.addClass('#notification', 'show', 'animate-fade-in');
+```
+
+<Note>
+You can pass multiple class names as separate arguments to add them all at once.
+</Note>
+
+## Method chaining
+
+Most methods return the `AppHelpers` instance, allowing for method chaining:
+
+```javascript
+const helpers = new AppHelpers();
+
+helpers
+  .watchElement('modal', '#product-modal')
+  .onClick('#open-modal', () => helpers.showElement(helpers.modal))
+  .onClick('#close-modal', () => helpers.hideElement(helpers.modal))
+  .addClass('#product-grid', 'loaded');
+```
