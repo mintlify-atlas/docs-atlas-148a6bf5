@@ -156,7 +156,9 @@
               "reference/anime",
               "reference/product-card-js",
               "reference/add-product-toast",
-              "reference/image-zoom"
+              "reference/image-zoom",
+              "reference/main-menu",
+              "reference/tooltip"
             ]
           },
           {

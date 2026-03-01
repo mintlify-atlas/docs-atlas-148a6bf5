@@ -1,0 +1,243 @@
+---
+title: Main menu
+description: Custom navigation menu web component with responsive overflow handling
+---
+
+The `NavigationMenu` class is a custom web component that renders the theme's main navigation menu with support for mega menus, responsive behavior, and an optional "More" dropdown for overflow items.
+
+## Overview
+
+The component automatically fetches menu data from the Salla API, renders both mobile and desktop versions, and handles overflow menu items by moving them into a "More" dropdown when space is limited.
+
+## Component definition
+
+```javascript
+class NavigationMenu extends HTMLElement
+```
+
+The component is registered as `<custom-main-menu>` and can be used in Twig templates.
+
+## Features
+
+- **API integration** - Fetches menu structure from Salla
+- **Responsive design** - Separate mobile and desktop rendering
+- **Mega menu support** - Display products directly in menu dropdowns
+- **Overflow handling** - Automatically moves items to "More" dropdown
+- **Menu images** - Support for category images in mobile menu
+- **RTL/LTR support** - Works with both text directions
+
+## Usage
+
+```twig
+<custom-main-menu></custom-main-menu>
+```
+
+The component is typically used in the header template (`src/views/components/header/header.twig`).
+
+## Configuration
+
+The overflow behavior is controlled by a global variable set in `master.twig`:
+
+```javascript
+window.enable_more_menu = {{ theme.settings.get('enable_more_menu', true) ? 'true' : 'false' }};
+```
+
+<ParamField path="enable_more_menu" type="boolean" default={true}>
+  When enabled, menu items that don't fit will be moved to a "More" dropdown. When disabled, all menu items remain visible without overflow handling.
+</ParamField>
+
+## Key methods
+
+### `connectedCallback()`
+
+Initializes the component when added to the DOM. Fetches menu data and renders the navigation.
+
+```javascript
+connectedCallback() {
+    salla.onReady()
+        .then(() => salla.lang.onLoaded())
+        .then(() => {
+            return salla.api.component.getMenus()
+            .then(({ data }) => {
+                this.menus = data;
+                return this.render()
+            }).then(() => {
+                this.initializeResponsiveMenu();
+            });
+        });
+}
+```
+
+### `hasChildren(menu)`
+
+Checks if a menu item has child items.
+
+<ParamField path="menu" type="object">
+  The menu object to check
+</ParamField>
+
+Returns `boolean` - `true` if the menu has children
+
+### `hasProducts(menu)`
+
+Checks if a menu item has associated products for mega menu display.
+
+<ParamField path="menu" type="object">
+  The menu object to check
+</ParamField>
+
+Returns `boolean` - `true` if the menu has products
+
+### `getMobileMenu(menu, displayAllText)`
+
+Generates the HTML for mobile menu items.
+
+<ParamField path="menu" type="object">
+  The menu object to render
+</ParamField>
+
+<ParamField path="displayAllText" type="string">
+  Text for "display all" link
+</ParamField>
+
+Returns `string` - HTML markup for mobile menu
+
+### `getDesktopMenu(menu, isRootMenu, additionalClasses)`
+
+Generates the HTML for desktop menu items.
+
+<ParamField path="menu" type="object">
+  The menu object to render
+</ParamField>
+
+<ParamField path="isRootMenu" type="boolean">
+  Whether this is a root-level menu item
+</ParamField>
+
+<ParamField path="additionalClasses" type="string">
+  Additional CSS classes to apply
+</ParamField>
+
+Returns `string` - HTML markup for desktop menu
+
+### `initializeResponsiveMenu()`
+
+Initializes the responsive overflow behavior. Only runs on desktop (screen width >= 1024px) and when `enable_more_menu` is enabled.
+
+```javascript
+initializeResponsiveMenu() {
+    if (window.innerWidth < 1024) return;
+    
+    const isMoreMenuEnabled = window.enable_more_menu;
+    if (!isMoreMenuEnabled) {
+        return;
+    }
+    
+    this.checkMenuOverflow();
+    
+    const resizeHandler = this.debounce(() => {
+        this.checkMenuOverflow();
+    }, 250);
+    
+    window.addEventListener('resize', resizeHandler);
+}
+```
+
+### `checkMenuOverflow()`
+
+Calculates which menu items fit in the available space and moves overflow items to the "More" dropdown.
+
+The method:
+1. Resets visible and overflow menus
+2. Shows all menu items
+3. Calculates available width (container width - other elements - 300px buffer)
+4. Hides items that don't fit
+5. Creates "More" dropdown if there are overflow items
+
+### `createMoreDropdown()`
+
+Creates the HTML for the "More" dropdown menu containing overflow items.
+
+Returns `string` - HTML markup for More dropdown
+
+### `debounce(func, wait)`
+
+Utility function to limit how often the resize handler is called.
+
+<ParamField path="func" type="function">
+  The function to debounce
+</ParamField>
+
+<ParamField path="wait" type="number">
+  Wait time in milliseconds
+</ParamField>
+
+Returns `function` - Debounced function
+
+## Menu object structure
+
+```javascript
+{
+  title: "Category Name",
+  url: "/category-slug",
+  attrs: "data-id='123'",
+  link_attrs: "data-category='123'",
+  image: "https://cdn.salla.sa/image.jpg",  // Optional
+  children: [],  // Array of child menu objects
+  products: []   // Array of product IDs for mega menu
+}
+```
+
+## Styling
+
+The component uses these CSS classes:
+
+- `.main-menu` - Main menu container
+- `.root-level` - Root menu items
+- `.has-children` - Menu items with submenu
+- `.mega-menu` - Menu items with products
+- `.sub-menu` - Submenu dropdown
+- `.mobile-menu` - Mobile menu container
+- `.close-mobile-menu` - Mobile menu close button
+
+## Example
+
+A complete navigation menu with overflow handling:
+
+```twig
+{# In header.twig #}
+<div class="container">
+    <div class="flex items-center justify-between">
+        {# Logo #}
+        <a href="{{ store.url }}">
+            <img src="{{ store.logo }}" alt="{{ store.name }}">
+        </a>
+        
+        {# Main menu #}
+        <custom-main-menu></custom-main-menu>
+        
+        {# User menu, cart, etc. #}
+    </div>
+</div>
+
+{# Set configuration in master.twig #}
+<script>
+    window.enable_more_menu = {{ theme.settings.get('enable_more_menu', true) ? 'true' : 'false' }};
+</script>
+```
+
+## Performance considerations
+
+- Menu data is cached after the initial API call
+- Resize events are debounced (250ms) to prevent excessive calculations
+- Overflow calculations only run on desktop (≥1024px width)
+- Menu images are only rendered in mobile view
+
+## Browser compatibility
+
+The component uses:
+- Custom Elements API
+- ES6 classes
+- Modern JavaScript features
+
+Ensure the Salla JavaScript framework is loaded before this component.

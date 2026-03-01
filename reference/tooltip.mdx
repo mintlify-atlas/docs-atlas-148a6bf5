@@ -1,0 +1,268 @@
+---
+title: Tooltip
+description: Hover and click-based tooltip functionality for product details and help text
+---
+
+The `toolTip` module provides interactive tooltip functionality with support for both hover and click interactions, automatically adapting to touch devices.
+
+## Overview
+
+This utility initializes tooltips throughout the theme, handling both hover-based tooltips (for desktop) and click-based tooltips (for mobile/touch devices). It manages tooltip visibility and provides click-outside-to-close functionality.
+
+## Usage
+
+```javascript
+import toolTip from './partials/tooltip';
+
+// Initialize tooltips
+toolTip();
+```
+
+The function is typically called in page-specific JavaScript files like `product.js`.
+
+## Tooltip types
+
+### Hover tooltips
+
+Display on mouse hover (desktop) or tap (touch devices).
+
+```html
+<div class="tooltip-toggle--hover">
+  <button>?</button>
+  <div class="tooltip">
+    <p>This is helpful information</p>
+    <button class="close-tooltip">×</button>
+  </div>
+</div>
+```
+
+### Click tooltips
+
+Display only when clicked.
+
+```html
+<div class="tooltip-toggle--clickable">
+  <button>More info</button>
+  <div class="tooltip">
+    <p>Additional details here</p>
+    <button class="close-tooltip">×</button>
+  </div>
+</div>
+```
+
+## CSS classes
+
+<ParamField path=".tooltip-toggle--hover" type="string">
+  Container for hover-activated tooltips. On desktop, shows on mouseenter/mouseleave. On touch devices, shows on click.
+</ParamField>
+
+<ParamField path=".tooltip-toggle--clickable" type="string">
+  Container for click-activated tooltips. Always requires a click to show, regardless of device type.
+</ParamField>
+
+<ParamField path=".tooltip" type="string">
+  The tooltip content container. Add class `visible` to show.
+</ParamField>
+
+<ParamField path=".close-tooltip" type="string">
+  Button to manually close the tooltip.
+</ParamField>
+
+## Behavior
+
+### Touch device detection
+
+```javascript
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+```
+
+The module uses the `pointer: coarse` media query to detect touch devices, ensuring tooltips work correctly on tablets and mobile devices.
+
+### Event handlers
+
+#### Hover tooltips
+- **Desktop**: Show on `mouseenter`, hide on `mouseleave`
+- **Touch devices**: Show on `click`, hide when clicking elsewhere
+
+#### Click tooltips
+- **All devices**: Show on `click`, hide when clicking elsewhere or close button
+
+#### Close button
+- Hides the parent tooltip when clicked
+- Prevents event propagation to avoid triggering other handlers
+
+#### Window click
+- Hides all visible tooltips when clicking anywhere outside
+- Provides a natural way to dismiss tooltips
+
+## Example implementations
+
+### Product information tooltip
+
+```html
+<div class="flex items-center gap-2">
+  <span>Shipping time</span>
+  <div class="tooltip-toggle--hover relative">
+    <button class="w-5 h-5 rounded-full bg-gray-200 text-xs">?</button>
+    <div class="tooltip absolute z-50 bg-white shadow-lg rounded-lg p-4 w-64 hidden">
+      <p class="text-sm text-gray-600">
+        Orders are typically shipped within 2-3 business days.
+      </p>
+      <button class="close-tooltip absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+        <i class="sicon-cancel"></i>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+### Size guide tooltip
+
+```html
+<div class="tooltip-toggle--clickable relative inline-block">
+  <button class="text-primary underline text-sm">
+    Size guide
+  </button>
+  <div class="tooltip absolute z-50 bg-white shadow-xl rounded-lg p-6 w-96 hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr>
+          <th>Size</th>
+          <th>Chest (cm)</th>
+          <th>Length (cm)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>S</td>
+          <td>88-92</td>
+          <td>68-70</td>
+        </tr>
+        <!-- More sizes -->
+      </tbody>
+    </table>
+    <button class="close-tooltip mt-4 btn btn--outline w-full">
+      Close
+    </button>
+  </div>
+</div>
+```
+
+## Styling
+
+Add these styles to show/hide tooltips:
+
+```css
+.tooltip {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tooltip.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Position tooltip */
+.tooltip-toggle--hover .tooltip,
+.tooltip-toggle--clickable .tooltip {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+}
+
+/* Tooltip arrow */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: white;
+}
+```
+
+## Common use cases
+
+### Product options explanation
+
+```html
+<label class="flex items-center gap-2">
+  <span>Engraving text</span>
+  <div class="tooltip-toggle--hover">
+    <i class="sicon-info text-gray-400"></i>
+    <div class="tooltip">
+      <p>Enter up to 20 characters for custom engraving</p>
+    </div>
+  </div>
+</label>
+```
+
+### Shipping information
+
+```html
+<div class="tooltip-toggle--hover">
+  <span class="flex items-center gap-1">
+    <i class="sicon-shipping-truck"></i>
+    Free shipping
+    <i class="sicon-info text-sm"></i>
+  </span>
+  <div class="tooltip">
+    <p>Free shipping on orders over $50</p>
+  </div>
+</div>
+```
+
+### Help text
+
+```html
+<div class="tooltip-toggle--clickable">
+  <button class="text-sm text-gray-500 underline">
+    What's this?
+  </button>
+  <div class="tooltip">
+    <h4 class="font-bold mb-2">Loyalty Points</h4>
+    <p>Earn 1 point for every $1 spent. Redeem points for discounts on future orders.</p>
+    <button class="close-tooltip">Got it</button>
+  </div>
+</div>
+```
+
+## Best practices
+
+1. **Keep content concise** - Tooltips should provide brief, helpful information
+2. **Use appropriate type** - Hover for quick info, click for detailed content
+3. **Make close buttons obvious** - Ensure users can easily dismiss tooltips
+4. **Test on touch devices** - Verify tooltips work well on mobile
+5. **Don't nest tooltips** - Avoid placing tooltip triggers inside tooltips
+6. **Consider accessibility** - Add ARIA labels for screen readers
+
+## Accessibility
+
+Enhance tooltips for better accessibility:
+
+```html
+<div class="tooltip-toggle--hover" role="tooltip">
+  <button aria-label="More information" aria-describedby="tooltip-1">
+    <i class="sicon-info"></i>
+  </button>
+  <div id="tooltip-1" class="tooltip" role="status">
+    <p>Helpful information here</p>
+  </div>
+</div>
+```
+
+## Browser support
+
+The tooltip module uses:
+- `querySelectorAll` - All modern browsers
+- `classList.add/remove` - All modern browsers
+- `matchMedia` - All modern browsers with touch detection support
+- Event listeners - All modern browsers
+
+No polyfills required for modern browsers (IE11+).
